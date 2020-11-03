@@ -12,3 +12,5 @@ Everybody stays in touch.
 
 ## Features
 * P2P channels and M2M channels
+* Web based platform
+* Easy to remember and short URL links for access
