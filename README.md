@@ -12,5 +12,5 @@ Everybody stays in touch.
 
 ## Features
 * P2P channels and M2M channels
-* Web based platform
+* No downloaded app, signup or user ID required to start conversation.
 * Easy to remember and short URL links for access
