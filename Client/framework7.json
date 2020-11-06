@@ -1,0 +1,26 @@
+{
+  "cwd": "/home/daniel/Devel/Git/IndySMS/Client",
+  "type": [
+    "pwa"
+  ],
+  "name": "IndySMS",
+  "framework": "svelte",
+  "template": "blank",
+  "bundler": "webpack",
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": true,
+    "color": "#270064",
+    "darkTheme": true,
+    "iconFonts": true,
+    "fillBars": true
+  },
+  "customBuild": false,
+  "webpack": {
+    "developmentSourceMap": true,
+    "productionSourceMap": true,
+    "hashAssets": false,
+    "preserveAssetsPaths": false,
+    "inlineAssets": true
+  }
+}
