@@ -6,6 +6,10 @@ var routes = [
     path: '/',
     component: HomePage,
   },
+  {
+    path: '/login/',
+    component: HomePage,
+  },
 ];
 
 export default routes;

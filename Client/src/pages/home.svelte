@@ -1,18 +1,44 @@
 <Page name="home">
   <!-- Top Navbar -->
-  <Navbar large>
+  <Navbar>
     <NavTitle>IndySMS</NavTitle>
-    <NavTitleLarge>IndySMS</NavTitleLarge>
   </Navbar>
-  <!-- Toolbar -->
+  <!-- Toolbar 
   <Toolbar bottom>
     <Link>Left Link</Link>
     <Link>Right Link</Link>
   </Toolbar>
   <!-- Page content -->
-  <Block strong>
-    <p>Here is your blank Framework7 app. Let's see what we have here.</p>
-  </Block>
+  <Button large raised>
+    <Link cardClose color="black" class="card-opened-fade-in" style="position: absolute; right: 15px; top: 15px" iconF7="xmark_circle_fill" />
+    <BlockTitle>Simple. No installations. Only your browser.</BlockTitle>
+    <p>No phone number, no e-mail, no personal data. Only communicate.</p>
+  </Button>
+  
+  <Card expandable >  
+    <!--CardContent style="background-size: cover; background-image: url(https://thumbs.dreamstime.com/z/people-group-young-man-woman-hipster-casual-clothes-stand-line-chat-box-vector-illustration-66733018.jpg)"-->
+    <CardContent>
+      <CardHeader>
+        Join a chat
+      </CardHeader>
+      <Link cardClose color="black" class="card-opened-fade-in" style="position: absolute; right: 15px; top: 15px" iconF7="xmark_circle_fill" />
+      <BlockTitle>Simple. No installations. Only your browser.</BlockTitle>
+      <p>No phone number, no e-mail, no personal data. Only communicate.</p>
+    </CardContent>
+  </Card>
+
+  <Card expandable> 
+    <!--CardContent style="background-size: cover; background-image: url(https://thumbs.dreamstime.com/z/people-group-young-man-woman-hipster-casual-clothes-stand-line-chat-box-vector-illustration-66733018.jpg)"-->
+    <CardContent>
+      <CardHeader>
+        Own your chats
+      </CardHeader>
+      <Link cardClose color="black" class="card-opened-fade-in" style="position: absolute; right: 15px; top: 15px" iconF7="xmark_circle_fill" />
+      <BlockTitle>Stay in contacts with no privacy leaks.</BlockTitle>
+      <p>No phone number, no e-mail, no personal data. Only communicate.</p>
+    </CardContent>
+  </Card>
+
 
 
 </Page>
@@ -21,9 +47,12 @@
     Page,
     Navbar,
     NavTitle,
-    NavTitleLarge,
     Link,
     Toolbar,
-    Block,
+    Card,
+    CardContent,
+    CardHeader,
+    BlockTitle,
+    Button,
   } from 'framework7-svelte';
 </script>
