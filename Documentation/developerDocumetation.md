@@ -4,44 +4,116 @@
 - [IndySMS](#indysms)
   - [TOC](#toc)
   - [Service](#service)
-    - [Documents](#documents)
-    - [Messages](#messages)
+    - [DB documents](#db-documents)
+    - [API dialogs:](#api-dialogs)
+      - [Signon](#signon)
+      - [Challege](#challege)
+      - [Login](#login)
+      - [Get](#get)
+      - [Put](#put)
+      - [Logout](#logout)
+      - [Updates notification](#updates-notification)
 
 ## Service
 
-### Documents
+### DB documents
 |Document|user|
 |-|-|
-|nameHash|Node: ```CryptoJS.SHA512(`${secretKey}${pin}`);``` browser: ```crypto.subtle.digest("SHA-256",new TextEncoder("utf-8").encode(str)).then(hash=>hex(hash));```|
+|nameHash|```string```|
 |p2pChats|```[chat.id,...]```|
 |m2mChats|```[chat.id,...]```|
 
 |Document|chat|
 |-|-|
-|id|```crypto.createHash('sha1').update(Date.now().toString()).digest('base64').slice(idx,5);```|
+|id|```crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}).digest('base64').slice(idx,5);```|
 |owner|```user.nameHash```|
-|type|```p2pChats|m2mChats```|
+|type|```p2pChat|m2mChat```|
 |peers|```[user.nameHash,...]```|
 |peer|```user.nameHash```|
 
 |Document|message|
 |-|-|
-|id|``` `${chat.id}:${user.nameHash}:${timestamp}` ```|
-|time|```Date.now()```|
+|chat|```chat.id```|
 |user|```user.nameHash```|
-|chat|```[chat.id,...]```|
-|content|```buff.toString('base64'); | null```|
-|file|``` filePath | null ```|
+|time|```Date.now()```|
+|content|```URL(https://safenote.co/file-sharing-api) | string```|
+|type|``` file | string ```|
 
-### Messages
-* Request:
-```json
-{
-    "user": "user.id",
-    "chat": "chat.id",
-    "signature": "ECDSA signature",
-    "msgType": "get|push|delete",
-    "startPoint": int
+### API dialogs:
+#### Signon
+```JavaScript
+request: {
+  msgType: 'signon',
+  nameHash: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${crypto.getRandomValues(new Uint32Array(10))}`:`${password}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
+}
+response: {
+  message: null | 'Error description',
+  ok: boolean,
 }
 ```
-* Response:
+#### Challege
+```JavaScript
+request: {
+  msgType: 'challenge',
+}
+response: {
+  message: crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}`).digest('base64') | null,
+  ok: boolean,
+}
+```
+#### Login
+```JavaScript
+request: {
+  msgType: 'login',
+  nameHash: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${nameSeed}`:`${password}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
+  challengeAnswer: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${nameHash}:${challenge}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
+}
+response: {
+  message: null | 'Error description',
+  ok: boolean,
+}
+```
+#### Get
+```JavaScript
+request: {
+  msgType: 'get',
+  chat: chat.id,
+  fromTimestamp: timestamp,
+}
+response: {
+  message: [...messages] | 'Error description',
+  ok: boolean,
+}
+```
+#### Put
+```JavaScript
+request: {
+  msgType: 'put',
+  chat: chat.id,
+  content: URL('https://safenote.co/file-sharing-api') | 'string';
+  type: 'file' | 'string';
+}
+response: {
+  message: [...messages] | 'Error description',
+  ok: boolean,
+}
+```
+#### Logout
+```JavaScript
+request: {
+  msgType: 'logout',
+}
+response: {
+  message: null,
+  ok: boolean,
+}
+```
+#### Updates notification
+```JavaScript
+request: {
+  msgType: 'updates',
+}
+response: {
+  ok: boolean,
+}
+```
