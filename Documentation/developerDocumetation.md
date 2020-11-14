@@ -13,6 +13,7 @@
       - [Put](#put)
       - [Logout](#logout)
       - [Updates notification](#updates-notification)
+      - [General error response](#general-error-response)
 
 ## Service
 
@@ -57,7 +58,7 @@ request: {
   msgType: 'challenge',
 }
 response: {
-  message: crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}`).digest('base64') | null,
+  message: crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}`).digest('base64'),
   ok: boolean,
 }
 ```
@@ -105,7 +106,7 @@ request: {
 }
 response: {
   message: null,
-  ok: boolean,
+  ok: true,
 }
 ```
 #### Updates notification
@@ -115,5 +116,12 @@ request: {
 }
 response: {
   ok: boolean,
+}
+```
+#### General error response
+```JavaScript
+response: {
+  message: 'Error description',
+  ok: false,
 }
 ```
