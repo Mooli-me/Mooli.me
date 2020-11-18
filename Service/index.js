@@ -4,6 +4,21 @@ const express = require('express');
 const session = require('express-session');
 const webSockets = require('ws');
 
+var mongoDB
+const mongoClient = require('./mongoClient.js');
+mongoClient.connect()
+    .then(
+        client=>{
+            mongoDB = client.db();
+            console.log('mongoClient:', client);
+            console.log('mongoDB:', mongoDB);
+        }
+    ).catch(
+        err=>{
+            console.error(err);
+        }
+    );
+
 const PORT = process.env.PORT || 3000;
 
 const serviceSecret = 'tm20kQAQnv9MbEah0daZIwPW8xTrgcTSW3C/namhw2/7';
@@ -20,6 +35,31 @@ async function requestTemplateHandler (ws,request) {
     const response = {
         message: '-> Only a template',
         ok: true,
+    }
+    ws.objSend(response);
+}
+
+async function signonHandler (ws,request) {
+    console.log('-> Signing on');
+    var response = {};
+    try {
+        const users = mongoDB.collection('users');
+        const user = {
+            nameHash: request.nameHash,
+            p2pChats: [],
+            m2mChats: [],
+        };
+        users.insertOne(user);
+        response = { 
+            message: null,
+            ok: true,
+        };
+    } catch (err) {
+        console.error(err)
+        response = { 
+            message: err.message,
+            ok: false,
+        }
     }
     ws.objSend(response);
 }
@@ -46,9 +86,7 @@ async function logoutHandler (ws,request) {
 }
 
 const messageHandlers = {
-    signon: (ws,request) => {
-        console.log('-> Signing on');
-    },
+    signon: signonHandler,
     challenge: challengeHandler,
     login: (ws,request) => {
         console.log('-> Logging in');

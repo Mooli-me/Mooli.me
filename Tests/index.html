@@ -1,0 +1,34 @@
+<script>
+    
+    const webSocketURL = 'ws://localhost:3000';
+    const userPassword = 'abc123.';
+    var webSocket = null;
+
+    function connect () {
+        webSocket = new WebSocket(webSocketURL);
+        webSocket.onopen = () => {
+            //webSocket.send('*** Nueva conexión ***')
+            signon();
+        }
+        webSocket.onmessage = msg => {
+            console.log(msg)
+        }
+    }
+    connect();
+
+    async function newIdentity () {
+        return crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${crypto.getRandomValues(new Uint32Array(10))}:${userPassword}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash))))
+    }
+
+    async function signon () {
+        var id = await newIdentity();
+        const request = {
+            msgType: 'signon',
+            nameHash: await newIdentity(),
+        }
+        console.log(webSocket)
+        webSocket.send(JSON.stringify(request));
+    }
+    signon();
+
+</script>
