@@ -1,14 +1,15 @@
 
-import HomePage from '../pages/home.svelte';
+import Start from '../pages/Start.svelte';
+import FirsRun from '../pages/FirstRun.svelte';
 
 var routes = [
   {
     path: '/',
-    component: HomePage,
+    component: Start,
   },
   {
-    path: '/login/',
-    component: HomePage,
+    path: '/FirstRun/',
+    component: FirsRun,
   },
 ];
 
