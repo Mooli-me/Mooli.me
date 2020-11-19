@@ -48,7 +48,4 @@
       <p>No phone number, no e-mail, no personal data. Only communicate.</p>
     </CardContent>
   </Card>
-
-
-
 </Page>

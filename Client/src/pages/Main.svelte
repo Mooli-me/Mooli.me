@@ -8,11 +8,11 @@
   } from 'framework7-svelte';
 </script>
 
-<Page name="home">
+<Page name="home" class="display-flex justify-content-center" style="height: 100vh;">
     <Navbar>
         <NavTitle>IndySMS</NavTitle>
     </Navbar>
-    <Block  class="display-flex justify-content-space-evenly align-content-space-around">
+    <Block  class="display-flex align-items-center" style="height: 80%;">
         <Preloader size={100}/>
     </Block>
 </Page>

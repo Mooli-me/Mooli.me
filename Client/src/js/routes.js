@@ -1,15 +1,34 @@
 
-import Start from '../pages/Start.svelte';
+import Main from '../pages/Main.svelte';
 import FirsRun from '../pages/FirstRun.svelte';
+
+import { identity, chats } from '../js/store.js';
+var identityVal, chatsVal;
+identity.subscribe(value => {
+  identityVal = value;
+});
+chats.subscribe(value => {
+  chatsVal = value;
+});
 
 var routes = [
   {
     path: '/',
-    component: Start,
+    redirect: function (route, resolve, reject) {
+      if ( identityVal || chatsVal ) {
+        resolve('/FirstRun/');
+      } else {
+        resolve('/Main/');
+      }
+    }
   },
   {
     path: '/FirstRun/',
     component: FirsRun,
+  },
+  {
+    path: '/Main/',
+    component: Main,
   },
 ];
 
