@@ -16,9 +16,9 @@ var routes = [
     path: '/',
     redirect: function (route, resolve, reject) {
       if ( identityVal || chatsVal ) {
-        resolve('/FirstRun/');
-      } else {
         resolve('/Main/');
+      } else {
+        resolve('/FirstRun/');
       }
     }
   },

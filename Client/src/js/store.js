@@ -7,7 +7,7 @@ import { writable } from 'svelte/store';
 const savedIdentityJSON = window.localStorage.getItem('identity') || "null";
 const savedIdentity = JSON.parse(savedIdentityJSON);
 
-const savedChatsJSON = window.localStorage.getItem('chats') || "{}";
+const savedChatsJSON = window.localStorage.getItem('chats') || "null";
 const savedChats = JSON.parse(savedChatsJSON);
 
 /**

@@ -26,6 +26,7 @@
     "framework7-icons": "^3.0.1",
     "framework7-svelte": "^5.7.13",
     "svelte": "^3.29.4",
+    "svelte-i18n": "^3.2.5",
     "template7": "^1.4.2"
   },
   "devDependencies": {

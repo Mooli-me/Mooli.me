@@ -5,6 +5,15 @@
 
 </App>
 <script>
+  /**
+   * svelte-i18n
+  */
+  import {dictionary,locale} from 'svelte-i18n';
+  import {translations} from '../js/translations.js';
+  dictionary.set(translations);
+  locale.set('es');
+  /***/
+  
   import { onMount } from 'svelte';
 
   import {

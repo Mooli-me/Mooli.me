@@ -3,49 +3,82 @@
     Page,
     Navbar,
     NavTitle,
-    Link,
-    Toolbar,
     Card,
     CardContent,
     CardHeader,
-    BlockTitle,
+    Row,
+    Col,
+    List,
+    ListInput,
+    BlockHeader,
     Button,
   } from 'framework7-svelte';
+
+  import {_} from 'svelte-i18n';
 </script>
 
 <Page name="home">
-  <!-- Top Navbar -->
+
   <Navbar>
     <NavTitle>IndySMS</NavTitle>
   </Navbar>
-  <!-- Toolbar 
-  <Toolbar bottom>
-    <Link>Left Link</Link>
-    <Link>Right Link</Link>
-  </Toolbar>
-  <!-- Page content -->
-  
-  <Card expandable >  
-    <!--CardContent style="background-size: cover; background-image: url(https://thumbs.dreamstime.com/z/people-group-young-man-woman-hipster-casual-clothes-stand-line-chat-box-vector-illustration-66733018.jpg)"-->
+
+  <Card>  
+    <CardHeader>
+      {$_('firsRunIntroCardTitle')}
+    </CardHeader>
     <CardContent>
-      <CardHeader>
-        Join a chat
-      </CardHeader>
-      <Link cardClose color="black" class="card-opened-fade-in" style="position: absolute; right: 15px; top: 15px" iconF7="xmark_circle_fill" />
-      <BlockTitle>Simple. No installations. Only your browser.</BlockTitle>
-      <p>No phone number, no e-mail, no personal data. Only communicate.</p>
+      <Row>
+        <Col width='20'>
+          <em>{$_('firsRunIntroSimpleTitle')}</em>
+        </Col>
+        <Col width='80'>
+          <p>{$_('firsRunIntroSimpleContent')}</p>
+        </Col>
+      </Row>
+      <Row>
+        <Col width='20'>
+          <em>{$_('firsRunIntroDiscreetTitle')}</em>
+        </Col>
+        <Col width='80'>
+          <p>{$_('firsRunIntroDiscreetContent')}</p>
+        </Col>
+      </Row>
     </CardContent>
   </Card>
 
-  <Card expandable> 
-    <!--CardContent style="background-size: cover; background-image: url(https://thumbs.dreamstime.com/z/people-group-young-man-woman-hipster-casual-clothes-stand-line-chat-box-vector-illustration-66733018.jpg)"-->
+  <Card>  
+    <CardHeader>
+      {$_('joinAChatTitle')}
+    </CardHeader>
     <CardContent>
-      <CardHeader>
-        Own your chats
-      </CardHeader>
-      <Link cardClose color="black" class="card-opened-fade-in" style="position: absolute; right: 15px; top: 15px" iconF7="xmark_circle_fill" />
-      <BlockTitle>Stay in contacts with no privacy leaks.</BlockTitle>
-      <p>No phone number, no e-mail, no personal data. Only communicate.</p>
+      <BlockHeader>
+        {$_('joinAChatContent')}
+      </BlockHeader>
+      <List>
+        <ListInput
+        outline
+        label={$_('joinAChatInputCodeLabel')}
+        floatingLabel
+        type="text"
+        clearButton
+        />
+      </List>
     </CardContent>
   </Card>
+
+  <Card>  
+    <CardHeader>
+      {$_('signupTitle')}
+    </CardHeader>
+    <CardContent>
+      <BlockHeader>
+        {$_('signupContent')}
+      </BlockHeader>
+      <Button large round fill href="/Main/">
+        {$_('signupButton')}
+      </Button>
+    </CardContent>
+  </Card>
+
 </Page>
