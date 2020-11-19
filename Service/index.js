@@ -4,6 +4,8 @@ const express = require('express');
 const session = require('express-session');
 const webSockets = require('ws');
 
+const PORT = process.env.PORT || 3000;
+
 var mongoDB
 const mongoClient = require('./mongoClient.js');
 mongoClient.connect()
@@ -18,8 +20,6 @@ mongoClient.connect()
             console.error(err);
         }
     );
-
-const PORT = process.env.PORT || 3000;
 
 const serviceSecret = 'tm20kQAQnv9MbEah0daZIwPW8xTrgcTSW3C/namhw2/7';
 
@@ -101,6 +101,9 @@ const messageHandlers = {
 }
 
 const expressApp = express();
+
+expressApp.use(express.static(__dirname + '/public'));
+
 expressApp.use(session(sessionOptions));
 
 const httpServer = http.createServer(expressApp);
@@ -162,7 +165,3 @@ httpServer.listen( PORT , ()=>{
     const connection = httpServer.address()
     console.log(`Address: ${connection.address} Port:${connection.port}`);
 }) ;
-
-expressApp.get('/',async (req,res)=>{
-    res.send('Hi!')
-})
