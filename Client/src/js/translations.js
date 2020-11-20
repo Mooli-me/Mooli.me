@@ -11,5 +11,8 @@ export const translations = {
         signupTitle: 'Crea tus canales',
         signupContent: '¿Necesitas mantener el contacto sin perder la privacidad?. Crea tu cuenta sin proporcionar datos.',
         signupButton: 'Crear mi cuenta',
+        newAccountInsertPassPlaceholder: 'Tu nueva contraseña de IndySMS...',
+        newAccountYouCanOmitPass: 'Puedes dejar la contraseña vacía... si eres una de esas personas.',
+        newAccountButton: 'Crear cuenta',
     },
 }
