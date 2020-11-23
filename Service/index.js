@@ -12,8 +12,7 @@ mongoClient.connect()
     .then(
         client=>{
             mongoDB = client.db();
-            console.log('mongoClient:', client);
-            console.log('mongoDB:', mongoDB);
+            console.log('Conected to Mongo Atlas');
         }
     ).catch(
         err=>{
