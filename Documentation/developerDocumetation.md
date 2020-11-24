@@ -7,7 +7,7 @@
     - [DB documents](#db-documents)
     - [API dialogs:](#api-dialogs)
       - [Signon](#signon)
-      - [Challege](#challege)
+      - [Challenge](#challenge)
       - [Login](#login)
       - [Get](#get)
       - [Put](#put)
@@ -52,7 +52,7 @@ response: {
   ok: boolean,
 }
 ```
-#### Challege
+#### Challenge
 ```JavaScript
 request: {
   msgType: 'challenge',

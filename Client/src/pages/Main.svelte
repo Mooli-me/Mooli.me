@@ -19,7 +19,7 @@
     socketURL = `wss://${window.location.hostname}/`;
   }
 
-  const ws = new WS(socketURL);
+  const ws = WS(socketURL,$identity);
 
   var userPassword;
 
@@ -28,12 +28,14 @@
   }
 
   async function signOn () {
-    $identity = await newIdentity();
+    //$identity = await newIdentity();
+    //ws.nameSeed = $identity;
     const request = {
       msgType: 'signon',
       nameHash: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${newIdentity}:${userPassword}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
     };
-    //const response = await fetch()
+    const response = await ws.sendObj(request);
+    console.log('********************',response);
   }
 
 </script>

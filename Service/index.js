@@ -38,26 +38,32 @@ async function requestTemplateHandler (ws,request) {
     ws.objSend(response);
 }
 
-async function signonHandler (ws,request) {
+async function signonHandler (ws,obj,code) {
     console.log('-> Signing on');
     var response = {};
     try {
         const users = mongoDB.collection('users');
         const user = {
-            nameHash: request.nameHash,
+            nameHash: obj.nameHash,
             p2pChats: [],
             m2mChats: [],
         };
         users.insertOne(user);
         response = { 
-            message: null,
-            ok: true,
+            code,
+            obj: {
+                message: null,
+                ok: true,
+            },
         };
     } catch (err) {
         console.error(err)
         response = { 
-            message: err.message,
-            ok: false,
+            code,
+            obj: {
+                message: err.message,
+                ok: false,
+            },
         }
     }
     ws.objSend(response);
@@ -87,13 +93,13 @@ async function logoutHandler (ws,request) {
 const messageHandlers = {
     signon: signonHandler,
     challenge: challengeHandler,
-    login: (ws,request) => {
+    login: (ws,obj,code) => {
         console.log('-> Logging in');
     },
-    get: (ws,request) => {
+    get: (ws,obj,code) => {
         console.log('-> Get');
     },
-    put: (ws,request) => {
+    put: (ws,obj,code) => {
         console.log('-> Put');
     },
     logout: logoutHandler,
@@ -133,14 +139,26 @@ webSocketsServer.on('connection', async (ws) => {
             return;
         }
 
-        if ( ! request.hasOwnProperty('msgType')) {
+        if ( ! request.hasOwnProperty('code') || ! request.hasOwnProperty('obj')) {
+            const response = {
+                message: 'Your message must have a "code" and a "obj" property',
+                ok: false,
+            }
+            ws.objSend(response);
+            return;
+        }
+
+        var code = request.code;
+        var obj = request.obj;
+
+        if ( ! obj.hasOwnProperty('msgType')) {
             const response = {
                 message: 'Your message must have a "msgType" property',
                 ok: false,
             }
             ws.objSend(response);
             return;
-        } else if ( ! messageHandlers.hasOwnProperty(request.msgType) ) {
+        } else if ( ! messageHandlers.hasOwnProperty(obj.msgType) ) {
             const response = {
                 message: `"msgType" must be one of: ${Object.keys(messageHandlers)}.`,
                 ok: false,
@@ -148,7 +166,7 @@ webSocketsServer.on('connection', async (ws) => {
             ws.objSend(response);
             return;
         } else {
-            messageHandlers[request.msgType](ws,request);
+            messageHandlers[obj.msgType](ws,obj,code);
         }
         /**
          * Sending messages:
