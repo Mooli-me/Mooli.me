@@ -18,7 +18,6 @@ export function WS (url,nameSeed) {
             ws.queue[data.code] = data.obj;
         }
         saveResponse(msg,ws);
-        console.log(ws)
     };
     ws.sendObj = function (obj) {
         try {
