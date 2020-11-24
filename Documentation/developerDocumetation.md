@@ -13,7 +13,6 @@
       - [Put](#put)
       - [Logout](#logout)
       - [Updates notification](#updates-notification)
-      - [General error response](#general-error-response)
 
 ## Service
 
@@ -48,6 +47,7 @@ request: {
   nameHash: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${crypto.getRandomValues(new Uint32Array(10))}`:`${password}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
 }
 response: {
+  msgType: 'signon',
   message: null | 'Error description',
   ok: boolean,
 }
@@ -58,6 +58,7 @@ request: {
   msgType: 'challenge',
 }
 response: {
+  msgType: 'challenge',
   message: crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}`).digest('base64'),
   ok: boolean,
 }
@@ -70,6 +71,7 @@ request: {
   challengeAnswer: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${nameHash}:${challenge}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
 }
 response: {
+  msgType: 'login',
   message: null | 'Error description',
   ok: boolean,
 }
@@ -82,6 +84,7 @@ request: {
   fromTimestamp: timestamp,
 }
 response: {
+  msgType: 'get',
   message: [...messages] | 'Error description',
   ok: boolean,
 }
@@ -95,6 +98,7 @@ request: {
   type: 'file' | 'string';
 }
 response: {
+  msgType: 'put',
   message: [...messages] | 'Error description',
   ok: boolean,
 }
@@ -105,6 +109,7 @@ request: {
   msgType: 'logout',
 }
 response: {
+  msgType: 'logout',
   message: null,
   ok: true,
 }
@@ -115,13 +120,7 @@ request: {
   msgType: 'updates',
 }
 response: {
+  msgType: 'updates',
   ok: boolean,
-}
-```
-#### General error response
-```JavaScript
-response: {
-  message: 'Error description',
-  ok: false,
 }
 ```
