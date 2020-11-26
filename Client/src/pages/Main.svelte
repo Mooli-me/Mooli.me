@@ -16,6 +16,8 @@
   import { identity, chats } from '../js/store.js';
   import { WS } from '../js/webSocket.js';
 
+  import Avatar from '../components/Avatar.svelte';
+
   var socketURL;
   if (window.location.hostname === "localhost") {
     socketURL = 'ws://localhost:3000/';
@@ -85,10 +87,9 @@
       </FabButtons>
     </Fab>
     <Block>
-
-      <img id="avatar" alt="avatar" src="https://avatars.dicebear.com/api/avataaars/{$identity}.svg?options[mouth][]=smile&options[eyebrow][]=raised&options[eyes][]=happy"/>
+      <Avatar id={$identity}/>
       <!--
-        //https://avatars.dicebear.com/api/avataaars/ty%20fyi%20jvyiyutiytiuytiut7687568.svg?options[mouth][]=smile&options[eyebrow][]=raised&options[eyes][]=happy
+        //https://avatars.dicebear.com/api/
         //https://www.npmjs.com/package/@dicebear/avatars-avataaars-sprites
       -->
     </Block>
