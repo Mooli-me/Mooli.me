@@ -15,5 +15,6 @@ export const translations = {
         newAccountYouCanOmitPass: 'Puedes dejar la contraseña vacía... si eres una de esas personas.',
         newAccountButton: 'Crear cuenta',
         somethingWasWrong: 'Uoooops! Algo ha ido mal...',
+        mainThereIsNotChatsToShow: 'No hay chats para mostrar aquí... por ahora.',
     },
 }

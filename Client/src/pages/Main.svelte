@@ -12,11 +12,15 @@
     FabButtons,
     FabButton,
   } from 'framework7-svelte';
+
   import {_} from 'svelte-i18n';
+
   import { identity, chats } from '../js/store.js';
+
   import { WS } from '../js/webSocket.js';
 
   import Avatar from '../components/Avatar.svelte';
+  import ChatList from '../components/ChatList.svelte';
 
   var socketURL;
   if (window.location.hostname === "localhost") {
@@ -44,6 +48,10 @@
     const response = await ws.sendObj(request);
     if (response.ok) {
       $identity = newId;
+      $chats = {
+        p2pChats: [],
+        m2mChats: [],
+      };
       working = false;
     } else {
       raisedError = true;
@@ -88,16 +96,13 @@
     </Fab>
     <Block>
       <Avatar id={$identity}/>
-      <!--
-        //https://avatars.dicebear.com/api/
-        //https://www.npmjs.com/package/@dicebear/avatars-avataaars-sprites
-      -->
+      Chats privados
+      <ChatList chats={$chats.p2pChats} />
+      Chats de grupo
+      <ChatList chats={$chats.m2mChats} />
     </Block>
     {/if}
 </Page>
 
 <style>
-  img#avatar {
-    width: 33vw;
-  }
 </style>
