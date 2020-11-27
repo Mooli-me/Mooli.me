@@ -10,8 +10,9 @@
   */
   import {dictionary,locale} from 'svelte-i18n';
   import {translations} from '../js/translations.js';
+  import {getBrowserLang} from '../js/getBrowserLang.js';
   dictionary.set(translations);
-  locale.set('es');
+  locale.set(getBrowserLang());
   /***/
   
   import { onMount } from 'svelte';
