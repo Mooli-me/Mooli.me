@@ -20,7 +20,7 @@
 <Page name="home">
 
   <Navbar>
-    <NavTitle>IndySMS</NavTitle>
+    <NavTitle>{$_('appNameTitle')}</NavTitle>
   </Navbar>
 
   <Card>  

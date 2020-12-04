@@ -62,7 +62,7 @@
 
 <Page name="home" class="display-flex justify-content-center" style="height: 100vh;">
     <Navbar>
-        <NavTitle>IndySMS</NavTitle>
+        <NavTitle>{$_('appNameTitle')}</NavTitle>
     </Navbar>
     {#if $identity === null && ! working }
     <Block>
