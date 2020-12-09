@@ -33,8 +33,28 @@
 
   var userPassword, raisedError, working;
 
+  async function sha512(data) {
+    const utf8 = new TextEncoder("utf-8");
+    const string = utf8.encode(data);
+    const hash = await crypto.subtle.digest("SHA-512",string);
+    const hashArray = new Uint8Array(hash);
+    const hashString = String.fromCharCode(...hashArray);
+    const base64 = btoa(hashString);
+    /*
+    console.log(
+      `string: ${string}
+      hash: ${hash}
+      hashArray: ${hashArray}
+      hashString: ${hashString}
+      base64: ${base64}
+      `
+    )
+    */
+    return base64;
+  }
+
   async function newIdentity () {
-    return  crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(crypto.getRandomValues(new Uint32Array(10)))).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash))));
+    return sha512(crypto.getRandomValues(new Uint32Array(10)));
   }
 
   async function signOn () {
@@ -43,7 +63,7 @@
     ws.nameSeed = newId;
     const request = {
       msgType: 'signon',
-      nameHash: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${newIdentity}:${userPassword}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
+      nameHash: await sha512(`${newId}:${userPassword}`),
     };
     const response = await ws.sendObj(request);
     if (response.ok) {
