@@ -3,12 +3,26 @@
     const webSocketURL = 'ws://localhost:3000';
     const userPassword = 'abc123.';
     var webSocket = null;
+    var code = 0;
 
     function connect () {
         webSocket = new WebSocket(webSocketURL);
         webSocket.onopen = () => {
             //webSocket.send('*** Nueva conexión ***')
-            signon();
+            var id;
+            newIdentity().then(
+                id => {
+                    console.log('=> Signon');
+                    signon(id);
+                    console.log('=> Good login');
+                    login(id);
+                    console.log('=> Login: bad id');
+                    login('aaaaaaaaaa');
+                    console.log('=> Login: no id');
+                    login(null);
+                }
+            );
+
         }
         webSocket.onmessage = msg => {
             console.log(msg)
@@ -20,23 +34,26 @@
         return crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${crypto.getRandomValues(new Uint32Array(10))}:${userPassword}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash))))
     }
 
-    async function signon () {
-        var id = await newIdentity();
+    async function signon (id) {
         const request = {
-            msgType: 'signon',
-            nameHash: await newIdentity(),
+            code: code++,
+            obj: {
+                msgType: 'signon',
+                nameHash: id,
+            }
         }
-        console.log(webSocket)
         webSocket.send(JSON.stringify(request));
     }
-    //signon();
 
-    async function getChallenge () {
-        
-    }
-
-    async function login () {
-
+    async function login (nameHash) {
+        const request = {
+            code: code++,
+            obj: {
+                msgType: 'login',
+                nameHash: nameHash,
+            },
+        }
+        webSocket.send(JSON.stringify(request));
     }
 
 </script>

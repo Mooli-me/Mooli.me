@@ -29,11 +29,53 @@ const sessionOptions = {
     cookie: {},
 }
 
+/*
 async function requestTemplateHandler (ws,request) {
     console.log('-> Only a template');
     const response = {
         message: '-> Only a template',
         ok: true,
+    }
+    ws.objSend(response);
+}
+*/
+
+async function loginHandler (ws,obj,code) {
+    console.log('-> Logging on');
+    var object = {}
+    if ( obj.hasOwnProperty('nameHash') && obj.nameHash !== null ) {
+        try {
+            const users = mongoDB.collection('users');
+            const nameHash = obj.nameHash;
+            const existentUser = await users.findOne({nameHash: nameHash});
+            if ( existentUser ) {
+                ws.nameHash = nameHash;
+                object = {
+                    message: 'Welcome!',
+                    ok: true,
+                }
+            } else {
+                object = {
+                    message: 'Inexistent nameHash.',
+                    ok: false,
+                }
+            }
+        } catch (err) {
+            console.error(err)
+            object = {
+                message: err.message,
+                ok: false,
+            }
+        }
+    } else {
+        object = {
+            message: 'Login request must have a "nameHash"',
+            ok: false,
+        }
+    }
+    const response = {
+        code,
+        object,
     }
     ws.objSend(response);
 }
@@ -93,9 +135,7 @@ async function logoutHandler (ws,request) {
 const messageHandlers = {
     signon: signonHandler,
     challenge: challengeHandler,
-    login: (ws,obj,code) => {
-        console.log('-> Logging in');
-    },
+    login: loginHandler,
     get: (ws,obj,code) => {
         console.log('-> Get');
     },

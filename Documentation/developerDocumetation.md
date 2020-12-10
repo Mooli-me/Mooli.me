@@ -53,6 +53,7 @@ response: {
 }
 ```
 #### Challenge
+*For future use*
 ```JavaScript
 request: {
   msgType: 'challenge',
@@ -67,8 +68,8 @@ response: {
 ```JavaScript
 request: {
   msgType: 'login',
-  nameHash: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${nameSeed}`:`${password}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
-  challengeAnswer: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${nameHash}:${challenge}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
+  nameHash: nameHash,
+  challengeAnswer: placeholder for future cryptographic signature,
 }
 response: {
   msgType: 'login',
