@@ -1,4 +1,4 @@
-# IndySMS
+# Mooli.me
 Communicate without leaks.
 You don't provide your personal information.
 We can't access your communications.

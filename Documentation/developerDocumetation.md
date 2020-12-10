@@ -1,7 +1,7 @@
-# IndySMS
+# Mooli.me
 
 ## TOC
-- [IndySMS](#indysms)
+- [Mooli.me](#moolime)
   - [TOC](#toc)
   - [Service](#service)
     - [DB documents](#db-documents)

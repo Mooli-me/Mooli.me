@@ -28,7 +28,7 @@
 
   // Framework7 Parameters
   let f7params = {
-    name: 'IndySMS', // App name
+    name: 'Mooli.me', // App name
     theme: 'auto', // Automatic theme detection
 
 
