@@ -31,7 +31,8 @@
 
   const ws = WS(socketURL,$identity);
 
-  var userPassword, raisedError, working;
+  var userPassword = '';
+  var raisedError, working;
 
   async function sha512(data) {
     const utf8 = new TextEncoder("utf-8");
