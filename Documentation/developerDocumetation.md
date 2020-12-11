@@ -5,14 +5,17 @@
   - [TOC](#toc)
   - [Service](#service)
     - [DB documents](#db-documents)
-    - [API dialogs:](#api-dialogs)
-      - [Signon](#signon)
-      - [Challenge](#challenge)
-      - [Login](#login)
-      - [Get](#get)
-      - [Put](#put)
-      - [Logout](#logout)
-      - [Updates notification](#updates-notification)
+  - [Client](#client)
+    - [General description](#general-description)
+      - [Initialization proccess](#initialization-proccess)
+  - [API dialogs:](#api-dialogs)
+    - [Signon](#signon)
+    - [Challenge](#challenge)
+    - [Login](#login)
+    - [Get](#get)
+    - [Put](#put)
+    - [Logout](#logout)
+    - [Updates notification](#updates-notification)
 
 ## Service
 
@@ -39,32 +42,70 @@
 |content|```URL(https://safenote.co/file-sharing-api) | string```|
 |type|``` file | string ```|
 
-### API dialogs:
-#### Signon
+## Client
+
+### General description
+
+#### Initialization proccess
+
+1. No local identity
+   1. Ask for creating a Identity
+   2. Ask for password
+   3. Create random identity
+   4. Signup message
+   5. Save identity
+   6. Login
+2. Local identity, login unsuccessfull
+   1. Ask for signup with current identity (show id information for validation), create new identity or clean current identity.
+3. Login successfull
+   1. Update burrows lists
+   2. Update message lists
+   3. Show disappeared burrows
+   4. Show existent burrows
+      1. Icon?
+      2. Name/id
+      3. Type
+      4. new messages number
+4. Enter in a burrow
+   1. Show burrow info
+   2. Show burrow messages
+## API dialogs:
+API is based in asyncronous WebSocket messages.
+
+All API messages follow this template:
+```JavaScript
+{
+  'code': string,
+  'obj': JSON,
+}
+```
+|Field|Purpouse|
+|-|-|
+|*code*|Unique id for each client message. Provides a way to asyncronous asociate responses and queries.|
+|*obj*|Query/response content|
+### Signon
 ```JavaScript
 request: {
   msgType: 'signon',
   nameHash: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${crypto.getRandomValues(new Uint32Array(10))}`:`${password}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
 }
 response: {
-  msgType: 'signon',
   message: null | 'Error description',
   ok: boolean,
 }
 ```
-#### Challenge
+### Challenge
 *For future use*
 ```JavaScript
 request: {
   msgType: 'challenge',
 }
 response: {
-  msgType: 'challenge',
   message: crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}`).digest('base64'),
   ok: boolean,
 }
 ```
-#### Login
+### Login
 ```JavaScript
 request: {
   msgType: 'login',
@@ -72,12 +113,11 @@ request: {
   challengeAnswer: placeholder for future cryptographic signature,
 }
 response: {
-  msgType: 'login',
   message: null | 'Error description',
   ok: boolean,
 }
 ```
-#### Get
+### Get
 ```JavaScript
 request: {
   msgType: 'get',
@@ -85,12 +125,11 @@ request: {
   fromTimestamp: timestamp,
 }
 response: {
-  msgType: 'get',
   message: [...messages] | 'Error description',
   ok: boolean,
 }
 ```
-#### Put
+### Put
 ```JavaScript
 request: {
   msgType: 'put',
@@ -99,29 +138,27 @@ request: {
   type: 'file' | 'string';
 }
 response: {
-  msgType: 'put',
   message: [...messages] | 'Error description',
   ok: boolean,
 }
 ```
-#### Logout
+### Logout
 ```JavaScript
 request: {
   msgType: 'logout',
 }
 response: {
-  msgType: 'logout',
   message: null,
   ok: true,
 }
 ```
-#### Updates notification
+### Updates notification
 ```JavaScript
 request: {
   msgType: 'updates',
 }
 response: {
-  msgType: 'updates',
   ok: boolean,
 }
 ```
+
