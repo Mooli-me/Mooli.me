@@ -21,6 +21,7 @@
 
   import Avatar from '../components/Avatar.svelte';
   import ChatList from '../components/ChatList.svelte';
+import View from 'framework7-svelte/components/view.svelte';
 
   var socketURL;
   if (window.location.hostname === "localhost") {
@@ -32,7 +33,9 @@
   const ws = WS(socketURL,$identity);
 
   var userPassword = '';
-  var raisedError, working;
+  var raisedError = false;
+  var working = false;
+  var loggedIn = false;
 
   async function sha512(data) {
     const utf8 = new TextEncoder("utf-8");
@@ -52,6 +55,15 @@
     )
     */
     return base64;
+  }
+
+  async function login () {
+    //view.router.navigate('/FirstRun/')
+    var request = {
+      msgType: 'login',
+      nameHash: await sha512(`${identity}:${userPassword}`),
+    }
+    const response = await ws.sendObj(request);
   }
 
   async function newIdentity () {
@@ -79,6 +91,29 @@
       working = false;
     }
   }
+
+  async function startUp () {
+    if ( $identity !== null && loggedIn === false ) {
+      working = true;
+      try {
+        loggedIn = await login();
+        if ( loggedIn ) {
+          /**
+           * Update burrow and messages lists.
+          */
+        } else {
+          /**
+           * Start bad loggin protocol: Re-signup, new identity, clear app data?
+          */
+        }
+        working = false;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+  startUp();
+
 </script>
 
 <Page name="home" class="display-flex justify-content-center" style="height: 100vh;">
@@ -106,7 +141,23 @@
         <Preloader size={100}/>
     </Block>
     {/if}
-    {#if  $identity !== null && ! working }
+    {#if  $identity !== null && ! working && ! loggedIn}
+    <Block>
+      <Avatar id={$identity}/>
+      Chats privados
+      <ChatList chats={$chats.p2pChats} />
+      Chats de grupo
+      <ChatList chats={$chats.m2mChats} />
+    </Block>
+    {/if}
+    {#if  $identity !== null && ! working && loggedIn}
+    <Block>
+      <Avatar id={$identity}/>
+      Chats privados
+      <ChatList chats={$chats.p2pChats} />
+      Chats de grupo
+      <ChatList chats={$chats.m2mChats} />
+    </Block>
     <Fab position="right-bottom">
       <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
       <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
@@ -115,13 +166,6 @@
         <FabButton label="Action 2">2</FabButton>
       </FabButtons>
     </Fab>
-    <Block>
-      <Avatar id={$identity}/>
-      Chats privados
-      <ChatList chats={$chats.p2pChats} />
-      Chats de grupo
-      <ChatList chats={$chats.m2mChats} />
-    </Block>
     {/if}
 </Page>
 
