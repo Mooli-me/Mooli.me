@@ -25,23 +25,23 @@
 
   <Card>  
     <CardHeader>
-      {$_('firsRunIntroCardTitle')}
+      {$_('FirstRun.wellCome')}
     </CardHeader>
     <CardContent>
       <Row>
         <Col width='20'>
-          <em>{$_('firsRunIntroSimpleTitle')}</em>
+          <em>{$_('FirstRun.simple')}</em>
         </Col>
         <Col width='80'>
-          <p>{$_('firsRunIntroSimpleContent')}</p>
+          <p>{$_('FirstRun.simpleContent')}</p>
         </Col>
       </Row>
       <Row>
         <Col width='20'>
-          <em>{$_('firsRunIntroDiscreetTitle')}</em>
+          <em>{$_('FirstRun.discreet')}</em>
         </Col>
         <Col width='80'>
-          <p>{$_('firsRunIntroDiscreetContent')}</p>
+          <p>{$_('FirstRun.discreetContent')}</p>
         </Col>
       </Row>
     </CardContent>
@@ -49,16 +49,16 @@
 
   <Card>  
     <CardHeader>
-      {$_('joinAChatTitle')}
+      {$_('FirstRun.joinAChatTitle')}
     </CardHeader>
     <CardContent>
       <BlockHeader>
-        {$_('joinAChatContent')}
+        {$_('FirstRun.joinAChatContent')}
       </BlockHeader>
       <List>
         <ListInput
         outline
-        label={$_('joinAChatInputCodeLabel')}
+        label={$_('FirstRun.codePlaceholder')}
         floatingLabel
         type="text"
         clearButton
@@ -69,14 +69,14 @@
 
   <Card>  
     <CardHeader>
-      {$_('signupTitle')}
+      {$_('FirstRun.signupTitle')}
     </CardHeader>
     <CardContent>
       <BlockHeader>
-        {$_('signupContent')}
+        {$_('FirstRun.signupContent')}
       </BlockHeader>
       <Button large round fill href="/SignOn/">
-        {$_('signupButton')}
+        {$_('FirstRun.signupButton')}
       </Button>
     </CardContent>
   </Card>
