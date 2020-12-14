@@ -75,7 +75,7 @@ async function loginHandler (ws,obj,code) {
     }
     const response = {
         code,
-        object,
+        obj: object,
     }
     ws.objSend(response);
 }

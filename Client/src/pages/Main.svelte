@@ -1,5 +1,6 @@
 <script>
   import {
+    f7,
     Page,
     Navbar,
     NavTitle,
@@ -15,60 +16,20 @@
 
   import {_} from 'svelte-i18n';
 
-  import { identity, chats } from '../js/store.js';
+  import { identity, chats, session } from '../js/store.js';
 
-  import { WS } from '../js/webSocket.js';
+  import {sha512, newIdentity} from '../js/aux.js';
+
+  import { ws } from '../js/webSocket.js';
 
   import Avatar from '../components/Avatar.svelte';
   import ChatList from '../components/ChatList.svelte';
-import View from 'framework7-svelte/components/view.svelte';
 
-  var socketURL;
-  if (window.location.hostname === "localhost") {
-    socketURL = 'ws://localhost:3000/';
-  } else {
-    socketURL = `wss://${window.location.hostname}/`;
-  }
-
-  const ws = WS(socketURL,$identity);
+  var router = f7.view.main.router;
 
   var userPassword = '';
   var raisedError = false;
   var working = false;
-  var loggedIn = false;
-
-  async function sha512(data) {
-    const utf8 = new TextEncoder("utf-8");
-    const string = utf8.encode(data);
-    const hash = await crypto.subtle.digest("SHA-512",string);
-    const hashArray = new Uint8Array(hash);
-    const hashString = String.fromCharCode(...hashArray);
-    const base64 = btoa(hashString);
-    /*
-    console.log(
-      `string: ${string}
-      hash: ${hash}
-      hashArray: ${hashArray}
-      hashString: ${hashString}
-      base64: ${base64}
-      `
-    )
-    */
-    return base64;
-  }
-
-  async function login () {
-    //view.router.navigate('/FirstRun/')
-    var request = {
-      msgType: 'login',
-      nameHash: await sha512(`${identity}:${userPassword}`),
-    }
-    const response = await ws.sendObj(request);
-  }
-
-  async function newIdentity () {
-    return sha512(crypto.getRandomValues(new Uint32Array(10)));
-  }
 
   async function signOn () {
     working = true;
@@ -86,33 +47,14 @@ import View from 'framework7-svelte/components/view.svelte';
         m2mChats: [],
       };
       working = false;
+      router.navigate('/')
     } else {
       raisedError = true;
       working = false;
     }
   }
 
-  async function startUp () {
-    if ( $identity !== null && loggedIn === false ) {
-      working = true;
-      try {
-        loggedIn = await login();
-        if ( loggedIn ) {
-          /**
-           * Update burrow and messages lists.
-          */
-        } else {
-          /**
-           * Start bad loggin protocol: Re-signup, new identity, clear app data?
-          */
-        }
-        working = false;
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  }
-  startUp();
+
 
 </script>
 
@@ -122,17 +64,14 @@ import View from 'framework7-svelte/components/view.svelte';
     </Navbar>
     {#if $identity === null && ! working }
     <Block>
-      <List>
-        <ListInput
-        outline
-        label={$_('newAccountInsertPassPlaceholder')}
-        floatingLabel
-        type="text"
-        clearButton
+        <input
+        placeholder="{$_('newAccountInsertPassPlaceholder')}"
+        type="password"
         bind:value={userPassword}
         />
         <p>{$_('newAccountYouCanOmitPass')}</p>
-      </List>
+    </Block>
+    <Block>
       <button on:click={signOn}>{$_('newAccountButton')}</button>
     </Block>
     {/if}
@@ -141,16 +80,7 @@ import View from 'framework7-svelte/components/view.svelte';
         <Preloader size={100}/>
     </Block>
     {/if}
-    {#if  $identity !== null && ! working && ! loggedIn}
-    <Block>
-      <Avatar id={$identity}/>
-      Chats privados
-      <ChatList chats={$chats.p2pChats} />
-      Chats de grupo
-      <ChatList chats={$chats.m2mChats} />
-    </Block>
-    {/if}
-    {#if  $identity !== null && ! working && loggedIn}
+    {#if  $identity !== null && ! working && $session.loggedOn}
     <Block>
       <Avatar id={$identity}/>
       Chats privados

@@ -1,3 +1,10 @@
+var socketURL;
+if (window.location.hostname === "localhost") {
+socketURL = 'ws://localhost:3000/';
+} else {
+socketURL = `wss://${window.location.hostname}/`;
+}
+
 function randomString(len) {
     const randomData = new Uint8Array(20);
     crypto.getRandomValues(randomData);
@@ -6,9 +13,8 @@ function randomString(len) {
     return code;
 }
 
-export function WS (url,nameSeed) {
+function WS (url,nameSeed) {
     const ws = {};
-    ws.nameSeed = nameSeed || randomString(20);
     url = url || `wss://${window.location.hostname}/`;
     ws.queue = {};
     ws.socket = new WebSocket(url);
@@ -28,9 +34,9 @@ export function WS (url,nameSeed) {
             return new Promise(
                 (resolve,reject) => {
                     try {
-                        Object.defineProperties(this.queue, 
+                        Object.defineProperty(this.queue, code, 
                             {
-                                [code]: { set: function(obj) { resolve(obj) } },
+                                set: function(obj) { resolve(obj) },
                             }
                         );
                     } catch (err) {
@@ -45,3 +51,5 @@ export function WS (url,nameSeed) {
     }
     return ws;
 };
+
+export const ws = WS(socketURL);
