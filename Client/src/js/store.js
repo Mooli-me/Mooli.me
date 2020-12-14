@@ -17,6 +17,12 @@ const savedChats = JSON.parse(savedChatsJSON);
 export const identity = writable(savedIdentity);
 export const chats = writable(savedChats);
 
+export const session = writable(
+	{
+		loggedOn: false,
+	}
+);
+
 /**
  * Update localStorage on stores changes.
  */

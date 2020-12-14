@@ -1,6 +1,12 @@
 export const translations = {
     es: {
         appNameTitle: 'Mooli',
+        login: {
+            title: 'Introduce tu contraseña',
+            instructions: 'Necesitas proporcionar la contraseña de entrada a tus galerías. Si no has establecido una contraseña, sigue adelante.',
+            passwordPlaceholder: 'Aquí tu contraseña...',
+            enterButton: 'Entrar a las galerías',
+        },
         firsRunIntroCardTitle: 'Bienvenido a Mooli',
         firsRunIntroSimpleTitle: 'Simple',
         firsRunIntroSimpleContent: 'Sin instalaciónes. Sin registros. Sólo tu navegador y tú.',

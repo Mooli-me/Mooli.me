@@ -1,5 +1,6 @@
 <script>
   import {
+    f7,
     Page,
     Navbar,
     NavTitle,
@@ -15,48 +16,20 @@
 
   import {_} from 'svelte-i18n';
 
-  import { identity, chats } from '../js/store.js';
+  import { identity, chats, session } from '../js/store.js';
 
-  import { WS } from '../js/webSocket.js';
+  import {sha512, newIdentity} from '../js/aux.js';
+
+  import { ws } from '../js/webSocket.js';
 
   import Avatar from '../components/Avatar.svelte';
   import ChatList from '../components/ChatList.svelte';
 
-  var socketURL;
-  if (window.location.hostname === "localhost") {
-    socketURL = 'ws://localhost:3000/';
-  } else {
-    socketURL = `wss://${window.location.hostname}/`;
-  }
-
-  const ws = WS(socketURL,$identity);
+  var router = f7.view.main.router;
 
   var userPassword = '';
-  var raisedError, working;
-
-  async function sha512(data) {
-    const utf8 = new TextEncoder("utf-8");
-    const string = utf8.encode(data);
-    const hash = await crypto.subtle.digest("SHA-512",string);
-    const hashArray = new Uint8Array(hash);
-    const hashString = String.fromCharCode(...hashArray);
-    const base64 = btoa(hashString);
-    /*
-    console.log(
-      `string: ${string}
-      hash: ${hash}
-      hashArray: ${hashArray}
-      hashString: ${hashString}
-      base64: ${base64}
-      `
-    )
-    */
-    return base64;
-  }
-
-  async function newIdentity () {
-    return sha512(crypto.getRandomValues(new Uint32Array(10)));
-  }
+  var raisedError = false;
+  var working = false;
 
   async function signOn () {
     working = true;
@@ -74,11 +47,15 @@
         m2mChats: [],
       };
       working = false;
+      router.navigate('/')
     } else {
       raisedError = true;
       working = false;
     }
   }
+
+
+
 </script>
 
 <Page name="home" class="display-flex justify-content-center" style="height: 100vh;">
@@ -87,17 +64,14 @@
     </Navbar>
     {#if $identity === null && ! working }
     <Block>
-      <List>
-        <ListInput
-        outline
-        label={$_('newAccountInsertPassPlaceholder')}
-        floatingLabel
-        type="text"
-        clearButton
+        <input
+        placeholder="{$_('newAccountInsertPassPlaceholder')}"
+        type="password"
         bind:value={userPassword}
         />
         <p>{$_('newAccountYouCanOmitPass')}</p>
-      </List>
+    </Block>
+    <Block>
       <button on:click={signOn}>{$_('newAccountButton')}</button>
     </Block>
     {/if}
@@ -106,7 +80,14 @@
         <Preloader size={100}/>
     </Block>
     {/if}
-    {#if  $identity !== null && ! working }
+    {#if  $identity !== null && ! working && $session.loggedOn}
+    <Block>
+      <Avatar id={$identity}/>
+      Chats privados
+      <ChatList chats={$chats.p2pChats} />
+      Chats de grupo
+      <ChatList chats={$chats.m2mChats} />
+    </Block>
     <Fab position="right-bottom">
       <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
       <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
@@ -115,13 +96,6 @@
         <FabButton label="Action 2">2</FabButton>
       </FabButtons>
     </Fab>
-    <Block>
-      <Avatar id={$identity}/>
-      Chats privados
-      <ChatList chats={$chats.p2pChats} />
-      Chats de grupo
-      <ChatList chats={$chats.m2mChats} />
-    </Block>
     {/if}
 </Page>
 
