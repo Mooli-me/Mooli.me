@@ -2,9 +2,10 @@
 import Main from '../pages/Main.svelte';
 import Login from '../pages/Login.svelte';
 import FirsRun from '../pages/FirstRun.svelte';
+import SignOn from '../pages/SignOn.svelte';
 
-import { identity, chats, session } from '../js/store.js';
-var identityVal, chatsVal, sessionVal;
+import { identity, session } from '../js/store.js';
+var identityVal, sessionVal;
 
 /**
  * It's necesary to use .suscribe store method becouse this is a .js file, not an .svlete one.
@@ -12,9 +13,6 @@ var identityVal, chatsVal, sessionVal;
  */
 identity.subscribe(value => {
   identityVal = value;
-});
-chats.subscribe(value => {
-  chatsVal = value;
 });
 session.subscribe(value => {
   sessionVal = value;
@@ -24,13 +22,13 @@ var routes = [
   {
     path: '/',
     redirect: function (route, resolve, reject) {
-      if ( identityVal && chatsVal && sessionVal.loggedOn ) {
+      if ( identityVal && sessionVal.loggedOn ) {
         resolve('/Main/');
       } 
-      if ( identityVal && chatsVal && ! sessionVal.loggedOn ) {
+      if ( identityVal && ! sessionVal.loggedOn ) {
         resolve('/Login/');
       } 
-      if ( ! identityVal || ! chatsVal ) {
+      if ( ! identityVal ) {
         resolve('/FirstRun/');
       }
     }
@@ -47,6 +45,10 @@ var routes = [
     path: '/FirstRun/',
     component: FirsRun,
   },
+  {
+    path: '/SignOn/',
+    component: SignOn,
+  }
 ];
 
 export default routes;

@@ -2,9 +2,10 @@
   import {
     f7,
     Page,
-    BlockHeader,
     Button,
     Block,
+    Navbar,
+    NavTitle,
   } from 'framework7-svelte';
 
   import {_} from 'svelte-i18n';
@@ -12,6 +13,8 @@
   import { sha512 } from '../js/aux.js';
 
   import { identity, session } from '../js/store.js';
+
+  import Avatar from '../components/Avatar.svelte';
 
   import { ws } from '../js/webSocket.js';
 
@@ -34,16 +37,24 @@
 </script>
 
 <Page name="Login">
-  <BlockHeader>
-    {$_('login.title')}
-  </BlockHeader>
+  <Navbar>
+    <NavTitle>{$_('appNameTitle')} - {$_('Login.title')}</NavTitle>
+</Navbar>
+
   <Block>
-    {$_('login.instructions')}
+    {#await sha512(`${$identity}:${password}`) }
+    <Avatar id=''/>
+    {:then hash }
+    <Avatar id={hash}/>
+    {/await}
   </Block>
   <Block>
-    <input bind:value={password} placeholder="{$_('login.passwordPlaceholder')}"/>
+    {$_('Login.instructions')}
+  </Block>
+  <Block>
+    <input type="password" bind:value={password} placeholder="{$_('Login.passwordPlaceholder')}"/>
   </Block>
   <Button large round fill on:click="{login}">
-    {$_('login.enterButton')}
+    {$_('Login.enterButton')}
   </Button>
 </Page>
