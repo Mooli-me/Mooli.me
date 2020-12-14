@@ -6,8 +6,6 @@
     NavTitle,
     Block,
     Preloader,
-    List,
-    ListInput,
     Fab,
     Icon,
     FabButtons,
@@ -22,14 +20,17 @@
 
   import { ws } from '../js/webSocket.js';
 
-  import Avatar from '../components/Avatar.svelte';
   import ChatList from '../components/ChatList.svelte';
 
   var router = f7.view.main.router;
 
   var userPassword = '';
-  var raisedError = false;
-  var working = false;
+
+  $: {
+    if ( ! $session.loggedOn ) {
+      router.navigate('/Login/');
+    }
+  }
 
   async function signOn () {
     working = true;
@@ -60,34 +61,16 @@
 
 <Page name="home" class="display-flex justify-content-center" style="height: 100vh;">
     <Navbar>
-        <NavTitle>{$_('appNameTitle')}</NavTitle>
+        <NavTitle>{$_('appNameTitle')} - {$_('Main.yourGalleries')}</NavTitle>
     </Navbar>
-    {#if $identity === null && ! working }
+
     <Block>
-        <input
-        placeholder="{$_('newAccountInsertPassPlaceholder')}"
-        type="password"
-        bind:value={userPassword}
-        />
-        <p>{$_('newAccountYouCanOmitPass')}</p>
-    </Block>
-    <Block>
-      <button on:click={signOn}>{$_('newAccountButton')}</button>
-    </Block>
-    {/if}
-    {#if  $identity === null && working }
-    <Block  class="display-flex align-items-center" style="height: 80%;">
-        <Preloader size={100}/>
-    </Block>
-    {/if}
-    {#if  $identity !== null && ! working && $session.loggedOn}
-    <Block>
-      <Avatar id={$identity}/>
-      Chats privados
+      {$_('Main.yourDuoGalleries')}
       <ChatList chats={$chats.p2pChats} />
-      Chats de grupo
+      {$_('Main.yourCrowdGalleries')}
       <ChatList chats={$chats.m2mChats} />
     </Block>
+
     <Fab position="right-bottom">
       <Icon ios="f7:plus" aurora="f7:plus" md="material:add"></Icon>
       <Icon ios="f7:xmark" aurora="f7:xmark" md="material:close"></Icon>
@@ -96,7 +79,7 @@
         <FabButton label="Action 2">2</FabButton>
       </FabButtons>
     </Fab>
-    {/if}
+
 </Page>
 
 <style>

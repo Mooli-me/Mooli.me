@@ -75,7 +75,7 @@
       <BlockHeader>
         {$_('signupContent')}
       </BlockHeader>
-      <Button large round fill href="/Main/">
+      <Button large round fill href="/SignOn/">
         {$_('signupButton')}
       </Button>
     </CardContent>

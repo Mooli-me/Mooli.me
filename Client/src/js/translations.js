@@ -1,6 +1,24 @@
 export const translations = {
     es: {
         appNameTitle: 'Mooli',
+        SignOn: {
+            somethingWrong: 'Ups!... algo ha salido mal la hacer tu disfraz de topo.',
+            createIdentity: 'Haciendo tu disfraz de topo.',
+            passwordPlaceholder: 'Teclea aquí tu contraseña.',
+            youCanOmitPass: 'Puedes dejar la contraseña vacía... si eres una de esas personas.',
+            newIdButton: 'Crear mi disfraz de topo.',
+        },
+        Login: {
+            title: 'Entrando a las galerías',
+            instructions: 'Teclea tu contraseña. O pulsar el botón si no tienes.',
+            passwordPlaceholder: 'Pon aquí tu contraseña.',
+            enterButton: 'Entrar a las galerías',
+        },
+        Main: {
+            yourGalleries: 'Tus galerías',
+            yourDuoGalleries: 'Tus galerías uno a uno',
+            yourCrowdGalleries: 'Tus galerías para grupos',
+        },
         firsRunIntroCardTitle: 'Bienvenido a Mooli',
         firsRunIntroSimpleTitle: 'Simple',
         firsRunIntroSimpleContent: 'Sin instalaciónes. Sin registros. Sólo tu navegador y tú.',
@@ -12,9 +30,6 @@ export const translations = {
         signupTitle: 'Crea tus canales',
         signupContent: '¿Necesitas mantener el contacto sin perder la privacidad?. Crea tu cuenta sin proporcionar datos.',
         signupButton: 'Crear mi cuenta',
-        newAccountInsertPassPlaceholder: 'Tu nueva contraseña de Mooli...',
-        newAccountYouCanOmitPass: 'Puedes dejar la contraseña vacía... si eres una de esas personas.',
-        newAccountButton: 'Crear cuenta',
         somethingWasWrong: 'Uoooops! Algo ha ido mal...',
         mainThereIsNotChatsToShow: 'No hay chats para mostrar aquí... por ahora.',
     },
