@@ -12,6 +12,7 @@
     - [Signon](#signon)
     - [Challenge](#challenge)
     - [Login](#login)
+    - [New chat](#new-chat)
     - [Get](#get)
     - [Put](#put)
     - [Logout](#logout)
@@ -88,22 +89,22 @@ All API messages follow this template:
 request: {
   msgType: 'signon',
   nameHash: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${crypto.getRandomValues(new Uint32Array(10))}`:`${password}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
-}
+};
 response: {
   message: null | 'Error description',
   ok: boolean,
-}
+};
 ```
 ### Challenge
 *For future use*
 ```JavaScript
 request: {
   msgType: 'challenge',
-}
+};
 response: {
   message: crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}`).digest('base64'),
   ok: boolean,
-}
+};
 ```
 ### Login
 ```JavaScript
@@ -111,11 +112,22 @@ request: {
   msgType: 'login',
   nameHash: nameHash,
   challengeAnswer: placeholder for future cryptographic signature,
-}
+};
 response: {
   message: null | 'Error description',
   ok: boolean,
-}
+};
+```
+### New chat
+```JavaScript
+request: {
+  msgType: 'chat',
+  type: p2p | m2m,
+};
+response: {
+  message: id | 'Error description',
+  ok: boolean,
+};
 ```
 ### Get
 ```JavaScript
@@ -123,11 +135,11 @@ request: {
   msgType: 'get',
   chat: chat.id,
   fromTimestamp: timestamp,
-}
+};
 response: {
   message: [...messages] | 'Error description',
   ok: boolean,
-}
+};
 ```
 ### Put
 ```JavaScript
@@ -136,29 +148,28 @@ request: {
   chat: chat.id,
   content: URL('https://safenote.co/file-sharing-api') | 'string';
   type: 'file' | 'string';
-}
+};
 response: {
   message: [...messages] | 'Error description',
   ok: boolean,
-}
+};
 ```
 ### Logout
 ```JavaScript
 request: {
   msgType: 'logout',
-}
+};
 response: {
-  message: null,
   ok: true,
-}
+};
 ```
 ### Updates notification
 ```JavaScript
 request: {
   msgType: 'updates',
-}
+};
 response: {
   ok: boolean,
-}
+};
 ```
 
