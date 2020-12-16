@@ -6,6 +6,9 @@
     NavTitle,
     Block,
     Preloader,
+    List,
+    ListInput,
+    Button,
   } from 'framework7-svelte';
 
   import {_} from 'svelte-i18n';
@@ -76,17 +79,19 @@
          <Avatar id={hash}/>
         {/await}
       </Block>
-      <Block>
-          <input
-          placeholder="{$_('SignOn.passwordPlaceholder')}"
-          type="password"
-          bind:value={userPassword}
-          />
-          <p>{$_('SignOn.youCanOmitPass')}</p>
-      </Block>
-      <Block>
-        <button on:click={signOn}>{$_('SignOn.newIdButton')}</button>
-      </Block>
+
+      <List>
+        <ListInput
+        outline
+        placeholder={$_('SignOn.passwordPlaceholder')}
+        type="text"
+        clearButton
+        onInput={ (event) => userPassword = event.target.value }
+        />
+      </List>
+
+      <Button large round fill onClick={signOn}>{$_('SignOn.newIdButton')}</Button>
+
       {/if}
 
       {#if working }

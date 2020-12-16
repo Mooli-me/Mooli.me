@@ -4,13 +4,8 @@
     Navbar,
     NavTitle,
     Card,
-    CardContent,
-    CardHeader,
-    Row,
-    Col,
     List,
     ListInput,
-    BlockHeader,
     Button,
   } from 'framework7-svelte';
 
@@ -20,7 +15,7 @@
 
 </script>
 
-<Page name="home">
+<Page name="home"  class="display-flex justify-content-center" style="height: 100vh;">
 
   <Navbar>
     <NavTitle>{$_('appNameTitle')} - {$_('FirstRun.wellCome')}</NavTitle>
@@ -30,8 +25,7 @@
     <img id="logo" alt="Mooli.me logo" src="/static/logo.png"/>
   </Card>
 
-  <Card>  
-    <CardContent>
+
       <List>
         <ListInput
         outline
@@ -41,22 +35,20 @@
         onInput={ (event) => chatCode = event.target.value }
         />
       </List>
-    </CardContent>
-  </Card>
 
-  <Card class="signUpCard" style="position: fixed; bottom: 0px; width: 100vw;">  
-    <CardContent>
       <Button large round fill href="/SignOn/">
+        {$_('FirstRun.enterChat')}
+      </Button>
+
+      <Button style="position: fixed; bottom: 0px; width: 80vw;" large fill href="/SignOn/">
         {$_('FirstRun.signupButton')}
       </Button>
-    </CardContent> 
-  </Card>
 
 </Page>
 
 <style>
   img#logo {  
     width: 80vw;
-    max-width: 400px;
+    max-width: 200px;
   }
 </style>

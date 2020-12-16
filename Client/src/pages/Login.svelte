@@ -6,6 +6,10 @@
     Block,
     Navbar,
     NavTitle,
+    Card,
+    CardContent,
+    List,
+    ListInput,
   } from 'framework7-svelte';
 
   import {_} from 'svelte-i18n';
@@ -48,12 +52,19 @@
     <Avatar id={hash}/>
     {/await}
   </Block>
-  <Block>
-    {$_('Login.instructions')}
-  </Block>
-  <Block>
-    <input type="password" bind:value={password} placeholder="{$_('Login.passwordPlaceholder')}"/>
-  </Block>
+
+
+      <List>
+        <ListInput
+        outline
+        placeholder={$_('Login.passwordPlaceholder')}
+        type="text"
+        clearButton
+        onInput={ (event) => chatCode = event.target.value }
+        />
+      </List>
+
+
   <Button large round fill on:click="{login}">
     {$_('Login.enterButton')}
   </Button>
