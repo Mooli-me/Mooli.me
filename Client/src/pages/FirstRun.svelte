@@ -15,6 +15,9 @@
   } from 'framework7-svelte';
 
   import {_} from 'svelte-i18n';
+
+  var chatCode;
+
 </script>
 
 <Page name="home">
@@ -28,37 +31,25 @@
   </Card>
 
   <Card>  
-    <CardHeader>
-      {$_('FirstRun.joinAChatTitle')}
-    </CardHeader>
     <CardContent>
-      <BlockHeader>
-        {$_('FirstRun.joinAChatContent')}
-      </BlockHeader>
       <List>
         <ListInput
         outline
-        label={$_('FirstRun.codePlaceholder')}
-        floatingLabel
+        placeholder={$_('FirstRun.codePlaceholder')}
         type="text"
         clearButton
+        onInput={ (event) => chatCode = event.target.value }
         />
       </List>
     </CardContent>
   </Card>
 
-  <Card>  
-    <CardHeader>
-      {$_('FirstRun.signupTitle')}
-    </CardHeader>
+  <Card class="signUpCard" style="position: fixed; bottom: 0px; width: 100vw;">  
     <CardContent>
-      <BlockHeader>
-        {$_('FirstRun.signupContent')}
-      </BlockHeader>
       <Button large round fill href="/SignOn/">
         {$_('FirstRun.signupButton')}
       </Button>
-    </CardContent>
+    </CardContent> 
   </Card>
 
 </Page>
