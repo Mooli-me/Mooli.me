@@ -20,31 +20,11 @@
 <Page name="home">
 
   <Navbar>
-    <NavTitle>{$_('appNameTitle')}</NavTitle>
+    <NavTitle>{$_('appNameTitle')} - {$_('FirstRun.wellCome')}</NavTitle>
   </Navbar>
 
-  <Card>  
-    <CardHeader>
-      {$_('FirstRun.wellCome')}
-    </CardHeader>
-    <CardContent>
-      <Row>
-        <Col width='20'>
-          <em>{$_('FirstRun.simple')}</em>
-        </Col>
-        <Col width='80'>
-          <p>{$_('FirstRun.simpleContent')}</p>
-        </Col>
-      </Row>
-      <Row>
-        <Col width='20'>
-          <em>{$_('FirstRun.discreet')}</em>
-        </Col>
-        <Col width='80'>
-          <p>{$_('FirstRun.discreetContent')}</p>
-        </Col>
-      </Row>
-    </CardContent>
+  <Card class="display-flex justify-content-center">  
+    <img id="logo" alt="Mooli.me logo" src="/static/logo.png"/>
   </Card>
 
   <Card>  
@@ -82,3 +62,10 @@
   </Card>
 
 </Page>
+
+<style>
+  img#logo {  
+    width: 80vw;
+    max-width: 400px;
+  }
+</style>
