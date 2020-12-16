@@ -23,28 +23,36 @@
   var userPassword = '';
   var newId = '';
   var working = false;
-  var p2pChats = [];
-  var m2mChats = [];
+  var p2p = [];
+  var m2m = [];
 
   async function createNewIdentity () {
     newId = await newIdentity();
   }
 
+  function login (hash) {
+    var request = {
+      msgType: 'login',
+      nameHash: hash,
+    }
+    return ws.sendObj(request);
+  }
+
   async function signOn () {
     working = true;
+    var nameHash = await sha512(`${newId}:${userPassword}`)
     const request = {
       msgType: 'signon',
-      nameHash: await sha512(`${newId}:${userPassword}`),
+      nameHash,
     };
-    const response = await ws.sendObj(request);
-    if (response.ok) {
+    const signupResponse = await ws.sendObj(request);
+    const loginResponse = await login(nameHash);
+    if ( signupResponse.ok && loginResponse.ok ) {
       $identity = newId;
-      $chats = {
-        p2pChats,
-        m2mChats,
-      };
+      console.log(signupResponse)
+      $chats = signupResponse.message.chats;
       working = false;
-      router.navigate('/Login/');
+      router.navigate('/Main/');
     } else {
       working = false;
       alert($_('SignOn.somethingWrong'));
