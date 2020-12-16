@@ -16,46 +16,17 @@
 
   import { identity, chats, session } from '../js/store.js';
 
-  import {sha512, newIdentity} from '../js/aux.js';
-
   import { ws } from '../js/webSocket.js';
 
   import ChatList from '../components/ChatList.svelte';
 
   var router = f7.view.main.router;
 
-  var userPassword = '';
-
   $: {
     if ( ! $session.loggedOn ) {
       router.navigate('/Login/');
     }
   }
-
-  async function signOn () {
-    working = true;
-    const newId = await newIdentity();
-    ws.nameSeed = newId;
-    const request = {
-      msgType: 'signon',
-      nameHash: await sha512(`${newId}:${userPassword}`),
-    };
-    const response = await ws.sendObj(request);
-    if (response.ok) {
-      $identity = newId;
-      $chats = {
-        p2pChats: [],
-        m2mChats: [],
-      };
-      working = false;
-      router.navigate('/')
-    } else {
-      raisedError = true;
-      working = false;
-    }
-  }
-
-
 
 </script>
 
@@ -66,9 +37,9 @@
 
     <Block>
       {$_('Main.yourDuoGalleries')}
-      <ChatList chats={$chats.p2pChats} />
+      <ChatList chats={$chats.p2p} />
       {$_('Main.yourCrowdGalleries')}
-      <ChatList chats={$chats.m2mChats} />
+      <ChatList chats={$chats.m2m} />
     </Block>
 
     <Fab position="right-bottom">

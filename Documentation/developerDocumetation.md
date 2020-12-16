@@ -24,16 +24,16 @@
 |Document|user|
 |-|-|
 |nameHash|```random string: crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${crypto.getRandomValues(new Uint32Array(10))}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash))))```|
-|p2pChats|```[chat.id,...]```|
-|m2mChats|```[chat.id,...]```|
+|chats|```{p2p:[chat.id,...],m2m:[chat.id,...]}```|
 
 |Document|chat|
 |-|-|
 |id|```random string: crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}).digest('base64').slice(idx,5);```|
 |owner|```user.nameHash```|
-|type|```p2pChat|m2mChat```|
+|type|```p2p|m2m```|
 |peers|```[user.nameHash,...]```|
-|peer|```user.nameHash```|
+|peerRequests|```[user.nameHash,...]```|
+|bannedIds|```[user.nameHash,...]```|
 
 |Document|message|
 |-|-|
@@ -91,7 +91,7 @@ request: {
   nameHash: await crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${crypto.getRandomValues(new Uint32Array(10))}`:`${password}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash)))),
 };
 response: {
-  message: null | 'Error description',
+  message: ```{chats: user.chats}``` | 'Error description',
   ok: boolean,
 };
 ```

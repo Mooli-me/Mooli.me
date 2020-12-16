@@ -3,7 +3,7 @@ export const translations = {
         appNameTitle: 'Mooli',
         somethingWasWrong: 'Uoooops! Algo ha ido mal...',
         SignOn: {
-            somethingWrong: 'Ups!... algo ha salido mal la hacer tu disfraz de topo.',
+            somethingWrong: 'Ups!... algo ha salido mal la hacer tu disfraz de topo. ¿Lo intentamos otra vez?.',
             createIdentity: 'Haciendo tu disfraz de topo.',
             passwordPlaceholder: 'Teclea aquí tu contraseña.',
             youCanOmitPass: 'Puedes dejar la contraseña vacía... si eres una de esas personas.',

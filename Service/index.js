@@ -85,16 +85,30 @@ async function signonHandler (ws,obj,code) {
     var response = {};
     try {
         const users = mongoDB.collection('users');
+        const chats = mongoDB.collection('chats');
+        const chat = {
+            id: crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}`).digest('base64').slice(0,5),
+            owner: obj.nameHash,
+            type: 'p2p',
+            peers: [],
+            peerRequests: [],
+            bannedIds: [],
+        };
         const user = {
             nameHash: obj.nameHash,
-            p2pChats: [],
-            m2mChats: [],
+            chats: {
+                p2p: [chat.id],
+                m2m: [],
+            },
         };
+        chats.insertOne(chat);
         users.insertOne(user);
         response = { 
             code,
             obj: {
-                message: null,
+                message: {
+                    chats: user.chats,
+                },
                 ok: true,
             },
         };
