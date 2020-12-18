@@ -18,7 +18,7 @@
     <ListItem link="#" title= {item} after="Cleaner" badge="5">
         <i slot="media" class="icon demo-list-icon" />
     </ListItem>
-{$_('ChatList.mainThereIsNotChatsToShow')}
+{$_('Components.ChatList.mainThereIsNotChatsToShow')}
 {/each}
 </List>
 

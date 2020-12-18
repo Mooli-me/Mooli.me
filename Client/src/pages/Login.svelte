@@ -6,8 +6,6 @@
     Block,
     Navbar,
     NavTitle,
-    Card,
-    CardContent,
     List,
     ListInput,
   } from 'framework7-svelte';
@@ -58,9 +56,9 @@
         <ListInput
         outline
         placeholder={$_('Login.passwordPlaceholder')}
-        type="text"
+        type="password"
         clearButton
-        onInput={ (event) => chatCode = event.target.value }
+        onInput={ (event) => password = event.target.value }
         />
       </List>
 

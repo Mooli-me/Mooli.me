@@ -5,7 +5,6 @@
     Navbar,
     NavTitle,
     Block,
-    Preloader,
     Fab,
     Icon,
     FabButtons,

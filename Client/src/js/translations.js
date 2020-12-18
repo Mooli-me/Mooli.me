@@ -6,14 +6,12 @@ export const translations = {
             somethingWrong: 'Ups!... algo ha salido mal la hacer tu disfraz de topo. ¿Lo intentamos otra vez?.',
             createIdentity: 'Haciendo tu disfraz de topo.',
             passwordPlaceholder: 'Teclea aquí tu contraseña.',
-            youCanOmitPass: 'Puedes dejar la contraseña vacía... si eres una de esas personas.',
-            newIdButton: 'Crear mi disfraz de topo.',
+            newIdButton: 'Crear mi Mooli',
         },
         Login: {
             title: 'Entrando a las galerías',
-            instructions: 'Teclea tu contraseña. O pulsar el botón si no tienes.',
             passwordPlaceholder: 'Pon aquí tu contraseña.',
-            enterButton: 'Entrar a las galerías',
+            enterButton: 'Entrar',
         },
         Main: {
             yourGalleries: 'Tus galerías',
@@ -22,20 +20,15 @@ export const translations = {
         },
         FirstRun: {
             wellCome: 'Bienvenido a Mooli.me',
-            simple: 'Simple',
-            simpleContent: 'Sin instalaciónes. Sin registros. Sólo tu navegador y tú.',
-            discreet: 'Discreto',
-            discreetContent: 'Sin número de teléfono, sin e-mail, sin información personal. Sólo comunicación. Sólo con quien tu elijas.',
-            joinAChatTitle: '¿Tienes un código para entrar a una galería?',
-            joinAChatContent: '¿Te han invitado a un canal?. Introduce tu código.',
-            codePlaceholder: 'Código de la galería',
-            signupTitle: 'Crea tus canales',
-            signupContent: '¿Necesitas mantener el contacto sin perder la privacidad?. Crea tu cuenta sin proporcionar datos.',
+            codePlaceholder: 'Código del chat',
+            enterChat: 'Entrar al chat',
             signupButton: 'Crear mi cuenta',
         },
-        ChatList: {
-            mainThereIsNotChatsToShow: 'No hay chats para mostrar aquí... por ahora.',
-        },
+        Components: {
+            ChatList: {
+                mainThereIsNotChatsToShow: 'No hay chats para mostrar aquí... por ahora.',
+            },
+        }
     },
     en: {
         firsRunIntroCardTitle: 'Welcome to Mooli',
