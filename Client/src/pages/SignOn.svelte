@@ -26,8 +26,6 @@
   var userPassword = '';
   var newId = '';
   var working = false;
-  var p2p = [];
-  var m2m = [];
 
   async function createNewIdentity () {
     newId = await newIdentity();
@@ -52,7 +50,6 @@
     const loginResponse = await login(nameHash);
     if ( signupResponse.ok && loginResponse.ok ) {
       $identity = newId;
-      console.log(signupResponse)
       $chats = signupResponse.message.chats;
       working = false;
       router.navigate('/Main/');

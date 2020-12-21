@@ -15,8 +15,6 @@ export const translations = {
         },
         Main: {
             yourGalleries: 'Tus galerías',
-            yourDuoGalleries: 'Tus galerías uno a uno',
-            yourCrowdGalleries: 'Tus galerías para grupos',
         },
         FirstRun: {
             wellCome: 'Bienvenido a Mooli.me',

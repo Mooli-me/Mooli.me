@@ -1,7 +1,7 @@
 const http = require('http');
 const crypto = require('crypto');
 const express = require('express');
-const session = require('express-session');
+//const session = require('express-session');
 const webSockets = require('ws');
 
 const PORT = process.env.PORT || 3000;
@@ -22,12 +22,7 @@ mongoClient.connect()
 
 const serviceSecret = 'tm20kQAQnv9MbEah0daZIwPW8xTrgcTSW3C/namhw2/7';
 
-const sessionOptions = {
-    secret: serviceSecret,
-    resave: true,
-    saveUninitialized: false,
-    cookie: {},
-}
+const sessions = new Map();
 
 /*
 async function requestTemplateHandler (ws,request) {
@@ -48,15 +43,18 @@ async function loginHandler (ws,obj,code) {
             const users = mongoDB.collection('users');
             const nameHash = obj.nameHash;
             const existentUser = await users.findOne({nameHash: nameHash});
-            if ( existentUser ) {
-                ws.nameHash = nameHash;
+            if ( existentUser !== null ) {
+                sessions.set(ws, nameHash);
+                console.log('  |-> Welcome');
+                console.log(`  |-> nameHash: ${nameHash}`)
                 object = {
                     message: 'Welcome!',
                     ok: true,
                 }
             } else {
+                console.log('  |-> Provides inexistent nameHash')
                 object = {
-                    message: 'Inexistent nameHash.',
+                    message: 'Inexistent nameHash',
                     ok: false,
                 }
             }
@@ -68,6 +66,7 @@ async function loginHandler (ws,obj,code) {
             }
         }
     } else {
+        console.log('  |-> Provides not nameHash')
         object = {
             message: 'Login request must have a "nameHash"',
             ok: false,
@@ -96,10 +95,7 @@ async function signonHandler (ws,obj,code) {
         };
         const user = {
             nameHash: obj.nameHash,
-            chats: {
-                p2p: [chat.id],
-                m2m: [],
-            },
+            chats: [chat.id],
         };
         chats.insertOne(chat);
         users.insertOne(user);
@@ -125,22 +121,95 @@ async function signonHandler (ws,obj,code) {
     ws.objSend(response);
 }
 
-async function challengeHandler (ws,request) {
+async function challengeHandler (ws,obj,code) {
     console.log('-> Challenge request');
     const challenge = crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}`).digest('base64');
-    const response = {
+    const object = {
         message: challenge,
         ok: true,
-    }
+    };
+    const response = { code, object };
     ws.objSend(response);
 }
 
-async function logoutHandler (ws,request) {
+async function getHandler (ws,obj,code) {
+
+    var response = {};
+    var user = null;
+    var userChatsPromises = [];
+    var userChats = [];
+    var nameHash = null;
+
+    console.log('-> Get');
+
+    if ( ! sessions.has(ws) ) {
+        console.log('  |-> User is not identified.');
+        response = {
+            code,
+            obj: {
+                messeage: 'You are not identified',
+                ok: false,
+            }
+        };
+        ws.objSend(response);
+        return;
+    };
+
+    try {
+        nameHash = sessions.get(ws);
+        console.log(`  |-> nameHash: ${nameHash}`)
+
+        const users = mongoDB.collection('users');
+        const chats = mongoDB.collection('chats');
+        const messages = mongoDB.collection('messages');
+        
+        user = await users.findOne({nameHash},{projection: {chats: 1, _id: 0}});
+        userChatsPromises = user.chats.map(
+            async chatId => {
+                const chat = await chats.findOne({id: chatId},{projection: {type: 1, _id: 0, }})
+                const chatType = chat.type;
+                const chatMessages = await messages.find({chat: chatId},{projection: {user:1, time: 1, content: 1, type: 1, _id: 0}}).toArray();
+                return {
+                    id: chatId,
+                    messages: chatMessages,
+                    type: chatType,
+                };
+            }
+
+        );
+        userChats = await Promise.all(userChatsPromises);
+
+        response = {
+            code,
+            obj: {
+                message: userChats,
+                ok: true,
+            }
+        };
+
+    } catch (err) {
+
+        console.error(err);
+
+        response = { 
+            code,
+            obj: {
+                message: err.message,
+                ok: false,
+            },
+        }
+    }
+
+    ws.objSend(response);
+};
+
+async function logoutHandler (ws,request,code) {
     console.log('-> Logout');
-    const response = {
+    const object = {
         message: null,
         ok: true,
-    }
+    };
+    const response = { code, object };
     ws.objSend(response);
     console.log('<- Closing socket');
     ws.close();
@@ -150,9 +219,7 @@ const messageHandlers = {
     signon: signonHandler,
     challenge: challengeHandler,
     login: loginHandler,
-    get: (ws,obj,code) => {
-        console.log('-> Get');
-    },
+    get: getHandler,
     put: (ws,obj,code) => {
         console.log('-> Put');
     },
@@ -162,8 +229,6 @@ const messageHandlers = {
 const expressApp = express();
 
 expressApp.use(express.static(__dirname + '/public'));
-
-expressApp.use(session(sessionOptions));
 
 const httpServer = http.createServer(expressApp);
 const webSocketsServer = new webSockets.Server({ server: httpServer });

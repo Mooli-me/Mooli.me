@@ -4,31 +4,7 @@
     const userPassword = 'abc123.';
     var webSocket = null;
     var code = 0;
-
-    function connect () {
-        webSocket = new WebSocket(webSocketURL);
-        webSocket.onopen = () => {
-            //webSocket.send('*** Nueva conexión ***')
-            var id;
-            newIdentity().then(
-                id => {
-                    console.log('=> Signon');
-                    signon(id);
-                    console.log('=> Good login');
-                    login(id);
-                    console.log('=> Login: bad id');
-                    login('aaaaaaaaaa');
-                    console.log('=> Login: no id');
-                    login(null);
-                }
-            );
-
-        }
-        webSocket.onmessage = msg => {
-            console.log(msg)
-        }
-    }
-    connect();
+    var id = null;
 
     async function newIdentity () {
         return crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${crypto.getRandomValues(new Uint32Array(10))}:${userPassword}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash))))
@@ -55,5 +31,44 @@
         }
         webSocket.send(JSON.stringify(request));
     }
+
+    async function get (chat=null, from=null) {
+        const request = {
+            code: code++,
+            obj: {
+                msgType: 'get',
+                chat: chat,
+                fromTimestamp: from,
+            },
+        }
+        webSocket.send(JSON.stringify(request));
+    }
+
+    const tests = [
+        ()=>{newIdentity().then(newId => id = newId)},
+        ()=>{signon(id)},
+        ()=>{get()},
+        ()=>{login('aaaaaaaaaa')},
+        ()=>{login(null)},
+        ()=>{login(id)},
+        ()=>{get()},
+    ]
+
+    function start () {
+        var counter = 0;
+        var delay = 100;
+        webSocket = new WebSocket(webSocketURL);
+        webSocket.onopen = () => {
+            tests.forEach(
+                (test)=>{
+                    setTimeout(test, delay*counter++);
+                }
+            )
+        }
+        webSocket.onmessage = msg => {
+            console.log(msg)
+        }
+    }
+    start();
 
 </script>

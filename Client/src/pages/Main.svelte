@@ -27,6 +27,37 @@
     }
   }
 
+  async function login () {
+    var request = {
+      msgType: 'login',
+      nameHash: await sha512(`${$identity}:${password}`),
+    }
+    const response = await ws.sendObj(request);
+    if ( response.ok ) {
+      $session.loggedOn = true;
+      router.navigate('/Main/');
+    } else {
+
+    }
+  }
+
+  async function updateChats (chat=null, from=null) {
+    const request = {
+      msgType: 'get',
+      chat: chat,
+      fromTimestamp: from,
+    };
+    const response = await ws.sendObj(request);
+
+    if ( response.ok ) {
+      $chats = response.message;
+    } else {
+      console.error(response)
+    }
+  }
+  updateChats();
+  
+
 </script>
 
 <Page name="home" class="display-flex justify-content-center" style="height: 100vh;">
@@ -35,10 +66,7 @@
     </Navbar>
 
     <Block>
-      {$_('Main.yourDuoGalleries')}
-      <ChatList chats={$chats.p2p} />
-      {$_('Main.yourCrowdGalleries')}
-      <ChatList chats={$chats.m2m} />
+      <ChatList chats={$chats} />
     </Block>
 
     <Fab position="right-bottom">
