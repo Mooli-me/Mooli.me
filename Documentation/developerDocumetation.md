@@ -24,7 +24,7 @@
 |Document|user|
 |-|-|
 |nameHash|```random string: crypto.subtle.digest("SHA-512",new TextEncoder("utf-8").encode(`${crypto.getRandomValues(new Uint32Array(10))}`)).then(hash=>btoa(String.fromCharCode(...new Uint8Array(hash))))```|
-|chats|```{p2p:[chat.id,...],m2m:[chat.id,...]}```|
+|chats|```[]```|
 
 |Document|chat|
 |-|-|
@@ -133,11 +133,11 @@ response: {
 ```JavaScript
 request: {
   msgType: 'get',
-  chat: chat.id,
-  fromTimestamp: timestamp,
+  chat: chat.id || null,
+  fromTimestamp: timestamp || null,
 };
 response: {
-  message: [...messages] | 'Error description',
+  message: [ {[chatId]:[...messages]}, ... ] | 'Error description',
   ok: boolean,
 };
 ```
