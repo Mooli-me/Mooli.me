@@ -190,7 +190,7 @@
 
 <Page>
 
-    <Navbar>
+    <Navbar  backLink="Back">
         <NavTitle>{$_('appNameTitle')} - {$_('Chat.title')} {chatId}</NavTitle>
     </Navbar>
 
