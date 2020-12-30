@@ -25,7 +25,8 @@ export const translations = {
         Chat: {
             title: 'Galería',
             commentPlaceholder: 'Añade un comentario...',
-            messagePlaceholder: 'Mensaje...'
+            messagePlaceholder: 'Mensaje...',
+            typing: 'Escribiendo...',
         },
         Components: {
             ChatList: {

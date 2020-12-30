@@ -282,7 +282,7 @@
             first={true}
             last={true}
             tail={true}
-            header={`typing...`}
+            header={$_('Chat.typing')}
             avatar={avatar(typingMessage.name)}
         ></Message>
         {/if}
