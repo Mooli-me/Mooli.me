@@ -249,7 +249,9 @@
 
     <Messages>
         
-        <MessagesTitle><b>Sunday, Feb 9,</b> 12:58</MessagesTitle>
+        <!--
+            <MessagesTitle><b>Sunday, Feb 9,</b> 12:58</MessagesTitle>
+        -->
 
         {#each messagesData as message, index (index)}
         
