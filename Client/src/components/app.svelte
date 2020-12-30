@@ -39,6 +39,10 @@
     serviceWorker: {
       path: '/service-worker.js',
     },
+    // For keep url in browsers
+    view: {
+      pushState: true,
+    }
   };
 
   onMount(() => {

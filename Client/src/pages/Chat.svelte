@@ -29,6 +29,8 @@
 
     var router = f7.view.main.router;
 
+    console.log(router)
+
     let messagebarComponent;
     let messagebarInstance;
 
