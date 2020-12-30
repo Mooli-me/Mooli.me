@@ -143,7 +143,7 @@
         if (text.length) {
         messagesToSend.push({
             type: 'sent',
-            name: $identity,
+            user: $session.pubIdentity,
             content: text,
         });
         }
@@ -178,8 +178,7 @@
         setTimeout(() => {
             messagesData = [...messagesData, {
             type: 'received',
-            user: $identity,
-            avatar: person.avatar,
+            user: person.name,
             content: answer,
             }];
             typingMessage = null;
@@ -268,7 +267,6 @@
         -->
         <Message
             type={message.type}
-            name={message.user}
             avatar={avatar(message.user)}
             first={isFirstMessage(message, index)}
             last={isLastMessage(message, index)}
@@ -285,7 +283,7 @@
             last={true}
             tail={true}
             header={`typing...`}
-            avatar={avatar($identity)}
+            avatar={avatar(typingMessage.name)}
         ></Message>
         {/if}
 

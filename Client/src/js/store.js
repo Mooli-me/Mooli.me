@@ -20,6 +20,7 @@ export const chats = writable(savedChats);
 export const session = writable(
 	{
 		loggedOn: false,
+		pubIdentity: '',
 	}
 );
 
