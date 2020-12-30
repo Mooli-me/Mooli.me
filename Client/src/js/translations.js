@@ -22,6 +22,11 @@ export const translations = {
             enterChat: 'Entrar al chat',
             signupButton: 'Crear mi cuenta',
         },
+        Chat: {
+            title: 'Galería',
+            commentPlaceholder: 'Añade un comentario...',
+            messagePlaceholder: 'Mensaje...'
+        },
         Components: {
             ChatList: {
                 mainThereIsNotChatsToShow: 'No hay chats para mostrar aquí... por ahora.',

@@ -103,7 +103,13 @@ async function signonHandler (ws,obj,code) {
             code,
             obj: {
                 message: {
-                    chats: user.chats,
+                    chats: [
+                        {
+                            id: user.chats,
+                            messages: [],
+                            type: 'p2p',
+                        },
+                    ],
                 },
                 ok: true,
             },
