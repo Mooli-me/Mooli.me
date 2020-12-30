@@ -2,12 +2,13 @@
     import {
         List,
         ListItem,
-        Icon,
     } from 'framework7-svelte';
 
     import {_} from 'svelte-i18n';
 
     export var chats
+
+    console.log(chats)
 </script>
 
 <List>
