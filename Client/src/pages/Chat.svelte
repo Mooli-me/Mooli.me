@@ -1,5 +1,5 @@
 <script>
-    import { onMount, onDestroy } from 'svelte';
+    import { onMount } from 'svelte';
     import {
         f7,
         f7ready,
@@ -7,14 +7,9 @@
         NavTitle,
         Page,
         Messages,
-        MessagesTitle,
         Message,
         Messagebar,
         Icon,
-        MessagebarAttachments,
-        MessagebarAttachment,
-        MessagebarSheet,
-        MessagebarSheetImage
     } from 'framework7-svelte';
 
     import {_} from 'svelte-i18n';
@@ -39,29 +34,7 @@
     let typingMessage = null;
     let messageText = '';
 
-    let messagesData = [
-        /*{
-            type: 'sent',
-            text: 'Hi, Kate',
-        },
-        {
-            name: 'Blue Ninja',
-            type: 'received',
-            text: 'Hi there, I am also fine, thanks! And how are you?',
-            avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
-        },
-        {
-            type: 'sent',
-            image: 'https://cdn.framework7.io/placeholder/cats-200x260-4.jpg',
-        },*/
-        {
-            chat: 'w32Wk',
-            user: 'OZ1xa3h5sjFlcf/LvATERllzNPWYcT/W0ehi2FuFhwgdjmqShPskJiL7mBLRjmd5ETORBKe2s2JTEmHWkfJ5Og==',
-            time: 1608986401971,
-            content: 'Hola, cómo estamos.',
-            type: 'string',
-        },
-    ];
+    let messagesData = [];
 
     /* let images = [
         'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
@@ -131,7 +104,7 @@
         }
         attachments = attachments;
     } */
-    function sendMessage() {
+    async function sendMessage() {
         const text = messageText.replace(/\n/g, '<br>').trim();
         const messagesToSend = [];
         /*
@@ -143,14 +116,14 @@
         });
         */
         if (text.length) {
-        messagesToSend.push({
-            type: 'sent',
-            user: $session.pubIdentity,
-            content: text,
-        });
+            const message = {
+                type: 'sent',
+                user: $session.pubIdentity,
+                content: text,
+            };
         }
-        if (messagesToSend.length === 0) {
-        return;
+        else {
+            return;
         }
 
         // Reset attachments
@@ -158,7 +131,12 @@
         // Hide sheet
         sheetVisible = false;
         // Send message
-        messagesData = [...messagesData, ...messagesToSend];
+        const request = {
+            msgType: 'put',
+            chat: chatId,
+            content: text,
+        }
+        const response = await ws.sendObj(request);
         // Clear
         messageText = '';
         messagebarInstance.clear();
@@ -169,24 +147,6 @@
         // Mock response
         if (responseInProgress) return;
         responseInProgress = true;
-
-        setTimeout(() => {
-        const answer = answers[Math.floor(Math.random() * answers.length)];
-        const person = people[Math.floor(Math.random() * people.length)];
-        typingMessage = {
-            name: person.name,
-            avatar: person.avatar,
-        };
-        setTimeout(() => {
-            messagesData = [...messagesData, {
-            type: 'received',
-            user: person.name,
-            content: answer,
-            }];
-            typingMessage = null;
-            responseInProgress = false;
-        }, 4000);
-        }, 1000);
     }
 </script>
 
