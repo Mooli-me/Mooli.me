@@ -8,13 +8,12 @@
 
     export var chats
 
-    console.log(chats)
 </script>
 
 <List>
 {#each chats as item, id }
 {#if item.messages.length}
-<ListItem link="#" title={item.id} badge={item.messages.length}>
+<ListItem link="/Chat/{item.id}" title={item.id} badge={item.messages.length}>
     <img alt={item.type} src="/static/{item.type}.png" slot="media">
 </ListItem>
 {:else}

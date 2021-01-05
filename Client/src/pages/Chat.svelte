@@ -116,11 +116,13 @@
         });
         */
         if (text.length) {
-            const message = {
-                type: 'sent',
-                user: $session.pubIdentity,
+            const request = {
+                msgType: 'put',
+                chat: chatId,
                 content: text,
+                type: 'string',
             };
+            const response = await ws.sendObj(request);
         }
         else {
             return;
@@ -130,13 +132,6 @@
         attachments = [];
         // Hide sheet
         sheetVisible = false;
-        // Send message
-        const request = {
-            msgType: 'put',
-            chat: chatId,
-            content: text,
-        }
-        const response = await ws.sendObj(request);
         // Clear
         messageText = '';
         messagebarInstance.clear();

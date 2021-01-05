@@ -209,6 +209,50 @@ async function getHandler (ws,obj,code) {
     ws.objSend(response);
 };
 
+async function putHandler (ws,obj,code) {
+
+    console.log('-> Put');
+
+    var response = {};
+
+    try {
+
+        const messages = mongoDB.collection('messages');
+
+        const document = {
+            chat: obj.chat,
+            user: sessions.get(ws),
+            time: Date.now(),
+            content: obj.content,
+            type: obj.type,
+        };
+
+        messages.insertOne(document);
+
+        response = {
+            message: null,
+            ok: true,
+        };
+
+        console.log(` |-> ${document.chat}`);
+        console.log(` |-> ${document.user}`);
+
+    } catch (err) {
+        
+        console.error(err)
+        
+        response = { 
+            code,
+            obj: {
+                message: err.message,
+                ok: false,
+            },
+        }
+    }
+
+    ws.objSend({ code, response });
+}
+
 async function logoutHandler (ws,request,code) {
     console.log('-> Logout');
     const object = {
@@ -226,9 +270,7 @@ const messageHandlers = {
     challenge: challengeHandler,
     login: loginHandler,
     get: getHandler,
-    put: (ws,obj,code) => {
-        console.log('-> Put');
-    },
+    put: putHandler,
     logout: logoutHandler,
 }
 
