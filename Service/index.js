@@ -13,6 +13,7 @@ mongoClient.connect()
         client=>{
             mongoDB = client.db();
             console.log('Conected to Mongo Atlas');
+            createWatchers();
         }
     ).catch(
         err=>{
@@ -34,6 +35,20 @@ async function requestTemplateHandler (ws,request) {
     ws.objSend(response);
 }
 */
+
+async function createWatchers () {
+    console.log('Creating watchers');
+    try {
+        const messages = mongoDB.collection('messages');
+        const messagesUpdates = messages.watch();
+        messagesUpdates.on('change',(data)=>{
+            console.log(`-> Messages update`);
+            console.log(data);
+        })
+    } catch (err) {
+        console.error(err.message)
+    }
+}
 
 async function loginHandler (ws,obj,code) {
     console.log('-> Logging on');
