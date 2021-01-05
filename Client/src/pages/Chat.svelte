@@ -29,6 +29,8 @@
 
     var router = f7.view.main.router;
 
+    console.log(router)
+
     let messagebarComponent;
     let messagebarInstance;
 
@@ -143,7 +145,7 @@
         if (text.length) {
         messagesToSend.push({
             type: 'sent',
-            name: $identity,
+            user: $session.pubIdentity,
             content: text,
         });
         }
@@ -178,8 +180,7 @@
         setTimeout(() => {
             messagesData = [...messagesData, {
             type: 'received',
-            user: $identity,
-            avatar: person.avatar,
+            user: person.name,
             content: answer,
             }];
             typingMessage = null;
@@ -191,7 +192,7 @@
 
 <Page>
 
-    <Navbar>
+    <Navbar  backLink="Back">
         <NavTitle>{$_('appNameTitle')} - {$_('Chat.title')} {chatId}</NavTitle>
     </Navbar>
 
@@ -250,7 +251,9 @@
 
     <Messages>
         
-        <MessagesTitle><b>Sunday, Feb 9,</b> 12:58</MessagesTitle>
+        <!--
+            <MessagesTitle><b>Sunday, Feb 9,</b> 12:58</MessagesTitle>
+        -->
 
         {#each messagesData as message, index (index)}
         
@@ -268,7 +271,6 @@
         -->
         <Message
             type={message.type}
-            name={message.user}
             avatar={avatar(message.user)}
             first={isFirstMessage(message, index)}
             last={isLastMessage(message, index)}
@@ -284,8 +286,8 @@
             first={true}
             last={true}
             tail={true}
-            header={`typing...`}
-            avatar={avatar($identity)}
+            header={$_('Chat.typing')}
+            avatar={avatar(typingMessage.name)}
         ></Message>
         {/if}
 

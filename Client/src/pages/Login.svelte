@@ -31,6 +31,7 @@
     const response = await ws.sendObj(request);
     if ( response.ok ) {
       $session.loggedOn = true;
+      $session.pubIdentity = request.nameHash;
       router.navigate('/Main/');
     } else {
 
