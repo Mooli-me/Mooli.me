@@ -65,7 +65,7 @@ async function sendUpdateNotification (updateObject) {
 
     const message = {
         code: 'updates',
-        update,
+        obj: update,
     }
 
     involvedSessions.forEach(

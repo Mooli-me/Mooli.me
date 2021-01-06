@@ -1,8 +1,9 @@
 var socketURL;
+
 if (window.location.hostname === "localhost") {
-socketURL = 'ws://localhost:3000/';
+    socketURL = 'ws://localhost:3000/';
 } else {
-socketURL = `wss://${window.location.hostname}/`;
+    socketURL = `wss://${window.location.hostname}/`;
 }
 
 function randomString(len) {
@@ -16,7 +17,9 @@ function randomString(len) {
 function WS (url,nameSeed) {
     const ws = {};
     url = url || `wss://${window.location.hostname}/`;
-    ws.queue = {};
+    ws.queue = {
+        set updates(obj) { console.log(obj) },
+    };
     ws.socket = new WebSocket(url);
     ws.socket.onmessage = function (msg) {
         async function saveResponse (msg,ws) {
@@ -49,6 +52,7 @@ function WS (url,nameSeed) {
             console.error(err);
         }
     }
+
     return ws;
 };
 
