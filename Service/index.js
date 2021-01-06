@@ -36,15 +36,52 @@ async function requestTemplateHandler (ws,request) {
 }
 */
 
+async function sendUpdateNotification (updateObject) {
+
+    const chats = mongoDB.collection('chats');
+    const users = mongoDB.collection('users');
+
+    const update = {
+        type: updateObject.ns.coll,
+        doc: updateObject.fullDocument,
+    };
+
+    const chatId = updateObject.fullDocument.chat;
+
+    const chat = await chats.findOne({id: chatId});
+
+    // If chat type === 'm2m'
+    const peers = [...chat.peers, chat.owner];
+
+    const involvedSessions = new Set()
+
+    sessions.forEach(
+        (id,ws)=>{
+            if ( peers.includes(id) ) {
+                involvedSessions.add( ws );
+            }
+        }
+    )
+
+    const message = {
+        code: 'updates',
+        update,
+    }
+
+    involvedSessions.forEach(
+        (ws)=>{
+            ws.objSend(message);
+        }
+    )
+
+}
+
 async function createWatchers () {
     console.log('Creating watchers');
     try {
         const messages = mongoDB.collection('messages');
         const messagesUpdates = messages.watch();
-        messagesUpdates.on('change',(data)=>{
-            console.log(`-> Messages update`);
-            console.log(data);
-        })
+        messagesUpdates.on('change',(data)=>sendUpdateNotification(data));
     } catch (err) {
         console.error(err.message)
     }

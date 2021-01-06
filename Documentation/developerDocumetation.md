@@ -167,6 +167,7 @@ response: {
 ```JavaScript
 request: {
   msgType: 'updates',
+  update: {},
 };
 response: {
   ok: boolean,
