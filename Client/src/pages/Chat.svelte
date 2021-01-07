@@ -24,8 +24,6 @@
 
     var router = f7.view.main.router;
 
-    console.log(router)
-
     let messagebarComponent;
     let messagebarInstance;
 
@@ -35,6 +33,20 @@
     let messageText = '';
 
     let messagesData = [];
+
+    ws.addHandler(
+        {
+            tag: 'updates',
+            function: (obj)=>{
+                console.log(obj);
+                if ( obj.type === 'messages' ) {
+                    messagesData = [...messagesData, obj.doc];
+                } else {
+                    console.error('Unhandled update mensage:', obj);
+                }
+            }
+        }
+    );
 
     /* let images = [
         'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
