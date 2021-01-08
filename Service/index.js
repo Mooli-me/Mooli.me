@@ -41,17 +41,29 @@ async function sendUpdateNotification (updateObject) {
     const chats = mongoDB.collection('chats');
     const users = mongoDB.collection('users');
 
+    var peers = [];
+
     const update = {
         type: updateObject.ns.coll,
         doc: updateObject.fullDocument,
     };
 
-    const chatId = updateObject.fullDocument.chat;
+    const destination = updateObject.fullDocument.destination;
+    const destType = updateObject.fullDocument.destType;
 
-    const chat = await chats.findOne({id: chatId});
+    switch (destType) {
+        case 'm2m':
+            const chat = await chats.findOne({id: destination});
+            peers = [...chat.peers, chat.owner];
+            break;
+        case 'p2p':
+            peers = [destination];
+            break;
+        default:
+            console.error('Unknown message detination type');
+    }
 
-    // If chat type === 'm2m'
-    const peers = [...chat.peers, chat.owner];
+    console.log(updateObject,destination,destType,peers)
 
     const involvedSessions = new Set()
 
@@ -224,14 +236,10 @@ async function getHandler (ws,obj,code) {
         user = await users.findOne({nameHash},{projection: {chats: 1, _id: 0}});
         userChatsPromises = user.chats.map(
             async chatId => {
-                const chat = await chats.findOne({id: chatId},{projection: {type: 1, _id: 0, }})
-                const chatType = chat.type;
-                const chatMessages = await messages.find({chat: chatId},{projection: {user:1, time: 1, content: 1, type: 1, _id: 0}}).toArray();
-                return {
-                    id: chatId,
-                    messages: chatMessages,
-                    type: chatType,
-                };
+                const chat = await chats.findOne({id: chatId},{projection: {_id: 0, }})
+                const chatMessages = await messages.find({chat: chatId},{projection: {_id: 0}}).toArray();
+                chat.messages = chatMessages;
+                return chat;
             }
 
         );
@@ -271,13 +279,10 @@ async function putHandler (ws,obj,code) {
 
         const messages = mongoDB.collection('messages');
 
-        const document = {
-            chat: obj.chat,
-            user: sessions.get(ws),
-            time: Date.now(),
-            content: obj.content,
-            type: obj.type,
-        };
+        const document = {...obj}
+
+        document.user = sessions.get(ws);
+        document.time = Date.now();
 
         messages.insertOne(document);
 

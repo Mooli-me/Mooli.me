@@ -48,6 +48,9 @@
       fromTimestamp: from,
     };
     const response = await ws.sendObj(request);
+    
+    console.log(response)
+
 
     if ( response.ok ) {
       $chats = response.message;

@@ -147,8 +147,8 @@ request: {
   msgType: 'put',
   destType: 'p2p' | 'm2m',
   destination: chat.id | user.nameHash,
-  content: URL('https://safenote.co/file-sharing-api') | 'string';
-  type: 'file' | 'string';
+  contentType: 'file' | 'string',
+  content: URL('https://safenote.co/file-sharing-api') | 'string',
 };
 response: {
   message: [...messages] | 'Error description',

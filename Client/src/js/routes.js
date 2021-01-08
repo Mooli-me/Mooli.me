@@ -51,7 +51,7 @@ var routes = [
     component: SignOn,
   },
   {
-    path: '/Chat/:chatId',
+    path: '/Chat/:chatIdx',
     component: Chat,
   }
 ];

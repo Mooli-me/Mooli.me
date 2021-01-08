@@ -20,8 +20,8 @@
 
     import { ws } from '../js/webSocket.js';
 
-    export var chatId;
-
+    export var chatIdx;
+    
     var router = f7.view.main.router;
 
     let messagebarComponent;
@@ -33,6 +33,8 @@
     let messageText = '';
 
     let messagesData = [];
+
+    const chat = $chats[chatIdx];
 
     ws.addHandler(
         {
@@ -130,9 +132,10 @@
         if (text.length) {
             const request = {
                 msgType: 'put',
-                chat: chatId,
+                destType: chat.type,
+                destination: chat.type === 'm2m' ? chat.id : chat.owner,
+                contentType: 'string',
                 content: text,
-                type: 'string',
             };
             const response = await ws.sendObj(request);
         }
@@ -160,7 +163,7 @@
 <Page>
 
     <Navbar  backLink="Back">
-        <NavTitle>{$_('appNameTitle')} - {$_('Chat.title')} {chatId}</NavTitle>
+        <NavTitle>{$_('appNameTitle')} - {$_('Chat.title')} {chat.id}</NavTitle>
     </Navbar>
 
     <Messagebar

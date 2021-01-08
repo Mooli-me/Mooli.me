@@ -11,13 +11,13 @@
 </script>
 
 <List>
-{#each chats as item, id }
+{#each chats as item, idx }
 {#if item.messages.length}
-<ListItem link="/Chat/{item.id}" title={item.id} badge={item.messages.length}>
+<ListItem link="/Chat/{idx}" title={item.id} badge={item.messages.length}>
     <img alt={item.type} src="/static/{item.type}.png" slot="media">
 </ListItem>
 {:else}
-<ListItem link="/Chat/{item.id}" title={item.id}>
+<ListItem link="/Chat/{idx}" title={item.id}>
     <img id="typeIcon" alt={item.type} src="/static/{item.type}.png" slot="media">
 </ListItem>
 {/if}
