@@ -122,7 +122,7 @@ response: {
 ```JavaScript
 request: {
   msgType: 'chat',
-  type: p2p | m2m,
+  type: 'p2p' | 'm2m',
 };
 response: {
   message: id | 'Error description',
@@ -145,7 +145,8 @@ response: {
 ```JavaScript
 request: {
   msgType: 'put',
-  chat: chat.id,
+  destType: 'p2p' | 'm2m',
+  destination: chat.id | user.nameHash,
   content: URL('https://safenote.co/file-sharing-api') | 'string';
   type: 'file' | 'string';
 };
