@@ -29,3 +29,15 @@ PRIVACY FEATURES
 - Limit the data given to the server or host provider to identify an individual.
 
 - Minimize spam and unintended use of personal information.
+
+¿ES MOOLI ADECUADO PARA PROTEGER TU PRIVACIDAD FRENTE A TUS OPONENTES?
+
+| Oponente | Privacidad efectiva |
+|-|-|
+| Entidades que puedan apropiarse de tu teléfono u ordenador | No |
+| Entidades próximas con las que mantienes relaciones puntuales | Si |
+| Entidades que puedan espiar tu wifi o redes próximas | Sí |
+| Entidades que puedan espiar las lineas de telecomunicaciones | Sí |
+| Entidades que controlan servicios en Internet | Sí |
+| Entidades con una visión multidimensional de lo que sucede en Internet | No |
+| Entidades gubernamentales, de inteligencia o seguridad, fuerzas del orden | No |
