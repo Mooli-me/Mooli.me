@@ -42,6 +42,11 @@
     // For keep url in browsers
     view: {
       pushState: true,
+      pushStateRoot: window.location.hostname === 'localhost' ? 'http://localhost:8080' : 'https://mooli.me',
+      pushStateSeparator: '',
+      //browserHistory: true,
+      //browserHistoryRoot: window.location.hostname === 'localhost' ? 'http://localhost:8080' : 'https://mooli.me',
+      //browserHistorySeparator: '',
     }
   };
 
@@ -51,4 +56,6 @@
       // Call F7 APIs here
     });
   })
+
+  console.log(f7params.view)
 </script>
