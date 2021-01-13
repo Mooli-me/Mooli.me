@@ -18,7 +18,7 @@
 <Page name="home"  class="display-flex justify-content-center" style="height: 100vh;">
 
   <Navbar>
-    <NavTitle>{$_('appNameTitle')} - Entrando a {chatCode}</NavTitle>
+    <NavTitle>{$_('appNameTitle')} - {$_('KnockKnock.enteringTo')} {chatCode}</NavTitle>
   </Navbar>
 
   <Card class="display-flex justify-content-center">  

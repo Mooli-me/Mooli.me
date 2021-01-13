@@ -32,6 +32,9 @@ export const translations = {
             messagePlaceholder: 'Mensaje...',
             typing: 'Escribiendo...',
         },
+        KnockKnock: {
+            enteringTo: 'Entrando a',
+        },
         Components: {
             ChatList: {
                 mainThereIsNotChatsToShow: 'No hay chats para mostrar aquí... por ahora.',
