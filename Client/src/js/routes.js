@@ -61,7 +61,7 @@ var routes = [
     component: Chat,
   },
   {
-    path: '/(.*)',
+    path: '/:chatCode',
     component: KnockKnock,
   },
 ];

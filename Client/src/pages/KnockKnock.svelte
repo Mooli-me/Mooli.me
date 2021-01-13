@@ -11,14 +11,14 @@
 
   import {_} from 'svelte-i18n';
 
-  var chatCode;
+  export var chatCode;
 
 </script>
 
 <Page name="home"  class="display-flex justify-content-center" style="height: 100vh;">
 
   <Navbar>
-    <NavTitle>{$_('appNameTitle')} - BorrameKnockKnock</NavTitle>
+    <NavTitle>{$_('appNameTitle')} - Entrando a {chatCode}</NavTitle>
   </Navbar>
 
   <Card class="display-flex justify-content-center">  
