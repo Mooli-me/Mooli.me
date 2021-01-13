@@ -49,21 +49,20 @@ async function sendUpdateNotification (updateObject) {
     };
 
     const destination = updateObject.fullDocument.destination;
+    const destinationChat = updateObject.fullDocument.chat;
     const destType = updateObject.fullDocument.destType;
 
     switch (destType) {
         case 'm2m':
-            const chat = await chats.findOne({id: destination});
+            const chat = await chats.findOne({id: destinationChat});
             peers = [...chat.peers, chat.owner];
             break;
         case 'p2p':
             peers = [destination];
             break;
         default:
-            console.error('Unknown message detination type');
+            console.error('*** Unknown message destination type on push update');
     }
-
-    console.log(updateObject,destination,destType,peers)
 
     const involvedSessions = new Set()
 
@@ -233,12 +232,31 @@ async function getHandler (ws,obj,code) {
         const chats = mongoDB.collection('chats');
         const messages = mongoDB.collection('messages');
         
-        user = await users.findOne({nameHash},{projection: {chats: 1, _id: 0}});
-        userChatsPromises = user.chats.map(
-            async chatId => {
-                const chat = await chats.findOne({id: chatId},{projection: {_id: 0, }})
-                const chatMessages = await messages.find({chat: chatId},{projection: {_id: 0}}).toArray();
-                chat.messages = chatMessages;
+        user = await users.findOne({nameHash},{projection: {_id: 0}});
+        userChats = await chats.find({owner: user.nameHash}).toArray();
+        userChatsPromises = userChats.map(
+            async chat => {
+                switch (chat.type) {
+                    case 'p2p':
+                        chat.messages = {};
+                        chat.peers.forEach(
+                            async (peer)=>{
+                                chat.messages[peer] = await messages.find({chat: chat.id, $or: [{user: peer}, {user: user.nameHash}]},{projection: {_id: 0}}).toArray();
+                            }
+                        );
+                        break;
+
+                    case 'm2m':
+                        chat.messages = [];
+                        const chatMessages = await messages.find({chat: chat.id},{projection: {_id: 0}}).toArray();
+                        chat.messages = chatMessages;
+                        break;
+    
+                    default:
+                        console.error(` |-> Unknown chat type: ${chat.id}: ${chat.type}`);
+                        break;
+                }
+                
                 return chat;
             }
 
@@ -279,8 +297,7 @@ async function putHandler (ws,obj,code) {
 
         const messages = mongoDB.collection('messages');
 
-        const document = {...obj}
-
+        const document = {...obj.msg}
         document.user = sessions.get(ws);
         document.time = Date.now();
 
