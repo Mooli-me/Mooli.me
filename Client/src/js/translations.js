@@ -16,6 +16,10 @@ export const translations = {
         Main: {
             yourGalleries: 'Tus galerías',
         },
+        Peers: {
+            title: 'Topos en la galería',
+            thereIsNotPeers: 'Por el momento no compartes esta galería con ningún topo.',
+        },
         FirstRun: {
             wellCome: 'Bienvenido a Mooli.me',
             codePlaceholder: 'Código del chat',
@@ -32,7 +36,7 @@ export const translations = {
             ChatList: {
                 mainThereIsNotChatsToShow: 'No hay chats para mostrar aquí... por ahora.',
             },
-        }
+        },
     },
     en: {
         firsRunIntroCardTitle: 'Welcome to Mooli',

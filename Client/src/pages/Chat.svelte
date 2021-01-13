@@ -21,6 +21,7 @@
     import { ws } from '../js/webSocket.js';
 
     export var chatIdx;
+    export var destination = null;
     
     var router = f7.view.main.router;
 
@@ -32,23 +33,26 @@
     let typingMessage = null;
     let messageText = '';
 
-    let messagesData = [];
-
     const chat = $chats[chatIdx];
 
-    ws.addHandler(
-        {
-            tag: 'updates',
-            function: (obj)=>{
-                console.log(obj);
-                if ( obj.type === 'messages' ) {
-                    messagesData = [...messagesData, obj.doc];
-                } else {
-                    console.error('Unhandled update mensage:', obj);
+    let messagesData = chat.messages;
+
+    try {
+        ws.addHandler(
+            {
+                tag: 'updates',
+                function: (obj)=>{
+                    if ( obj.type === 'messages' ) {
+                        messagesData = [...messagesData, obj.doc];
+                    } else {
+                        console.error('Unhandled update mensage:', obj);
+                    }
                 }
             }
-        }
-    );
+        );
+    } catch (err) {
+        console.error('Can not set updates handler!!!')
+    }
 
     /* let images = [
         'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
@@ -132,10 +136,13 @@
         if (text.length) {
             const request = {
                 msgType: 'put',
-                destType: chat.type,
-                destination: chat.type === 'm2m' ? chat.id : chat.owner,
-                contentType: 'string',
-                content: text,
+                msg: {
+                    destType: chat.type,
+                    chat: chat.id,
+                    destination,
+                    contentType: 'string',
+                    content: text,
+                }
             };
             const response = await ws.sendObj(request);
         }
@@ -266,5 +273,7 @@
 </Page>
 
 <style>
-
+    :global(div.message-avatar) {
+        border-radius: 0;
+    }
 </style>

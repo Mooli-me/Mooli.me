@@ -3,6 +3,7 @@ import Main from '../pages/Main.svelte';
 import Login from '../pages/Login.svelte';
 import FirsRun from '../pages/FirstRun.svelte';
 import SignOn from '../pages/SignOn.svelte';
+import Peers from '../pages/Peers.svelte';
 import Chat from '../pages/Chat.svelte';
 
 import { identity, session } from '../js/store.js';
@@ -51,7 +52,11 @@ var routes = [
     component: SignOn,
   },
   {
-    path: '/Chat/:chatIdx',
+    path: '/Peers/:chatIdx/',
+    component: Peers,
+  },
+  {
+    path: '/Chat/:chatIdx/',
     component: Chat,
   }
 ];

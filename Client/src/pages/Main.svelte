@@ -4,11 +4,14 @@
     Page,
     Navbar,
     NavTitle,
-    Block,
     Fab,
     Icon,
     FabButtons,
     FabButton,
+    Link,
+    Block,
+    BlockTitle,
+    Badge,
   } from 'framework7-svelte';
 
   import {_} from 'svelte-i18n';
@@ -16,8 +19,6 @@
   import { identity, chats, session } from '../js/store.js';
 
   import { ws } from '../js/webSocket.js';
-
-  import ChatList from '../components/ChatList.svelte';
 
   var router = f7.view.main.router;
 
@@ -49,9 +50,6 @@
     };
     const response = await ws.sendObj(request);
     
-    console.log(response)
-
-
     if ( response.ok ) {
       $chats = response.message;
     } else {
@@ -69,7 +67,34 @@
     </Navbar>
 
     <Block>
-      <ChatList chats={$chats} />
+    {#each $chats as item, idx }
+    {#if item.type === 'p2p'}
+      <Link href="/Peers/{idx}/">
+        <Block class="gallery">
+          <BlockTitle>
+            <img class="grpType" alt={item.type} src="/static/{item.type}.png">
+            {item.id}
+          </BlockTitle>
+        {#if item.peerRequests.length}
+          Requests: <Badge>{item.peerRequests.length}</Badge>
+        {/if}
+        </Block>
+      </Link>
+    {/if}
+    {#if item.type === 'm2m'}
+      <Link href="/Chat/{idx}/">
+        <Block  class="gallery">
+          <img class="grpType" alt={item.type} src="/static/{item.type}.png">
+          {item.id}
+        {#if item.messages.length}
+          <Badge>{item.messages.length}</Badge>
+        {/if}
+        </Block>
+      </Link>
+    {/if}
+    {:else}
+      {$_('Components.ChatList.mainThereIsNotChatsToShow')}
+    {/each}
     </Block>
 
     <Fab position="right-bottom">
@@ -84,4 +109,12 @@
 </Page>
 
 <style>
+  img.grpType {
+      height: 4em;
+      vertical-align: middle;
+  }
+  :global(.gallery) {
+    background-color: rgb(30,30,30);
+    border-radius: 20px;
+  }
 </style>
