@@ -5,6 +5,7 @@ import FirsRun from '../pages/FirstRun.svelte';
 import SignOn from '../pages/SignOn.svelte';
 import Peers from '../pages/Peers.svelte';
 import Chat from '../pages/Chat.svelte';
+import KnockKnock from '../pages/KnockKnock.svelte';
 
 import { identity, session } from '../js/store.js';
 var identityVal, sessionVal;
@@ -58,7 +59,11 @@ var routes = [
   {
     path: '/Chat/:chatIdx/',
     component: Chat,
-  }
+  },
+  {
+    path: '/(.*)',
+    component: KnockKnock,
+  },
 ];
 
 export default routes;
