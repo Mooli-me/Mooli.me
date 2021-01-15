@@ -1,48 +1,45 @@
 <script>
   import {
     Page,
+    PageContent,
     Navbar,
     NavTitle,
-    Card,
-    List,
-    ListInput,
     Button,
+    Preloader,
   } from 'framework7-svelte';
 
   import {_} from 'svelte-i18n';
 
   export var chatCode;
 
+  var working = true;
+
+  /*
+  Exist -> Error
+  Woned || Member -> `/Chat/${chatCode}/`
+  Else -> Input presentation button 'Request access'
+  */
+
 </script>
 
-<Page name="home"  class="display-flex justify-content-center" style="height: 100vh;">
+<Page name="home" pageContent=false>
 
   <Navbar>
     <NavTitle>{$_('appNameTitle')} - {$_('KnockKnock.enteringTo')} {chatCode}</NavTitle>
   </Navbar>
 
-  <Card class="display-flex justify-content-center">  
+  <PageContent class="display-flex justify-content-center">
+
+    {#if working }
+    <Preloader size={100}/>
+    {:else}
+    <Button large round fill href="/Chat/{chatCode}/">
+      {$_('FirstRun.enterChat')}
+    </Button>
     <img id="logo" alt="Mooli.me logo" src="/static/logo.png"/>
-  </Card>
+    {/if}
 
-
-      <List>
-        <ListInput
-        outline
-        placeholder={$_('FirstRun.codePlaceholder')}
-        type="text"
-        clearButton
-        onInput={ (event) => chatCode = event.target.value }
-        />
-      </List>
-
-      <Button large round fill href="/SignOn/">
-        {$_('FirstRun.enterChat')}
-      </Button>
-
-      <Button style="position: fixed; bottom: 0px; width: 80vw;" large fill href="/SignOn/">
-        {$_('FirstRun.signupButton')}
-      </Button>
+  </PageContent>
 
 </Page>
 
