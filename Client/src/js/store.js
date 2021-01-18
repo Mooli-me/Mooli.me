@@ -21,6 +21,7 @@ export const session = writable(
 	{
 		loggedOn: false,
 		pubIdentity: '',
+		updating: false,
 	}
 );
 

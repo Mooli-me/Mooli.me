@@ -25,7 +25,6 @@
 
   var userPassword = '';
   var newId = '';
-  var working = false;
 
   async function createNewIdentity () {
     newId = await newIdentity();
@@ -40,7 +39,6 @@
   }
 
   async function signOn () {
-    working = true;
     var nameHash = await sha512(`${newId}:${userPassword}`)
     const request = {
       msgType: 'signon',
@@ -51,10 +49,8 @@
     if ( signupResponse.ok && loginResponse.ok ) {
       $identity = newId;
       $chats = signupResponse.message.chats;
-      working = false;
       router.navigate('/Main/');
     } else {
-      working = false;
       alert($_('SignOn.somethingWrong'));
     }
   }
@@ -68,7 +64,6 @@
           <NavTitle>{$_('appNameTitle')} - {$_('SignOn.createIdentity')}</NavTitle>
       </Navbar>
 
-      {#if ! working }
       <Block>
         {#await sha512(`${newId}:${userPassword}`) }
         <Avatar id=''/>
@@ -88,14 +83,6 @@
       </List>
 
       <Button large round fill onClick={signOn}>{$_('SignOn.newIdButton')}</Button>
-
-      {/if}
-
-      {#if working }
-      <Block  class="display-flex align-items-center" style="height: 80%;">
-          <Preloader size={100}/>
-      </Block>
-      {/if}
 
   </Page>
   

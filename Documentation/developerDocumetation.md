@@ -13,6 +13,7 @@
     - [Challenge](#challenge)
     - [Login](#login)
     - [New chat](#new-chat)
+    - [Request chat access](#request-chat-access)
     - [Get](#get)
     - [Put](#put)
     - [Logout](#logout)
@@ -126,6 +127,17 @@ request: {
 };
 response: {
   message: id | 'Error description',
+  ok: boolean,
+};
+```
+### Request chat access
+```JavaScript
+request: {
+  msgType: 'chatAccess',
+  chat: chat.id,
+};
+response: {
+  message: 'granted' | 'await' | 'Error description' ,
   ok: boolean,
 };
 ```

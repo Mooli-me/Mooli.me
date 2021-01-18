@@ -10,16 +10,30 @@
 
   import {_} from 'svelte-i18n';
 
+  import { session } from '../js/store.js';
+
   export var chatCode;
 
-  var working = true;
+  $session.updating = true;
 
-  /*
-  Exist -> Error
-  Woned || Member -> `/Chat/${chatCode}/`
-  Else -> Input presentation button 'Request access'
-  */
+  import { ws } from '../js/webSocket.js';
 
+  async function requestChatAccess (chat=null) {
+    $session.updating = true;
+    const request = {
+      msgType: 'chatAccess',
+      chat,
+    };
+    const response = await ws.sendObj(request);
+    
+    if ( response.ok ) {
+      //$chats = response.message;
+    } else {
+      console.error(response)
+    }
+    $session.updating = false;
+  }
+  requestChatAccess(chatCode);
 </script>
 
 <Page name="home" pageContent=false>
@@ -30,14 +44,14 @@
 
   <PageContent class="display-flex justify-content-center">
 
-    {#if working }
+  {#if $session.updating }
     <Preloader size={100}/>
-    {:else}
+  {:else}
     <Button large round fill href="/Chat/{chatCode}/">
       {$_('FirstRun.enterChat')}
     </Button>
     <img id="logo" alt="Mooli.me logo" src="/static/logo.png"/>
-    {/if}
+  {/if}
 
   </PageContent>
 

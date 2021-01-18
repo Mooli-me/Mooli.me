@@ -12,6 +12,7 @@
     Block,
     BlockTitle,
     Badge,
+    Preloader,
   } from 'framework7-svelte';
 
   import {_} from 'svelte-i18n';
@@ -28,21 +29,8 @@
     }
   }
 
-  async function login () {
-    var request = {
-      msgType: 'login',
-      nameHash: await sha512(`${$identity}:${password}`),
-    }
-    const response = await ws.sendObj(request);
-    if ( response.ok ) {
-      $session.loggedOn = true;
-      router.navigate('/Main/');
-    } else {
-
-    }
-  }
-
   async function updateChats (chat=null, from=null) {
+    $session.updating = true;
     const request = {
       msgType: 'get',
       chat: chat,
@@ -55,9 +43,9 @@
     } else {
       console.error(response)
     }
+    $session.updating = false;
   }
   updateChats();
-  
 
 </script>
 
@@ -67,34 +55,39 @@
     </Navbar>
 
     <Block>
+    {#if $session.updating }
+      <Preloader size={100}/>
+    {:else}
+    <br><Link href='/qzJjO'>qzJjO</Link><br><Link href='/zzzzz'>zzzzz</Link><br><Link href='/aaaaa'>aaaaa</Link><br>
     {#each $chats as item, idx }
-    {#if item.type === 'p2p'}
-      <Link href="/Peers/{idx}/">
-        <Block class="gallery">
-          <BlockTitle>
+      {#if item.type === 'p2p'}
+        <Link href="/Peers/{idx}/">
+          <Block class="gallery">
+            <BlockTitle>
+              <img class="grpType" alt={item.type} src="/static/{item.type}.png">
+              {item.id}
+            </BlockTitle>
+          {#if item.peerRequests.length}
+            Requests: <Badge>{item.peerRequests.length}</Badge>
+          {/if}
+          </Block>
+        </Link>
+      {/if}
+      {#if item.type === 'm2m'}
+        <Link href="/Chat/{idx}/">
+          <Block  class="gallery">
             <img class="grpType" alt={item.type} src="/static/{item.type}.png">
             {item.id}
-          </BlockTitle>
-        {#if item.peerRequests.length}
-          Requests: <Badge>{item.peerRequests.length}</Badge>
-        {/if}
-        </Block>
-      </Link>
+          {#if item.messages.length}
+            <Badge>{item.messages.length}</Badge>
+          {/if}
+          </Block>
+        </Link>
+      {/if}
+      {:else}
+        {$_('Components.ChatList.mainThereIsNotChatsToShow')}
+      {/each}
     {/if}
-    {#if item.type === 'm2m'}
-      <Link href="/Chat/{idx}/">
-        <Block  class="gallery">
-          <img class="grpType" alt={item.type} src="/static/{item.type}.png">
-          {item.id}
-        {#if item.messages.length}
-          <Badge>{item.messages.length}</Badge>
-        {/if}
-        </Block>
-      </Link>
-    {/if}
-    {:else}
-      {$_('Components.ChatList.mainThereIsNotChatsToShow')}
-    {/each}
     </Block>
 
     <Fab position="right-bottom">

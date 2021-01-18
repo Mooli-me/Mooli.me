@@ -201,6 +201,113 @@ async function challengeHandler (ws,obj,code) {
     ws.objSend(response);
 }
 
+
+async function chatAccessHandler (ws,obj,code) {
+
+
+
+  /*
+  SignUp/Login
+  Request access
+  Server: Exist -> - || Error
+  Server: Owned || Member -> Granted || Requested
+  `/Chat/${chatCode}/ || Whaiting for authorization
+  */
+
+
+    console.log('-> Chat Access request');
+
+    try {
+
+        if ( ! sessions.has(ws) ) {
+            console.log('  |-> User is not identified.');
+            response = {
+                code,
+                obj: {
+                    message: 'You are not identified',
+                    ok: false,
+                }
+            };
+            ws.objSend(response);
+            return;
+        };
+
+        const chats = mongoDB.collection('chats');
+        const messages = mongoDB.collection('messages');
+        var response = {code}
+        const nameHash = sessions.get(ws);
+
+        console.log(`  |-> nameHash: ${nameHash}`);
+
+        const chat = await chats.findOne({id: obj.chat},{projection: {_id: 0}});
+
+        if ( chat === null ) {
+            console.log(`  |-> Nonexistent chat`);
+            response.obj = {
+                message: `Chat ${obj.chat} doesn't exists`,
+                ok: false,
+            };
+            ws.objSend(response);
+            return;
+        };
+
+        console.log(`  |-> chat: ${obj.chat}`);
+
+        if ( chat.bannedIds.includes(nameHash) ) {
+            console.log(`  |-> Banned id`);
+            response.obj = {
+                message: `You are banned in ${obj.chat}.`,
+                ok: false,
+            };
+            ws.objSend(response);
+            return;
+        }
+
+        if ( chat.owner === nameHash || chat.peers.includes(nameHash)) {
+            response.obj = {
+                message: `granted`,
+                ok: true,
+            };
+            ws.objSend(response);
+            return;
+        } else {
+            if ( ! chat.peerRequests.includes(nameHash) ) {
+                const peerRequests = [...chat.peerRequests, nameHash];
+                const update = await chats.updateOne({id:chat.id},{ $set:{peerRequests} });
+                if ( update.result.nModified === 1 ) {
+                    console.log(`  |-> Access request added. Await.`);
+                }
+            } else {
+                console.log(`  |-> Allready in access requests list.`);
+            };
+            response.obj = {
+                message: `await`,
+                ok: true,
+            };
+            ws.objSend(response);
+            return;
+        }
+    } catch (err) {
+
+        console.error(err);
+
+        response = { 
+            code,
+            obj: {
+                message: err.message,
+                ok: false,
+            },
+        }
+    }
+
+    response.obj = {
+        message: '...',
+        ok: true,
+    };
+    ws.objSend(response);
+}
+
+
 async function getHandler (ws,obj,code) {
 
     var response = {};
@@ -216,7 +323,7 @@ async function getHandler (ws,obj,code) {
         response = {
             code,
             obj: {
-                messeage: 'You are not identified',
+                message: 'You are not identified',
                 ok: false,
             }
         };
@@ -343,6 +450,7 @@ const messageHandlers = {
     signon: signonHandler,
     challenge: challengeHandler,
     login: loginHandler,
+    chatAccess: chatAccessHandler,
     get: getHandler,
     put: putHandler,
     logout: logoutHandler,

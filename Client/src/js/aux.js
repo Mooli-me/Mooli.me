@@ -6,16 +6,6 @@
     const hashArray = new Uint8Array(hash);
     const hashString = String.fromCharCode(...hashArray);
     const base64 = btoa(hashString);
-    /*
-    console.log(
-      `string: ${string}
-      hash: ${hash}
-      hashArray: ${hashArray}
-      hashString: ${hashString}
-      base64: ${base64}
-      `
-    )
-    */
     return base64;
   }
 
