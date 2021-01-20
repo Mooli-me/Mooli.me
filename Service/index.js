@@ -270,6 +270,12 @@ async function chatAccessHandler (ws,obj,code) {
             };
             ws.objSend(response);
             return;
+        } else if (chat.isPublic === true) {
+            const peers = [...chat.peers, nameHash];
+            const update = await chats.updateOne({id:chat.id},{ $set:{peers} });
+            if ( update.result.nModified === 1 ) {
+                console.log(`  |-> Access granted to public group.`);
+            }
         } else {
             if ( ! chat.peerRequests.includes(nameHash) ) {
                 const peerRequests = [...chat.peerRequests, nameHash];
