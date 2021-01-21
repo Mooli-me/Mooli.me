@@ -1,24 +1,12 @@
 import { writable, get } from 'svelte/store';
 
-import { newIdentity, pubIdentity, signOn, login } from './aux.js';
+import { newIdentity } from './aux.js';
 
 async function createGuestId () {
 	const sessionVal = get(session);
-	sessionVal.updating = true;
-	session.set(sessionVal);
 	const id = await newIdentity();
 	identity.set(id);
-	const nameHash = await pubIdentity(id);
-	const signOnResponse = await signOn(nameHash);
-	const loginResponse = await login(nameHash);
-	if ( ! signOnResponse.ok ) console.error('Signon error');
-	if ( loginResponse.ok ) {
-		sessionVal.loggedOn = true;
-		sessionVal.pubIdentity = nameHash;
-		session.set(sessionVal);
-	} else {
-		console.error('Login error');
-	}
+	session.set(sessionVal);
 }
 
 /**

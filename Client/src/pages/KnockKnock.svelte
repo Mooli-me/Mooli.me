@@ -10,15 +10,41 @@
 
   import {_} from 'svelte-i18n';
 
-  import { session } from '../js/store.js';
-
-  export var chatCode;
-
-  $session.updating = true;
+  import { session, chats, identity } from '../js/store.js';
 
   import { ws } from '../js/webSocket.js';
 
+  import { pubIdentity, signOn, login } from '../js/aux.js';
+
+  export var chatCode;
+
+  var accessRequestResponse = {};
+
+  $: {
+    $session.updating = $session.loggedOn && accessRequestResponse.ok;
+    console.log($session.loggedOn, accessRequestResponse.ok, $session.loggedOn && accessRequestResponse.ok)
+  }
+
+  async function guestLogin () {
+    $session.pubIdentity = await pubIdentity($identity);
+    const signOnResponse = await signOn($session.pubIdentity);
+    const loginResponse = await login($session.pubIdentity);
+    const resultOk = signOnResponse.ok && loginResponse.ok
+    if ( resultOk ) {
+      $session.loggedOn = true;
+    }
+    return resultOk
+  }
+
   async function requestChatAccess (chat=null) {
+    if ( ! $session.loggedOn ) {
+      const loginOk = await guestLogin()
+      if ( loginOk ) {
+        $session.loggedOn = true;
+      } else {
+        console.error('Login error');
+      }
+    }
     $session.updating = true;
     const request = {
       msgType: 'chatAccess',
@@ -27,13 +53,16 @@
     const response = await ws.sendObj(request);
     
     if ( response.ok ) {
-      //$chats = response.message;
+      $chats = response.message;
     } else {
       console.error(response)
     }
     $session.updating = false;
   }
+
   requestChatAccess(chatCode);
+
+
 </script>
 
 <Page name="home" pageContent=false>
