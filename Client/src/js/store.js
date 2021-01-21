@@ -1,4 +1,25 @@
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
+
+import { newIdentity, pubIdentity, signOn, login } from './aux.js';
+
+async function createGuestId () {
+	const sessionVal = get(session);
+	sessionVal.updating = true;
+	session.set(sessionVal);
+	const id = await newIdentity();
+	identity.set(id);
+	const nameHash = await pubIdentity(id);
+	const signOnResponse = await signOn(nameHash);
+	const loginResponse = await login(nameHash);
+	if ( ! signOnResponse.ok ) console.error('Signon error');
+	if ( loginResponse.ok ) {
+		sessionVal.loggedOn = true;
+		sessionVal.pubIdentity = nameHash;
+		session.set(sessionVal);
+	} else {
+		console.error('Login error');
+	}
+}
 
 /**
  * Reading from localStorage or initializing.
@@ -22,8 +43,15 @@ export const session = writable(
 		loggedOn: false,
 		pubIdentity: '',
 		updating: false,
+		guest: savedIdentity ? false : true,
 	}
 );
+
+/**
+ * Select window storage
+ */
+
+var windowStorage = ! savedIdentity ? sessionStorage : localStorage;
 
 /**
  * Update localStorage on stores changes.
@@ -32,12 +60,18 @@ export const session = writable(
 identity.subscribe(
 	(identity)=>{
 		const identityJSON = JSON.stringify(identity);
-		localStorage.setItem('identity', identityJSON);
+		windowStorage.setItem('identity', identityJSON);
 	}
 );
 chats.subscribe(
 	(chats)=>{
 		const chatsJSON = JSON.stringify(chats);
-		localStorage.setItem('chats', chatsJSON);
+		windowStorage.setItem('chats', chatsJSON);
 	}
 );
+
+/**
+ * Create identity if no identity found.
+ */
+
+if ( ! savedIdentity ) createGuestId();

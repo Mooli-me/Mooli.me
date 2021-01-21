@@ -22,7 +22,7 @@ session.subscribe(value => {
 });
 
 var routes = [
-  {
+  /*{
     path: '/',
     redirect: function (route, resolve, reject) {
       if ( identityVal && sessionVal.loggedOn ) {
@@ -34,6 +34,12 @@ var routes = [
       if ( ! identityVal ) {
         resolve('/FirstRun/');
       }
+    }
+  },*/
+  {
+    path: '/',
+    redirect: function (route, resolve, reject) {
+      resolve( sessionVal.guest ? '/FirstRun/' : '/Login/');
     }
   },
   {
