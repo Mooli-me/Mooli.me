@@ -64,7 +64,13 @@ function WS (url,nameSeed) {
             const code = randomString(20);
             const msg = { code, obj };
             const json = JSON.stringify(msg);
-            this.socket.send(json);
+            if ( this.socket.readyState === 0 ) {
+                this.socket.onopen = (ev)=>{
+                    this.socket.send(json)
+                };
+            } else {
+                this.socket.send(json);
+            }
             return new Promise(
                 (resolve,reject) => {
                     try {
