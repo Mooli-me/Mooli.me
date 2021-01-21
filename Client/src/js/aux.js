@@ -14,8 +14,8 @@ export async function newIdentity () {
   return sha512(crypto.getRandomValues(new Uint32Array(10)));
 }
 
-export async function pubIdentity (id,password=null) {
-  return await sha512(`${id}:${password}`);
+export async function pubIdentity (identity,password=null) {
+  return await sha512(`${identity}:${password}`);
 }
 
 export async function login (nameHash) {
@@ -33,3 +33,13 @@ export async function signOn (nameHash) {
   };
   return await ws.sendObj(request);
 }
+
+export async function updateChats (chat=null, from=null) {
+  const request = {
+    msgType: 'get',
+    chat: chat,
+    fromTimestamp: from,
+  };
+  const response = await ws.sendObj(request);
+  return response;
+} 

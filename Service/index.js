@@ -263,7 +263,13 @@ async function chatAccessHandler (ws,obj,code) {
             const peers = [...chat.peers, nameHash];
             const update = await chats.updateOne({id:chat.id},{ $set:{peers} });
             if ( update.result.nModified === 1 ) {
+                response.obj = {
+                    message: `granted`,
+                    ok: true,
+                };
+                ws.objSend(response);
                 console.log(`  |-> Access granted to public group.`);
+                return;
             }
         } else {
             if ( ! chat.peerRequests.includes(nameHash) ) {

@@ -34,6 +34,9 @@ export const translations = {
         },
         KnockKnock: {
             enteringTo: 'Entrando a',
+            loginError: 'Se ha producido algún problema iniciando sesión.',
+            unknownResponse: 'Se ha recibido una respuesta inesperada desde el servidor.',
+            chatsUpdateError: 'Error recibiendo la lista de chats.'
         },
         Components: {
             ChatList: {
