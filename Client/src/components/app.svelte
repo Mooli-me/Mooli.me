@@ -57,5 +57,4 @@
     });
   })
 
-  console.log(f7params.view)
 </script>

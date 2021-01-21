@@ -204,17 +204,6 @@ async function challengeHandler (ws,obj,code) {
 
 async function chatAccessHandler (ws,obj,code) {
 
-
-
-  /*
-  SignUp/Login
-  Request access
-  Server: Exist -> - || Error
-  Server: Owned || Member -> Granted || Requested
-  `/Chat/${chatCode}/ || Whaiting for authorization
-  */
-
-
     console.log('-> Chat Access request');
 
     try {
