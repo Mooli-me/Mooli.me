@@ -51,18 +51,20 @@ async function sendUpdateNotification (updateObject) {
     const destination = updateObject.fullDocument.destination;
     const destinationChat = updateObject.fullDocument.chat;
     const destType = updateObject.fullDocument.destType;
+    const sender = updateObject.fullDocument.user;
+    const chat = await chats.findOne({id: destinationChat});
 
     switch (destType) {
         case 'm2m':
-            const chat = await chats.findOne({id: destinationChat});
             peers = [...chat.peers, chat.owner];
             break;
         case 'p2p':
-            peers = [destination];
+            peers = [sender, chat.owner];
             break;
         default:
             console.error('*** Unknown message destination type on push update');
     }
+
 
     const involvedSessions = new Set()
 
@@ -155,6 +157,7 @@ async function signonHandler (ws,obj,code) {
             peers: [],
             peerRequests: [],
             bannedIds: [],
+            isPublic: true,
         };
         const user = {
             nameHash: obj.nameHash,
@@ -201,6 +204,114 @@ async function challengeHandler (ws,obj,code) {
     ws.objSend(response);
 }
 
+
+async function chatAccessHandler (ws,obj,code) {
+
+    console.log('-> Chat Access request');
+
+    try {
+
+        if ( ! sessions.has(ws) ) {
+            console.log('  |-> User is not identified.');
+            response = {
+                code,
+                obj: {
+                    message: 'You are not identified',
+                    ok: false,
+                }
+            };
+            ws.objSend(response);
+            return;
+        };
+
+        const chats = mongoDB.collection('chats');
+        const messages = mongoDB.collection('messages');
+        var response = {code}
+        const nameHash = sessions.get(ws);
+
+        console.log(`  |-> nameHash: ${nameHash}`);
+
+        const chat = await chats.findOne({id: obj.chat},{projection: {_id: 0}});
+
+        if ( chat === null ) {
+            console.log(`  |-> Nonexistent chat`);
+            response.obj = {
+                message: `unknown`,
+                ok: true,
+            };
+            ws.objSend(response);
+            return;
+        };
+
+        console.log(`  |-> chat: ${obj.chat}`);
+
+        if ( chat.bannedIds.includes(nameHash) ) {
+            console.log(`  |-> Banned id`);
+            response.obj = {
+                message: `You are banned in ${obj.chat}.`,
+                ok: false,
+            };
+            ws.objSend(response);
+            return;
+        }
+
+        if ( chat.owner === nameHash || chat.peers.includes(nameHash)) {
+            response.obj = {
+                message: `granted`,
+                ok: true,
+            };
+            ws.objSend(response);
+            return;
+        } else if (chat.isPublic === true) {
+            const peers = [...chat.peers, nameHash];
+            const update = await chats.updateOne({id:chat.id},{ $set:{peers} });
+            if ( update.result.nModified === 1 ) {
+                response.obj = {
+                    message: `granted`,
+                    ok: true,
+                };
+                ws.objSend(response);
+                console.log(`  |-> Access granted to public group.`);
+                return;
+            }
+        } else {
+            if ( ! chat.peerRequests.includes(nameHash) ) {
+                const peerRequests = [...chat.peerRequests, nameHash];
+                const update = await chats.updateOne({id:chat.id},{ $set:{peerRequests} });
+                if ( update.result.nModified === 1 ) {
+                    console.log(`  |-> Access request added. Await.`);
+                }
+            } else {
+                console.log(`  |-> Allready in access requests list.`);
+            };
+            response.obj = {
+                message: `await`,
+                ok: true,
+            };
+            ws.objSend(response);
+            return;
+        }
+    } catch (err) {
+
+        console.error(err);
+
+        response = { 
+            code,
+            obj: {
+                message: err.message,
+                ok: false,
+            },
+        }
+    }
+
+    response.obj = {
+        message: '...',
+        ok: true,
+    };
+    ws.objSend(response);
+}
+
+
 async function getHandler (ws,obj,code) {
 
     var response = {};
@@ -216,7 +327,7 @@ async function getHandler (ws,obj,code) {
         response = {
             code,
             obj: {
-                messeage: 'You are not identified',
+                message: 'You are not identified',
                 ok: false,
             }
         };
@@ -231,42 +342,38 @@ async function getHandler (ws,obj,code) {
         const users = mongoDB.collection('users');
         const chats = mongoDB.collection('chats');
         const messages = mongoDB.collection('messages');
-        
-        user = await users.findOne({nameHash},{projection: {_id: 0}});
-        userChats = await chats.find({owner: user.nameHash}).toArray();
+
+        //user = await users.findOne({nameHash},{projection: {_id: 0}});
+        const ownedChats = await chats.find({owner: nameHash}).toArray();
+        const authorizedChats = await chats.find({peers: nameHash}).toArray();
+        const userChats = [...ownedChats, ...authorizedChats];
         userChatsPromises = userChats.map(
             async chat => {
+                var chatMessages;
                 switch (chat.type) {
                     case 'p2p':
-                        chat.messages = {};
-                        chat.peers.forEach(
-                            async (peer)=>{
-                                chat.messages[peer] = await messages.find({chat: chat.id, $or: [{user: peer}, {user: user.nameHash}]},{projection: {_id: 0}}).toArray();
-                            }
-                        );
+                        if (chat.owner === nameHash) {
+                            chatMessages = await messages.find({chat: chat.id},{projection: {_id: 0}}).toArray();
+                        } else {
+                            chatMessages = await messages.find({chat: chat.id, $or: [{destination: nameHash}, {user: nameHash}]},{projection: {_id: 0}}).toArray();
+                        }
                         break;
-
                     case 'm2m':
-                        chat.messages = [];
-                        const chatMessages = await messages.find({chat: chat.id},{projection: {_id: 0}}).toArray();
-                        chat.messages = chatMessages;
+                        chatMessages = await messages.find({chat: chat.id},{projection: {_id: 0}}).toArray();
                         break;
-    
                     default:
-                        console.error(` |-> Unknown chat type: ${chat.id}: ${chat.type}`);
                         break;
                 }
-                
+                chat.messages = chatMessages;
                 return chat;
             }
-
         );
-        userChats = await Promise.all(userChatsPromises);
+        const chatsAndMessages = [...await Promise.all(userChatsPromises)];
 
         response = {
             code,
             obj: {
-                message: userChats,
+                message: chatsAndMessages,
                 ok: true,
             }
         };
@@ -343,6 +450,7 @@ const messageHandlers = {
     signon: signonHandler,
     challenge: challengeHandler,
     login: loginHandler,
+    chatAccess: chatAccessHandler,
     get: getHandler,
     put: putHandler,
     logout: logoutHandler,

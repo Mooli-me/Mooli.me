@@ -32,6 +32,17 @@ export const translations = {
             messagePlaceholder: 'Mensaje...',
             typing: 'Escribiendo...',
         },
+        KnockKnock: {
+            enteringTo: 'Entrando a',
+            creatingIdentity: 'Creando identidad...',
+            startingSession: 'Iniciando sesión...',
+            requestingAccess: 'Solicitando acceso...',
+            loginError: 'Se ha producido algún problema iniciando sesión.',
+            unknownChat: 'No existe el chat',
+            unknownResponse: 'Se ha recibido una respuesta inesperada desde el servidor.',
+            chatsUpdateError: 'Error recibiendo la lista de chats.',
+            serverError: 'El servidor ha informado de un error accediendo al chat.',
+        },
         Components: {
             ChatList: {
                 mainThereIsNotChatsToShow: 'No hay chats para mostrar aquí... por ahora.',

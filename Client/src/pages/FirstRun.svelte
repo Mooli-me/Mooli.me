@@ -21,28 +21,11 @@
     <NavTitle>{$_('appNameTitle')} - {$_('FirstRun.wellCome')}</NavTitle>
   </Navbar>
 
-  <Card class="display-flex justify-content-center">  
-    <img id="logo" alt="Mooli.me logo" src="/static/logo.png"/>
+  <img id="logo" alt="Mooli.me logo" src="/static/logo.png"/>
+
+  <Card class="display-flex justify-content-center">
+    <p>Aquí irán los contenidos de introducción...</p>
   </Card>
-
-
-      <List>
-        <ListInput
-        outline
-        placeholder={$_('FirstRun.codePlaceholder')}
-        type="text"
-        clearButton
-        onInput={ (event) => chatCode = event.target.value }
-        />
-      </List>
-
-      <Button large round fill href="/SignOn/">
-        {$_('FirstRun.enterChat')}
-      </Button>
-
-      <Button style="position: fixed; bottom: 0px; width: 80vw;" large fill href="/SignOn/">
-        {$_('FirstRun.signupButton')}
-      </Button>
 
 </Page>
 

@@ -5,6 +5,7 @@ import FirsRun from '../pages/FirstRun.svelte';
 import SignOn from '../pages/SignOn.svelte';
 import Peers from '../pages/Peers.svelte';
 import Chat from '../pages/Chat.svelte';
+import KnockKnock from '../pages/KnockKnock.svelte';
 
 import { identity, session } from '../js/store.js';
 var identityVal, sessionVal;
@@ -21,7 +22,7 @@ session.subscribe(value => {
 });
 
 var routes = [
-  {
+  /*{
     path: '/',
     redirect: function (route, resolve, reject) {
       if ( identityVal && sessionVal.loggedOn ) {
@@ -33,6 +34,12 @@ var routes = [
       if ( ! identityVal ) {
         resolve('/FirstRun/');
       }
+    }
+  },*/
+  {
+    path: '/',
+    redirect: function (route, resolve, reject) {
+      resolve( sessionVal.guest ? '/FirstRun/' : '/Login/');
     }
   },
   {
@@ -56,9 +63,13 @@ var routes = [
     component: Peers,
   },
   {
-    path: '/Chat/:chatIdx/',
+    path: '/Chat/:chatId/:destId/',
     component: Chat,
-  }
+  },
+  {
+    path: '/:chatCode',
+    component: KnockKnock,
+  },
 ];
 
 export default routes;

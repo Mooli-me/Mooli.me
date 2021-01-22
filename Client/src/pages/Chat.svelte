@@ -20,72 +20,38 @@
 
     import { ws } from '../js/webSocket.js';
 
-    export var chatIdx;
-    export var destination = null;
+    import { updateChats } from '../js/aux.js';
+
+    export var chatId;
+    export var destId;
+
+    destId = destId === 'null' ? null : destId;
     
     var router = f7.view.main.router;
 
     let messagebarComponent;
     let messagebarInstance;
 
-    let attachments = [];
+    var attachments = [];
     let sheetVisible = false;
     let typingMessage = null;
     let messageText = '';
 
-    const chat = $chats[chatIdx];
+    var attachmentsVisible;
+    var placeholder;
 
+    var chat = {
+        id: '',
+        messages: [''],
+        bannedIds: [],
+        isPublic: false,
+        owner: session.publicId,
+        peerRequests: [],
+        peers: [session.publicId],
+        type: 'm2m',
+    };
     let messagesData = chat.messages;
 
-    try {
-        ws.addHandler(
-            {
-                tag: 'updates',
-                function: (obj)=>{
-                    if ( obj.type === 'messages' ) {
-                        messagesData = [...messagesData, obj.doc];
-                    } else {
-                        console.error('Unhandled update mensage:', obj);
-                    }
-                }
-            }
-        );
-    } catch (err) {
-        console.error('Can not set updates handler!!!')
-    }
-
-    /* let images = [
-        'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
-        'https://cdn.framework7.io/placeholder/cats-200x300-2.jpg',
-    ]; */
-
-    let people = [
-        {
-            name: 'Kate Johnson',
-            avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
-        },
-        {
-            name: 'Blue Ninja',
-            avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
-        },
-    ];
-
-    let answers = [
-        'Yes!',
-        'No',
-        'Hm...',
-    ];
-
-    let responseInProgress = false;
-
-    $: attachmentsVisible = attachments.length > 0;
-    $: placeholder = attachments.length > 0 ? $_('Chat.commentPlaceholder') : $_('Chat.messagePlaceholder');
-
-    onMount(() => {
-        f7ready(() => {
-        messagebarInstance = messagebarComponent.instance();
-        });
-    });
 
     function isFirstMessage(message, index) {
         const previousMessage = messagesData[index - 1];
@@ -139,7 +105,7 @@
                 msg: {
                     destType: chat.type,
                     chat: chat.id,
-                    destination,
+                    destination: destId,
                     contentType: 'string',
                     content: text,
                 }
@@ -165,6 +131,70 @@
         if (responseInProgress) return;
         responseInProgress = true;
     }
+
+    async function getChat() {
+        const chatUpdateResponse = await updateChats(chatId);
+        if ( chatUpdateResponse.ok ) {
+            chat = chatUpdateResponse.message.find(
+                chat => chat.id === chatId
+            );
+            messagesData = chat.messages;
+        }
+    }
+
+    getChat();
+
+    try {
+        ws.addHandler(
+            {
+                tag: 'updates',
+                function: (obj)=>{
+                    if ( obj.type === 'messages' ) {
+                        messagesData = [...messagesData, obj.doc];
+                    } else {
+                        console.error('Unhandled update mensage:', obj);
+                    }
+                }
+            }
+        );
+    } catch (err) {
+        console.error('Can not set updates handler!!!')
+    }
+
+    /* let images = [
+        'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
+        'https://cdn.framework7.io/placeholder/cats-200x300-2.jpg',
+    ]; */
+
+    let people = [
+        {
+            name: 'Kate Johnson',
+            avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
+        },
+        {
+            name: 'Blue Ninja',
+            avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
+        },
+    ];
+
+    let answers = [
+        'Yes!',
+        'No',
+        'Hm...',
+    ];
+
+    let responseInProgress = false;
+
+    $: attachmentsVisible = attachments.length > 0;
+    $: placeholder = attachments.length > 0 ? $_('Chat.commentPlaceholder') : $_('Chat.messagePlaceholder');
+
+    onMount(() => {
+        f7ready(() => {
+        messagebarInstance = messagebarComponent.instance();
+        });
+    });
+
+
 </script>
 
 <Page>
