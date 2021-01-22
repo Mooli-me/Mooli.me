@@ -63,7 +63,7 @@ var routes = [
     component: Peers,
   },
   {
-    path: '/Chat/:chatIdx/',
+    path: '/Chat/:chatId/',
     component: Chat,
   },
   {

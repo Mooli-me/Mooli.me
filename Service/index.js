@@ -233,8 +233,8 @@ async function chatAccessHandler (ws,obj,code) {
         if ( chat === null ) {
             console.log(`  |-> Nonexistent chat`);
             response.obj = {
-                message: `Chat ${obj.chat} doesn't exists`,
-                ok: false,
+                message: `unknown`,
+                ok: true,
             };
             ws.objSend(response);
             return;
@@ -339,9 +339,11 @@ async function getHandler (ws,obj,code) {
         const users = mongoDB.collection('users');
         const chats = mongoDB.collection('chats');
         const messages = mongoDB.collection('messages');
-        
+
         user = await users.findOne({nameHash},{projection: {_id: 0}});
-        userChats = await chats.find({owner: user.nameHash}).toArray();
+        const ownedChats = await chats.find({owner: user.nameHash}).toArray();
+        const authorizedChats = await chats.find({peers: user.nameHash}).toArray();
+        const userChats = [...ownedChats, ...authorizedChats];
         userChatsPromises = userChats.map(
             async chat => {
                 switch (chat.type) {
@@ -369,12 +371,12 @@ async function getHandler (ws,obj,code) {
             }
 
         );
-        userChats = await Promise.all(userChatsPromises);
+        const chatsAndMessages = [...await Promise.all(userChatsPromises)];
 
         response = {
             code,
             obj: {
-                message: userChats,
+                message: chatsAndMessages,
                 ok: true,
             }
         };

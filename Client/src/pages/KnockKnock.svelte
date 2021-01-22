@@ -5,7 +5,6 @@
     PageContent,
     Navbar,
     NavTitle,
-    Button,
     Preloader,
   } from 'framework7-svelte';
 
@@ -23,6 +22,8 @@
 
   var accessRequested = false;
   var chatsUpdated = false;
+  var unknownChat = false;
+  var serverError =  false;
 
   async function guestLogin (id) {
     $session.pubIdentity = await pubIdentity(id);
@@ -66,23 +67,27 @@
             alert($_('KnockKnock.chatsUpdateError'))
           }
           break;
+        case 'unknown':
+          unknownChat = true;
+          break;
         default:
           alert($_('KnockKnock.unknownResponse'));
+          serverError = $_('KnockKnock.unknownResponse');
           break;
       }
     } else {
+      serverError = chatAccessResponse.message;
       console.error(chatAccessResponse)
     }
   }
 
   $: {
-    $session.updating = ! ( $session.loggedOn && accessRequested  && $chats );
+    $session.updating = ! ( $session.loggedOn && accessRequested  && $chats ) && ! serverError && ! unknownChat;
     if ( $identity && ! accessRequested ) {
       accessRequested = true;
       requestChatAccess($identity,chatCode);
     }
     if ( chatsUpdated ) {
-      console.log('-------------->')
       router.navigate(`/Chat/${chatCode}/`);
     }
   }
@@ -98,15 +103,18 @@
 
   {#if $session.updating }
     {#if ! $identity}
-    <p>Creando identidad...</p>
-    {/if}
-    {#if ! $session.loggedOn}
-    <p>Iniciando sesión...</p>
-    {/if}
-    {#if accessRequested}
-    <p>Solicitando acceso... </p>
+    <p>{$_('KnockKnock.creatingIdentity')}</p>
+    {:else if ! $session.loggedOn}
+    <p>{$_('KnockKnock.startingSession')}</p>
+    {:else if accessRequested}
+    <p>{$_('KnockKnock.requestingAccess')}</p>
     {/if}
     <Preloader size={100}/>
+  {:else if serverError}
+    <p>{$_('KnockKnock.serverError')}</p>
+    <p>{serverError}</p>
+  {:else if unknownChat}
+    <p>{$_('KnockKnock.unknownChat')} {chatCode}</p>
   {:else}
     <img id="logo" alt="Mooli.me logo" src="/static/logo.png"/>
     <p>Accediendo al chat...</p>
