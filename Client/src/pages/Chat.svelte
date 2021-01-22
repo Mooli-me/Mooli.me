@@ -23,7 +23,9 @@
     import { updateChats } from '../js/aux.js';
 
     export var chatId;
-    export var destination = null;
+    export var destId;
+
+    destId = destId === 'null' ? null : destId;
     
     var router = f7.view.main.router;
 
@@ -103,7 +105,7 @@
                 msg: {
                     destType: chat.type,
                     chat: chat.id,
-                    destination,
+                    destination: destId,
                     contentType: 'string',
                     content: text,
                 }
@@ -133,11 +135,10 @@
     async function getChat() {
         const chatUpdateResponse = await updateChats(chatId);
         if ( chatUpdateResponse.ok ) {
-            const chat = chatUpdateResponse.message.find(
+            chat = chatUpdateResponse.message.find(
                 chat => chat.id === chatId
             );
             messagesData = chat.messages;
-            console.log(chat)
         }
     }
 

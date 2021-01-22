@@ -88,7 +88,7 @@
       requestChatAccess($identity,chatCode);
     }
     if ( chatsUpdated ) {
-      router.navigate(`/Chat/${chatCode}/`);
+      router.navigate(`/Chat/${chatCode}/null/`);
     }
   }
 </script>
