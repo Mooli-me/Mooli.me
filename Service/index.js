@@ -65,6 +65,7 @@ async function sendUpdateNotification (updateObject) {
             console.error('*** Unknown message destination type on push update');
     }
 
+    console.log(peers)
 
     const involvedSessions = new Set()
 

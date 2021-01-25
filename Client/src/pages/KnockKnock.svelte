@@ -93,13 +93,13 @@
   }
 </script>
 
-<Page name="home" pageContent=false>
+<Page name="knockknock" pageContent=false>
 
   <Navbar>
     <NavTitle>{$_('appNameTitle')} - {$_('KnockKnock.enteringTo')} {chatCode}</NavTitle>
   </Navbar>
 
-  <PageContent class="display-flex justify-content-center align-content-space-around align-items-center	flex-direction-column">
+  <PageContent class="display-flex flex-direction-column justify-content-center align-content-space-around align-items-center">
 
   {#if $session.updating }
     {#if ! $identity}
