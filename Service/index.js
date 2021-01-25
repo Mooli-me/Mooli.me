@@ -65,8 +65,6 @@ async function sendUpdateNotification (updateObject) {
             console.error('*** Unknown message destination type on push update');
     }
 
-    console.log(peers)
-
     const involvedSessions = new Set()
 
     sessions.forEach(
@@ -156,6 +154,7 @@ async function signonHandler (ws,obj,code) {
             owner: obj.nameHash,
             type: 'p2p',
             peers: [],
+            messages: [],
             peerRequests: [],
             bannedIds: [],
             isPublic: true,
@@ -164,18 +163,14 @@ async function signonHandler (ws,obj,code) {
             nameHash: obj.nameHash,
             chats: [chat.id],
         };
-        chats.insertOne(chat);
-        users.insertOne(user);
+        await chats.insertOne(chat);
+        await users.insertOne(user);
         response = { 
             code,
             obj: {
                 message: {
                     chats: [
-                        {
-                            id: user.chats,
-                            messages: [],
-                            type: 'p2p',
-                        },
+                        chat,
                     ],
                 },
                 ok: true,
