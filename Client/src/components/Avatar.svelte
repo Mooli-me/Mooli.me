@@ -3,6 +3,7 @@
     import sprites from '@dicebear/avatars-jdenticon-sprites';
 
     export var id;
+    export var size = null;
 
     /**
      * Avatars node module documentation:
@@ -11,7 +12,7 @@
 
     let options = {
         hues: 256,
-        width: 300,
+        width: size || 300,
         //height: 300,
         colorLightness: [0.1,0.8],
         grayscaleLightness: [0.2,0.7],
