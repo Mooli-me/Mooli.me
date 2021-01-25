@@ -1,7 +1,7 @@
 
 import Main from '../pages/Main.svelte';
 import Login from '../pages/Login.svelte';
-import FirsRun from '../pages/FirstRun.svelte';
+import Home from '../pages/Home.svelte';
 import SignOn from '../pages/SignOn.svelte';
 import Peers from '../pages/Peers.svelte';
 import Chat from '../pages/Chat.svelte';
@@ -38,9 +38,10 @@ var routes = [
   },*/
   {
     path: '/',
-    redirect: function (route, resolve, reject) {
+    component: Home,
+    /*redirect: function (route, resolve, reject) {
       resolve( sessionVal.guest ? '/FirstRun/' : '/Login/');
-    }
+    }*/
   },
   {
     path: '/Main/',
@@ -49,10 +50,6 @@ var routes = [
   {
     path: '/Login/',
     component: Login,
-  },
-  {
-    path: '/FirstRun/',
-    component: FirsRun,
   },
   {
     path: '/SignOn/',

@@ -35,11 +35,7 @@ export const session = writable(
 	}
 );
 
-/**
- * Select window storage
- */
-
-var windowStorage = ! savedIdentity ? sessionStorage : localStorage;
+export var windowStorage = ! savedIdentity ? sessionStorage : localStorage;
 
 /**
  * Update localStorage on stores changes.
