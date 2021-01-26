@@ -4,6 +4,7 @@ import Login from '../pages/Login.svelte';
 import Home from '../pages/Home.svelte';
 import SignOn from '../pages/SignOn.svelte';
 import Peers from '../pages/Peers.svelte';
+import ChatInfo from '../pages/ChatInfo.svelte';
 import Chat from '../pages/Chat.svelte';
 import KnockKnock from '../pages/KnockKnock.svelte';
 
@@ -58,6 +59,10 @@ var routes = [
   {
     path: '/Peers/:chatIdx/',
     component: Peers,
+  },
+  {
+    path: '/ChatInfo/:chatId/',
+    component: ChatInfo,
   },
   {
     path: '/Chat/:chatId/:destId/',

@@ -43,6 +43,13 @@ export const translations = {
             chatsUpdateError: 'Error recibiendo la lista de chats.',
             serverError: 'El servidor ha informado de un error accediendo al chat.',
         },
+        Home: {
+            title: 'Tus galerías',
+        },
+        ChatInfo: {
+            title: 'Info de:',
+            privateChat: 'Chat para conversaciones privadas de tú a tú.',
+        },
         Components: {
             ChatList: {
                 mainThereIsNotChatsToShow: 'No hay chats para mostrar aquí... por ahora.',
