@@ -21,7 +21,6 @@
   import { identity, chats, session } from '../js/store.js';
 
   import { signOn, login, updateChats } from '../js/aux.js';
-import CardContent from 'framework7-svelte/components/card-content.svelte';
 
   var router = f7.view.main.router;
 
@@ -77,11 +76,13 @@ import CardContent from 'framework7-svelte/components/card-content.svelte';
 
     <QR data={chatURL} size=200/>
 
+    <Block class="display-flex flex-direction-col align-content-space-around align-items-center" style="flex-wrap: wrap">
     {#each chat.peers as peerId, idx (chat.id)}
-    <Button large raised onClick={()=>{router.navigate(`/Chat/${chatId}/${encodeURIComponent(peerId)}/`)}}>
-      <Avatar id="{peerId}" size=40/>
-    </Button>
+      <Button large raised onClick={()=>{router.navigate(`/Chat/${chatId}/${encodeURIComponent(peerId)}/`)}}>
+        <Avatar id="{peerId}" size=40/>
+      </Button>
     {/each}
+    </Block>
       
   </PageContent>
 

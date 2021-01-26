@@ -59,11 +59,13 @@ async function sendUpdateNotification (updateObject) {
             peers = [...chat.peers, chat.owner];
             break;
         case 'p2p':
-            peers = [sender, chat.owner];
+            peers = [sender, chat.owner, destination];
             break;
         default:
             console.error('*** Unknown message destination type on push update');
     }
+
+    console.log(peers)
 
     const involvedSessions = new Set()
 
