@@ -27,6 +27,8 @@
   var installedAway = false;
   var installedNow = false;
   var standalone = false;
+  var installAction = null;
+  var installButtonColor = "blue";
 
   async function signIn () {
     const id = sessionStorage.getItem('identity');
@@ -115,6 +117,17 @@
     }
   )
 
+  $: {
+    if (installable) {
+      installAction = install;
+      installButtonColor = 'blue';
+    } else {
+      installAction = null;
+      installButtonColor = 'gray';
+    }
+    console.log(installable,installedNow,installAction,installButtonColor)
+  }
+
 </script>
 
 <Page name="home"  pageContent=false>
@@ -149,21 +162,23 @@
 
     {#if $session.guest }
     <img id="logo" alt="Mooli.me logo" src="/static/logo.png"/>
-    <Card class="topic-card">
+    <Card class="topic-card display-flex flex-direction-column align-content-space-around align-items-center">
       <span slot="content">
         <p>Con Mooli podrás abrir un canal de comunicación con otras personas sin necesidad de intercambiar datos personales.</p>
-        <p>Puedes usar Mooli como una página web o instalarla en tu teléfono u ordenador utilizando un navegador compatible.</p>
+        <p>Si tu navegador lo permite, podrás instalar Mooli como una app y conservar tus chats.</p>
+        <p>En cualquier caso, también puedes crear un chat para uso puntual.</p>
       </span>
       <span slot="footer">
-        {#if installable && !installedNow}
-        <Button large onClick={install}>
+        {#if !installable}<p>Tu navegador no es compatible con PWA. No puedes instalar Mooli.</p>{/if}
+        <Button large color="{installButtonColor}" onClick={installAction}>
+        {#if installable}
           Instalar ahora
-        </Button>
         {:else}
-        <p>Tu navegador no puede instalar aplicaciones PWA</p>
+          Navegador no compatible
         {/if}
+        </Button>
         <Button large onClick={signIn}>
-          Usar Mooli desde la web.
+          Crear un chat efímero
         </Button>
       </span>
     </Card>
