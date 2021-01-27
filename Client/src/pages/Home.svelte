@@ -5,6 +5,7 @@
     PageContent,
     Navbar,
     NavTitle,
+    NavRight,
     Card,
     Block,
     Button,
@@ -119,10 +120,12 @@
 <Page name="home"  pageContent=false>
 
   <Navbar>
-    {#if $session.loggedOn }
-    <Avatar id={$identity} size="2em"/>
-    {/if}
     <NavTitle>{$_('appNameTitle')} - {$_('Home.title')}</NavTitle>
+    <NavRight>
+      {#if $session.loggedOn }
+      <Avatar id={$identity} size="2em"/>
+      {/if}
+    </NavRight>
   </Navbar>
 
   <PageContent class="display-flex flex-direction-column align-content-space-around align-items-center" style="padding-top: 0px;">

@@ -26,9 +26,12 @@
   var serverError =  false;
 
   async function guestLogin (id) {
-    $session.pubIdentity = await pubIdentity(id);
+    /*$session.pubIdentity = await pubIdentity(id);
     const signOnResponse = await signOn($session.pubIdentity);
     const loginResponse = await login($session.pubIdentity);
+    */
+    const signOnResponse = await signOn($identity);
+    const loginResponse = await login($identity);
     const resultOk = signOnResponse.ok && loginResponse.ok
     if ( resultOk ) {
       $session.loggedOn = true;
