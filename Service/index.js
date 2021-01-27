@@ -65,8 +65,6 @@ async function sendUpdateNotification (updateObject) {
             console.error('*** Unknown message destination type on push update');
     }
 
-    console.log(peers)
-
     const involvedSessions = new Set()
 
     sessions.forEach(
@@ -456,7 +454,10 @@ const messageHandlers = {
 
 const expressApp = express();
 
-expressApp.use(express.static(__dirname + '/public'));
+expressApp.use('/static/',express.static(__dirname + '/public/static/'));
+expressApp.use('/css/',express.static(__dirname + '/public/css/'));
+expressApp.use('/fonts/',express.static(__dirname + '/public/fonts/'));
+expressApp.use('/js/',express.static(__dirname + '/public/js/'));
 
 const httpServer = http.createServer(expressApp);
 const webSocketsServer = new webSockets.Server({ server: httpServer });
@@ -524,6 +525,19 @@ webSocketsServer.on('connection', async (ws) => {
     });
 
 })
+
+expressApp.get('/', function(req, res) {
+    res.sendFile(__dirname + '/public/index.html');
+});
+expressApp.get('/index.html', function(req, res) {
+    res.sendFile(__dirname + '/public/index.html');
+});
+expressApp.get('/manifest.json', function(req, res) {
+    res.sendFile(__dirname + '/public/manifest.json');
+});
+expressApp.get('/service-worker.js', function(req, res) {
+    res.sendFile(__dirname + '/public/service-worker.js');
+});
 
 httpServer.listen( PORT , ()=>{
     const connection = httpServer.address()

@@ -5,6 +5,7 @@
     PageContent,
     Navbar,
     NavTitle,
+    NavRight,
     Card,
     Block,
     Icon,
@@ -48,11 +49,13 @@
 
 <Page name="home"  pageContent=false>
 
-  <Navbar>
-    {#if $session.loggedOn }
-    <Avatar id={$identity} size="2em"/>
-    {/if}
+  <Navbar backLink="Back">
     <NavTitle>{$_('appNameTitle')} - {$_('ChatInfo.title')} {chatId}</NavTitle>
+    <NavRight>
+      {#if $session.loggedOn }
+      <Avatar id={$identity} size="2em"/>
+      {/if}
+    </NavRight>
   </Navbar>
 
   <PageContent class="display-flex flex-direction-column align-content-space-around align-items-center" style="padding-top: 0px;">
