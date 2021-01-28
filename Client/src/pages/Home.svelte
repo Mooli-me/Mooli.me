@@ -146,7 +146,7 @@
     {#if $session.loggedOn }
     <Block>
       {#each $chats as chat, idx (chat.id)}
-      <Button large raised fill onClick={()=>{router.navigate(`/ChatInfo/${chat.id}/`)}}>
+      <Button large raised fill onClick={()=>{router.navigate(`/ChatInfo/${encodeURIComponent(chat.id)}/`)}}>
           {chat.id}
         {#if chat.peers.length}
         <Badge color="black">
