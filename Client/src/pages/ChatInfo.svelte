@@ -81,7 +81,7 @@
 
     <Block class="display-flex flex-direction-col align-content-space-around align-items-center" style="flex-wrap: wrap">
     {#each chat.peers as peerId, idx (chat.id)}
-      <Button large raised onClick={()=>{router.navigate(`/Chat/${chatId}/${encodeURIComponent(peerId)}/`)}}>
+      <Button large raised onClick={()=>{router.navigate(`/Chat/${encodeURIComponent(chatId)}/${encodeURIComponent(peerId)}/`)}}>
         <Avatar id="{peerId}" size=40/>
       </Button>
     {/each}
