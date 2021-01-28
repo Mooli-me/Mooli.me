@@ -54,7 +54,7 @@
       chat,
     };
     const chatAccessResponse = await ws.sendObj(request);
-    
+
     if ( chatAccessResponse.ok ) {
       switch (chatAccessResponse.message) {
         case 'await':
@@ -65,7 +65,7 @@
           if ( updateChatsResponse.ok ) {
             $chats = updateChatsResponse.message;
             chatsUpdated = true;
-            router.navigate('/Chat/'+chatCode);
+            router.navigate(`/Chat/${encodeURIComponent(chatCode)}`);
           } else {
             alert($_('KnockKnock.chatsUpdateError'))
           }
@@ -91,7 +91,7 @@
       requestChatAccess($identity,chatCode);
     }
     if ( chatsUpdated ) {
-      router.navigate(`/Chat/${chatCode}/null/`);
+      router.navigate(`/Chat/${encodeURIComponent(chatCode)}/null/`);
     }
   }
 </script>
@@ -99,7 +99,7 @@
 <Page name="knockknock" pageContent=false>
 
   <Navbar>
-    <NavTitle>{$_('appNameTitle')} - {$_('KnockKnock.enteringTo')} {chatCode}</NavTitle>
+    <NavTitle>{$_('appNameTitle')} - {$_('KnockKnock.enteringTo')} {chatCode} </NavTitle>
   </Navbar>
 
   <PageContent class="display-flex flex-direction-column justify-content-center align-content-space-around align-items-center">

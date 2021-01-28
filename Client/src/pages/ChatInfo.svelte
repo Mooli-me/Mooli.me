@@ -35,7 +35,7 @@
 
   var chat = $chats[chatIdx];
 
-  var chatURL = `${location.protocol}//${location.host}/${chat.id}`
+  var chatURL = `${location.protocol}//${location.host}/${encodeURIComponent(chat.id)}`
 
   function copyToClipboard(url) {
     navigator.clipboard.writeText(url).then(
