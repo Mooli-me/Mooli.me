@@ -43,6 +43,8 @@
     var attachmentsVisible;
     var placeholder;
 
+    var messagesData = [];
+
     var chat = {
         id: '',
         messages: [''],
@@ -54,7 +56,11 @@
         type: 'm2m',
     };
 
-    let messagesData = chat.messages;
+    $: {
+        messagesData = chat.type === 'm2m' ? chat.messages : chat.messages.filter(
+            (msg) => msg.user === destId || msg.destination === destId
+        );
+    }
 
 
     function isFirstMessage(message, index) {
@@ -171,8 +177,11 @@
 
     let responseInProgress = false;
 
-    $: attachmentsVisible = attachments.length > 0;
-    $: placeholder = attachments.length > 0 ? $_('Chat.commentPlaceholder') : $_('Chat.messagePlaceholder');
+
+    $: { 
+        attachmentsVisible = attachments.length > 0;
+        placeholder = attachments.length > 0 ? $_('Chat.commentPlaceholder') : $_('Chat.messagePlaceholder');
+    }
 
     onMount(() => {
         f7ready(() => {
