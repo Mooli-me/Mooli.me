@@ -5,6 +5,7 @@
         f7ready,
         Navbar,
         NavTitle,
+        NavRight,
         Page,
         Messages,
         Message,
@@ -13,6 +14,8 @@
     } from 'framework7-svelte';
 
     import {_} from 'svelte-i18n';
+
+    import Avatar from '../components/Avatar.svelte';
 
     import { avatar } from '../js/AvatarURI.js';
 
@@ -40,6 +43,8 @@
     var attachmentsVisible;
     var placeholder;
 
+    var messagesData = [];
+
     var chat = {
         id: '',
         messages: [''],
@@ -50,25 +55,30 @@
         peers: [session.publicId],
         type: 'm2m',
     };
-    let messagesData = chat.messages;
+
+    $: {
+        messagesData = chat.type === 'm2m' ? chat.messages : chat.messages.filter(
+            (msg) => msg.user === destId || msg.destination === destId
+        );
+    }
 
 
     function isFirstMessage(message, index) {
         const previousMessage = messagesData[index - 1];
         if (message.isTitle) return false;
-        if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
+        if (!previousMessage || previousMessage.type !== message.type || previousMessage.user !== message.user) return true;
         return false;
     }
     function isLastMessage(message, index) {
         const nextMessage = messagesData[index + 1];
         if (message.isTitle) return false;
-        if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+        if (!nextMessage || nextMessage.type !== message.type || nextMessage.user !== message.user) return true;
         return false;
     }
     function isTailMessage(message, index) {
         const nextMessage = messagesData[index + 1];
         if (message.isTitle) return false;
-        if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
+        if (!nextMessage || nextMessage.type !== message.type || nextMessage.user !== message.user) return true;
         return false;
     }
     /* function deleteAttachment(image) {
@@ -132,6 +142,10 @@
         responseInProgress = true;
     }
 
+    function messageType(message) {
+        return message.user === $identity ? 'sent' : 'received' ;
+    }
+
     async function getChat() {
         const chatUpdateResponse = await updateChats(chatId);
         if ( chatUpdateResponse.ok ) {
@@ -161,32 +175,13 @@
         console.error('Can not set updates handler!!!')
     }
 
-    /* let images = [
-        'https://cdn.framework7.io/placeholder/cats-300x300-1.jpg',
-        'https://cdn.framework7.io/placeholder/cats-200x300-2.jpg',
-    ]; */
-
-    let people = [
-        {
-            name: 'Kate Johnson',
-            avatar: 'https://cdn.framework7.io/placeholder/people-100x100-9.jpg',
-        },
-        {
-            name: 'Blue Ninja',
-            avatar: 'https://cdn.framework7.io/placeholder/people-100x100-7.jpg',
-        },
-    ];
-
-    let answers = [
-        'Yes!',
-        'No',
-        'Hm...',
-    ];
-
     let responseInProgress = false;
 
-    $: attachmentsVisible = attachments.length > 0;
-    $: placeholder = attachments.length > 0 ? $_('Chat.commentPlaceholder') : $_('Chat.messagePlaceholder');
+
+    $: { 
+        attachmentsVisible = attachments.length > 0;
+        placeholder = attachments.length > 0 ? $_('Chat.commentPlaceholder') : $_('Chat.messagePlaceholder');
+    }
 
     onMount(() => {
         f7ready(() => {
@@ -201,6 +196,11 @@
 
     <Navbar  backLink="Back">
         <NavTitle>{$_('appNameTitle')} - {$_('Chat.title')} {chat.id}</NavTitle>
+        <NavRight>
+          {#if $session.loggedOn }
+          <Avatar id={$identity} size="2em"/>
+          {/if}
+        </NavRight>
     </Navbar>
 
     <Messagebar
@@ -277,7 +277,8 @@
         />
         -->
         <Message
-            type={message.type}
+            type={messageType(message)}
+            name={message.user}
             avatar={avatar(message.user)}
             first={isFirstMessage(message, index)}
             last={isLastMessage(message, index)}
@@ -305,5 +306,8 @@
 <style>
     :global(div.message-avatar) {
         border-radius: 0;
+    }
+    :global(div.message-name) {
+        display: none;
     }
 </style>

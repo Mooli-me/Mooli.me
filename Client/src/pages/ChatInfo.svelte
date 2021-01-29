@@ -5,6 +5,7 @@
     PageContent,
     Navbar,
     NavTitle,
+    NavRight,
     Card,
     Block,
     Icon,
@@ -34,7 +35,7 @@
 
   var chat = $chats[chatIdx];
 
-  var chatURL = `${location.protocol}//${location.host}/${chat.id}`
+  var chatURL = `${location.protocol}//${location.host}/${encodeURIComponent(chat.id)}`
 
   function copyToClipboard(url) {
     navigator.clipboard.writeText(url).then(
@@ -48,11 +49,13 @@
 
 <Page name="home"  pageContent=false>
 
-  <Navbar>
-    {#if $session.loggedOn }
-    <Avatar id={$identity} size="2em"/>
-    {/if}
+  <Navbar backLink="Back">
     <NavTitle>{$_('appNameTitle')} - {$_('ChatInfo.title')} {chatId}</NavTitle>
+    <NavRight>
+      {#if $session.loggedOn }
+      <Avatar id={$identity} size="2em"/>
+      {/if}
+    </NavRight>
   </Navbar>
 
   <PageContent class="display-flex flex-direction-column align-content-space-around align-items-center" style="padding-top: 0px;">
@@ -78,7 +81,7 @@
 
     <Block class="display-flex flex-direction-col align-content-space-around align-items-center" style="flex-wrap: wrap">
     {#each chat.peers as peerId, idx (chat.id)}
-      <Button large raised onClick={()=>{router.navigate(`/Chat/${chatId}/${encodeURIComponent(peerId)}/`)}}>
+      <Button large raised onClick={()=>{router.navigate(`/Chat/${encodeURIComponent(chatId)}/${encodeURIComponent(peerId)}/`)}}>
         <Avatar id="{peerId}" size=40/>
       </Button>
     {/each}
