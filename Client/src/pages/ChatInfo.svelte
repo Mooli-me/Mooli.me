@@ -21,13 +21,15 @@
 
   import { identity, chats, session } from '../js/store.js';
 
-  import { signOn, login, updateChats } from '../js/aux.js';
+  import { login, updateChats } from '../js/aux.js';
 
   var router = f7.view.main.router;
 
   export var chatId;
 
   var copied = false;
+
+  console.log($session);
 
   var chatIdx = $chats.findIndex(
     chat => chat.id === chatId

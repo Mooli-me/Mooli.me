@@ -536,6 +536,27 @@ expressApp.get('/manifest.json', function(req, res) {
 expressApp.get('/service-worker.js', function(req, res) {
     res.sendFile(__dirname + '/public/service-worker.js');
 });
+expressApp.get(/^\/.*\/js\/app\.js$/, function(req, res) {
+    res.sendFile(__dirname + '/public/js/app.js');
+});
+expressApp.get(/^\/.*\/js\/app\.js\.map$/, function(req, res) {
+    res.sendFile(__dirname + '/public/js/app.js.map');
+});
+expressApp.get(/^\/.*\/css\/app\.css$/, function(req, res) {
+    res.sendFile(__dirname + '/public/css/app.css');
+});
+expressApp.get(/^\/.*\/css\/app\.css\.map$/, function(req, res) {
+    res.sendFile(__dirname + '/public/css/app.css.map');
+});
+expressApp.get(/^\/.*\/fonts\/Framework7Icons-Regular\.ttf$/, function(req, res) {
+    res.sendFile(__dirname + '/public/fonts/Framework7Icons-Regular.ttf');
+});
+expressApp.get(/^\/.*\/fonts\/Framework7Icons-Regular\.woff$/, function(req, res) {
+    res.sendFile(__dirname + '/public/fonts/Framework7Icons-Regular.woff');
+});
+expressApp.get(/^\/.*\/fonts\/Framework7Icons-Regular\.woff2$/, function(req, res) {
+    res.sendFile(__dirname + '/public/fonts/Framework7Icons-Regular.woff2');
+});
 expressApp.get(/.*/, function(req, res) {
     res.sendFile(__dirname + '/public/index.html');
 });
