@@ -536,6 +536,9 @@ expressApp.get('/manifest.json', function(req, res) {
 expressApp.get('/service-worker.js', function(req, res) {
     res.sendFile(__dirname + '/public/service-worker.js');
 });
+expressApp.get('/service-worker.js.map', function(req, res) {
+    res.sendFile(__dirname + '/public/service-worker.js.map');
+});
 expressApp.get(/^\/.*\/js\/app\.js$/, function(req, res) {
     res.sendFile(__dirname + '/public/js/app.js');
 });
