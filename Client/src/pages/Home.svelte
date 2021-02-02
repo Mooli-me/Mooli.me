@@ -125,7 +125,6 @@
       installAction = null;
       installButtonColor = 'gray';
     }
-    console.log(installable,installedNow,installAction,installButtonColor)
   }
 
 </script>

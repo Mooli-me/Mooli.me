@@ -560,6 +560,15 @@ expressApp.get(/^\/.*\/fonts\/Framework7Icons-Regular\.woff$/, function(req, res
 expressApp.get(/^\/.*\/fonts\/Framework7Icons-Regular\.woff2$/, function(req, res) {
     res.sendFile(__dirname + '/public/fonts/Framework7Icons-Regular.woff2');
 });
+expressApp.get(/^\/.*\/fonts\/MaterialIcons-Regular\.ttf$/, function(req, res) {
+    res.sendFile(__dirname + '/public/fonts/MaterialIcons-Regular.ttf');
+});
+expressApp.get(/^\/.*\/fonts\/MaterialIcons-Regular\.woff$/, function(req, res) {
+    res.sendFile(__dirname + '/public/fonts/MaterialIcons-Regular.woff');
+});
+expressApp.get(/^\/.*\/fonts\/MaterialIcons-Regular\.woff2$/, function(req, res) {
+    res.sendFile(__dirname + '/public/fonts/MaterialIcons-Regular.woff2');
+});
 expressApp.get(/.*/, function(req, res) {
     res.sendFile(__dirname + '/public/index.html');
 });

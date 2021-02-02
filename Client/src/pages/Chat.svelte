@@ -23,7 +23,7 @@
 
     import { ws } from '../js/webSocket.js';
 
-    import { updateChats } from '../js/aux.js';
+    import { login, updateChats } from '../js/aux.js';
 
     export var chatId;
     export var destId;
@@ -55,13 +55,6 @@
         peers: [session.publicId],
         type: 'm2m',
     };
-
-    $: {
-        messagesData = chat.type === 'm2m' ? chat.messages : chat.messages.filter(
-            (msg) => msg.user === destId || msg.destination === destId
-        );
-    }
-
 
     function isFirstMessage(message, index) {
         const previousMessage = messagesData[index - 1];
@@ -156,6 +149,22 @@
         }
     }
 
+    async function logIn () {
+        const loginResponse =  await login($identity);
+        console.log(loginResponse)
+        if ( loginResponse.ok ) {
+            const updateChatsResponse = await updateChats();
+            if ( updateChatsResponse.ok ) {
+            $chats = updateChatsResponse.message;
+            $session.loggedOn = true;
+            }
+        }
+    }
+
+    if ( $session.loggedOn === false ) {
+        logIn();
+    }
+
     getChat();
 
     try {
@@ -181,7 +190,11 @@
     $: { 
         attachmentsVisible = attachments.length > 0;
         placeholder = attachments.length > 0 ? $_('Chat.commentPlaceholder') : $_('Chat.messagePlaceholder');
+        messagesData = chat.type === 'm2m' ? chat.messages : chat.messages.filter(
+            (msg) => msg.user === destId || msg.destination === destId
+        );
     }
+
 
     onMount(() => {
         f7ready(() => {

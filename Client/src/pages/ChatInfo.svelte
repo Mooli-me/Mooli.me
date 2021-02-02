@@ -21,7 +21,7 @@
 
   import { identity, chats, session } from '../js/store.js';
 
-  import { login, updateChats } from '../js/aux.js';
+  import { login, pubIdentity, updateChats } from '../js/aux.js';
 
   var router = f7.view.main.router;
 
@@ -29,15 +29,7 @@
 
   var copied = false;
 
-  console.log($session);
-
-  var chatIdx = $chats.findIndex(
-    chat => chat.id === chatId
-  );
-
-  var chat = $chats[chatIdx];
-
-  var chatURL = `${location.protocol}//${location.host}/${encodeURIComponent(chat.id)}`
+  var chat, chatIdx, chatURL;
 
   function copyToClipboard(url) {
     navigator.clipboard.writeText(url).then(
@@ -46,6 +38,33 @@
     );
     copied = true;
   }
+
+  async function logIn () {
+    const loginResponse =  await login($identity);
+      if ( loginResponse.ok ) {
+        const updateChatsResponse = await updateChats();
+        if ( updateChatsResponse.ok ) {
+          $chats = updateChatsResponse.message;
+          $session.loggedOn = true;
+        }
+      }
+  }
+
+  if ( $session.loggedOn === false ) {
+    logIn();
+  }
+  
+  $: {
+    chatIdx = $chats.findIndex(
+      chat => chat.id === chatId
+    );
+
+    chat = $chats[chatIdx];
+
+    chatURL = `${location.protocol}//${location.host}/${encodeURIComponent(chat.id)}`
+  }
+
+
 
 </script>
 

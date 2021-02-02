@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const ora = require('ora');
 const rm = require('rimraf');
 const chalk = require('chalk');
+const copy = require('recursive-copy');
 const config = require('./webpack.config.js');
 
 const env = process.env.NODE_ENV || 'development';
@@ -11,12 +12,22 @@ const isCordova = target === 'cordova'
 const spinner = ora(env === 'production' ? 'building for production...' : 'building development version...');
 spinner.start();
 
-//rm(isCordova ? './cordova/www' : './www/', (removeErr) => {
-rm(isCordova ? './cordova/www' : '../Service/public/', (removeErr) => {
+rm(isCordova ? './cordova/www' : './www/', (removeErr) => {
   if (removeErr) throw removeErr;
 
   webpack(config, (err, stats) => {
     if (err) throw err;
+    rm('../Service/public', (removeErr) => {
+      if (removeErr) throw removeErr;
+      copy('./www/', '../Service/public')
+        .then(function(results) {
+            console.info('Copied ' + results.length + ' files');
+        })
+        .catch(function(error) {
+            console.error('Copy failed: ' + error);
+        });
+    });
+
     spinner.stop();
 
     process.stdout.write(`${stats.toString({

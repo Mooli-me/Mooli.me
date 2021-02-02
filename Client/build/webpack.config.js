@@ -24,8 +24,7 @@ module.exports = {
     app: './src/js/app.js',
   },
   output: {
-    //path: resolvePath('www'),
-    path: resolvePath('../Service/public'),
+    path: resolvePath('www'),
     filename: 'js/[name].js',
     chunkFilename: 'js/[name].js',
     publicPath: '',
