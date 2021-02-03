@@ -39,11 +39,16 @@
     let sheetVisible = false;
     let typingMessage = null;
     let messageText = '';
+    let responseInProgress = false;
 
     var attachmentsVisible;
     var placeholder;
 
-    var messagesData = [];
+    var chatIdx = 0;
+    var chatsUpdated = false;
+    var messages = [];
+
+    /*var messagesData = [];
 
     var chat = {
         id: '',
@@ -54,22 +59,28 @@
         peerRequests: [],
         peers: [session.publicId],
         type: 'm2m',
-    };
+    };*/
+
+    function messagesData (chat) {
+        return chat.type === 'm2m' ? chat.messages : chat.messages.filter(
+            (msg) =>  msg.user === destId || msg.destination === destId || msg.user === $identity || msg.destination === $identity
+        );
+    }
 
     function isFirstMessage(message, index) {
-        const previousMessage = messagesData[index - 1];
+        const previousMessage = messagesData($chats[chatIdx])[index - 1];
         if (message.isTitle) return false;
         if (!previousMessage || previousMessage.type !== message.type || previousMessage.user !== message.user) return true;
         return false;
     }
     function isLastMessage(message, index) {
-        const nextMessage = messagesData[index + 1];
+        const nextMessage = messagesData($chats[chatIdx])[index + 1];
         if (message.isTitle) return false;
         if (!nextMessage || nextMessage.type !== message.type || nextMessage.user !== message.user) return true;
         return false;
     }
     function isTailMessage(message, index) {
-        const nextMessage = messagesData[index + 1];
+        const nextMessage = messagesData($chats[chatIdx])[index + 1];
         if (message.isTitle) return false;
         if (!nextMessage || nextMessage.type !== message.type || nextMessage.user !== message.user) return true;
         return false;
@@ -106,8 +117,8 @@
             const request = {
                 msgType: 'put',
                 msg: {
-                    destType: chat.type,
-                    chat: chat.id,
+                    destType: $chats[chatIdx].type,
+                    chat: $chats[chatIdx].id,
                     destination: destId,
                     contentType: 'string',
                     content: text,
@@ -139,13 +150,33 @@
         return message.user === $identity ? 'sent' : 'received' ;
     }
 
-    async function getChat() {
+    function setUpdateHandlers () {
+        try {
+            ws.addHandler(
+                {
+                    tag: 'updates',
+                    function: (obj)=>{
+                        if ( obj.type === 'messages' ) {
+                            $chats[chatIdx].messages = [...$chats[chatIdx].messages, obj.doc];
+                        } else {
+                            console.error('Unhandled update mensage:', obj);
+                        }
+                    }
+                }
+            );
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    async function getChatIdx() {
         const chatUpdateResponse = await updateChats(chatId);
         if ( chatUpdateResponse.ok ) {
-            chat = chatUpdateResponse.message.find(
+            $chats = chatUpdateResponse.message;
+            chatIdx = $chats.findIndex(
                 chat => chat.id === chatId
             );
-            messagesData = chat.messages;
+            chatsUpdated = true;
         }
     }
 
@@ -153,48 +184,32 @@
         const loginResponse =  await login($identity);
         console.log(loginResponse)
         if ( loginResponse.ok ) {
-            const updateChatsResponse = await updateChats();
-            if ( updateChatsResponse.ok ) {
-            $chats = updateChatsResponse.message;
             $session.loggedOn = true;
-            }
+        } else {
+            console.error(loginResponse);
         }
     }
-
-    if ( $session.loggedOn === false ) {
-        logIn();
-    }
-
-    getChat();
-
-    try {
-        ws.addHandler(
-            {
-                tag: 'updates',
-                function: (obj)=>{
-                    if ( obj.type === 'messages' ) {
-                        messagesData = [...messagesData, obj.doc];
-                    } else {
-                        console.error('Unhandled update mensage:', obj);
-                    }
-                }
-            }
-        );
-    } catch (err) {
-        console.error('Can not set updates handler!!!')
-    }
-
-    let responseInProgress = false;
-
 
     $: { 
         attachmentsVisible = attachments.length > 0;
         placeholder = attachments.length > 0 ? $_('Chat.commentPlaceholder') : $_('Chat.messagePlaceholder');
-        messagesData = chat.type === 'm2m' ? chat.messages : chat.messages.filter(
-            (msg) => msg.user === destId || msg.destination === destId
-        );
     }
-
+    $: {
+        if ( $session.loggedOn === false && $identity ) {
+            logIn();
+        }
+        if ( $session.loggedOn === true &&  chatsUpdated === false ) {
+            getChatIdx();
+        }
+        if ( chatsUpdated === true ) {
+            setUpdateHandlers();
+        }
+    }
+    $: {
+        if ( chatsUpdated === true && $chats[chatIdx].messages ) {
+            messages = messagesData($chats[chatIdx]);
+        }
+    }
 
     onMount(() => {
         f7ready(() => {
@@ -208,7 +223,7 @@
 <Page>
 
     <Navbar  backLink="Back">
-        <NavTitle>{$_('appNameTitle')} - {$_('Chat.title')} {chat.id}</NavTitle>
+        <NavTitle>{$_('appNameTitle')} - {$_('Chat.title')} {$chats[chatIdx].id}</NavTitle>
         <NavRight>
           {#if $session.loggedOn }
           <Avatar id={$identity} size="2em"/>
@@ -234,13 +249,13 @@
         </a>
         -->
 
-        <a class="link icon-only" slot="inner-end" on:click={sendMessage}>
+        <span class="link icon-only" slot="inner-end" on:click={sendMessage}>
         <Icon
             ios="f7:arrow_up_circle_fill"
             aurora="f7:arrow_up_circle_fill"
             md="material:send"
         />
-        </a>
+        </span>
 
         <!--
         <MessagebarAttachments>
@@ -269,13 +284,14 @@
 
     </Messagebar>
 
+    {#if $chats}
     <Messages>
         
         <!--
             <MessagesTitle><b>Sunday, Feb 9,</b> 12:58</MessagesTitle>
         -->
 
-        {#each messagesData as message, index (index)}
+        {#each messages as message, index (message.time)}
         
         <!--
         <Message
@@ -313,6 +329,7 @@
         {/if}
 
     </Messages>
+    {/if}
 
 </Page>
 
