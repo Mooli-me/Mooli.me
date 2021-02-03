@@ -37,11 +37,15 @@ function WS (url,nameSeed) {
             return;
         }
 
-        Object.defineProperty(ws.pushHandlers, handler.tag, 
-            {
-                set: handler.function,
-            }
-        );
+        /*console.log(ws.pushHandlers,handler);
+        if (ws.pushHandlers.hasOwnProperty(handler.tag)) {
+            console.log('borrando')
+            delete ws.pushHandlers[handler.tag];
+        }
+        console.log(ws.pushHandlers,handler);*/
+        Object.defineProperty(ws.pushHandlers, handler.tag, {set: handler.function,configurable: true});
+        //console.log(ws.pushHandlers,handler);
+
     };
     ws.socket = new WebSocket(url);
     ws.socket.onmessage = function (msg) {
