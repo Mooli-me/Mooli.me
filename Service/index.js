@@ -6,8 +6,10 @@ const webSockets = require('ws');
 
 const PORT = process.env.PORT || 3000;
 
-var mongoDB
+var mongoDB;
 const mongoClient = require('./mongoClient.js');
+const ObjectID = require("mongodb").ObjectID;
+
 mongoClient.connect()
     .then(
         client=>{
@@ -36,10 +38,9 @@ async function requestTemplateHandler (ws,request) {
 }
 */
 
-async function sendUpdateNotification (updateObject) {
-
+async function sendMessagesUpdateNotification (updateObject) {
+    
     const chats = mongoDB.collection('chats');
-    const users = mongoDB.collection('users');
 
     var peers = [];
 
@@ -86,14 +87,79 @@ async function sendUpdateNotification (updateObject) {
         }
     )
 
+    console.log('-> Messages update background notification');
+
+}
+
+async function sendChatsUpdateNotification (updateObject) {
+
+    var peers = []
+
+    const update = {
+        type: 'chats',
+    };
+
+    switch (updateObject.operationType) {
+        case 'insert':
+            peers = [
+                updateObject.fullDocument.owner,
+                ...updateObject.fullDocument.peers,
+                ...updateObject.fullDocument.peerRequests
+            ];
+            update.doc = updateObject.fullDocument;
+            break;
+    
+        case 'update':
+            const chats = mongoDB.collection('chats');
+            const chat = await chats.findOne({_id: ObjectID(updateObject.documentKey._id)});
+            console.log(chat)
+            peers = [
+                chat.owner,
+                ...chat.peers,
+                ...chat.peerRequests
+            ];
+            update.doc = chat;
+            break;
+        
+        default:
+            console.error('*** Unknown operation type in chats');
+            break;
+    }
+
+    const involvedSessions = new Set()
+
+    sessions.forEach(
+        (id,ws)=>{
+            if ( peers.includes(id) ) {
+                involvedSessions.add( ws );
+            }
+        }
+    )
+
+    const message = {
+        code: 'updates',
+        obj: update,
+    }
+
+    involvedSessions.forEach(
+        (ws)=>{
+            ws.objSend(message);
+        }
+    )
+
+    console.log('-> Chats update background notification');
+
 }
 
 async function createWatchers () {
     console.log('Creating watchers');
     try {
         const messages = mongoDB.collection('messages');
+        const chats = mongoDB.collection('chats');
         const messagesUpdates = messages.watch();
-        messagesUpdates.on('change',(data)=>sendUpdateNotification(data));
+        const chatsUpdates = chats.watch();
+        messagesUpdates.on('change',(data)=>sendMessagesUpdateNotification(data));
+        chatsUpdates.on('change',(data)=>sendChatsUpdateNotification(data));
     } catch (err) {
         console.error(err.message)
     }
