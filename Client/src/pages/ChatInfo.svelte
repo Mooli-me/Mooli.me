@@ -100,12 +100,15 @@
     <QR data={chatURL} size=200/>
 
     <Block class="display-flex flex-direction-col align-content-space-around align-items-center" style="flex-wrap: wrap">
+      <p>{$_('ChatInfo.mooliesInTheGallery')}</p>
     {#each $chats[chatIdx].peers as peerId (peerId)}
       <div transition:scale >
         <Button large raised onClick={()=>{router.navigate(`/Chat/${encodeURIComponent(chatId)}/${encodeURIComponent(peerId)}/`)}}>
           <Avatar id="{peerId}" size=40/>
         </Button>
       </div>
+    {:else}
+      <p transition:scale>{$_('ChatInfo.thereIsNobody')}</p>
     {/each}
     </Block>
       
