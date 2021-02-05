@@ -49,6 +49,8 @@ export const translations = {
         ChatInfo: {
             title: 'Info de:',
             privateChat: 'Chat para conversaciones privadas de tú a tú.',
+            mooliesInTheGallery: 'Moolies en esta galería:',
+            thereIsNobody: 'Por el momento no hay nadie en este chat. Para permitir acceder a una persona, dale la URL del chat o permítele leer el código QR.',
         },
         Components: {
             ChatList: {
