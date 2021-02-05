@@ -13,6 +13,8 @@
     Badge,
   } from 'framework7-svelte';
 
+  import { scale } from 'svelte/transition';
+
   import {_} from 'svelte-i18n';
 
   import Avatar from '../components/Avatar.svelte';
@@ -58,10 +60,7 @@
     chatIdx = $chats.findIndex(
       chat => chat.id === chatId
     );
-
-    chat = $chats[chatIdx];
-
-    chatURL = `${location.protocol}//${location.host}/${encodeURIComponent(chat.id)}`
+    chatURL = `${location.protocol}//${location.host}/${encodeURIComponent($chats[chatIdx].id)}`
   }
 
 
@@ -82,7 +81,7 @@
   <PageContent class="display-flex flex-direction-column align-content-space-around align-items-center" style="padding-top: 0px;">
 
     <p id="chatType">
-    {#if chat.type === 'p2p'}
+    {#if $chats[chatIdx].type === 'p2p'}
     {$_('ChatInfo.privateChat')}
     {:else}
     {$_('ChatInfo.groupChat')}
@@ -101,10 +100,12 @@
     <QR data={chatURL} size=200/>
 
     <Block class="display-flex flex-direction-col align-content-space-around align-items-center" style="flex-wrap: wrap">
-    {#each chat.peers as peerId, idx (chat.id)}
-      <Button large raised onClick={()=>{router.navigate(`/Chat/${encodeURIComponent(chatId)}/${encodeURIComponent(peerId)}/`)}}>
-        <Avatar id="{peerId}" size=40/>
-      </Button>
+    {#each $chats[chatIdx].peers as peerId (peerId)}
+      <div transition:scale >
+        <Button large raised onClick={()=>{router.navigate(`/Chat/${encodeURIComponent(chatId)}/${encodeURIComponent(peerId)}/`)}}>
+          <Avatar id="{peerId}" size=40/>
+        </Button>
+      </div>
     {/each}
     </Block>
       
@@ -113,10 +114,6 @@
 </Page>
 
 <style>
-  img#logo {  
-    width: 80vw;
-    max-width: 200px;
-  }
   #chatURL {
     cursor: pointer;
     font-size: larger;
