@@ -61,7 +61,5 @@
       height: 4em;
       vertical-align: middle;
   }
-  .mole {
-    background-color: rgb(10,10,10);
-  }
+
 </style>

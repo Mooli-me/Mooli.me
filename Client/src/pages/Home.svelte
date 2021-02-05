@@ -11,6 +11,8 @@
     Button,
     Badge,
   } from 'framework7-svelte';
+
+  import { fly } from 'svelte/transition';
   
   import {_} from 'svelte-i18n';
 
@@ -18,7 +20,10 @@
 
   import { identity, chats, session, windowStorage } from '../js/store.js';
 
+  import { ws } from '../js/webSocket.js';
+
   import { signOn, login, updateChats } from '../js/aux.js';
+
 
   var router = f7.view.main.router;
 
@@ -81,6 +86,48 @@
     installedAway = localStorage.getItem('installedAway') === null ? false : localStorage.getItem('installedAway');
   }
 
+  function setUpdateHandlers () {
+    try {
+      ws.addHandler(
+        {
+          tag: 'updates',
+          function: (obj)=>{
+            var chatIdx = -1;
+            switch (obj.type) {
+              case 'messages':
+                const message = obj.doc;
+                chatIdx = $chats.findIndex(
+                  chat => chat.id === message.chat
+                );
+                if ( chatIdx !== -1 ) {
+                  $chats[chatIdx].messages = [...$chats[chatIdx].messages, message];
+                } else {
+                  console.error('Message update for unexistent chat');
+                }
+                break;
+              case 'chats':
+                const updatedChat = obj.doc;
+                chatIdx = $chats.findIndex(
+                  storedChat => storedChat.id === updatedChat.id
+                );
+                if ( chatIdx !== -1 ) {
+                  $chats[chatIdx] = updatedChat;
+                } else {
+                  $chats = [...$chats, updatedChat];
+                }
+                break;
+              default:
+                console.error('Unhandled update mensage:', obj);
+                break;
+            }
+          }
+        }
+      );
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   window.addEventListener('appinstalled', async (ev) => {
     installedNow = true;
     installedAway = true;
@@ -105,7 +152,6 @@
     ev.preventDefault();
     pwaInstall = ev;
     installable = true;
-    console.log
   });
 
   window.addEventListener('load',
@@ -127,6 +173,8 @@
     }
   }
 
+  setUpdateHandlers();
+
 </script>
 
 <Page name="home"  pageContent=false>
@@ -145,14 +193,16 @@
     {#if $session.loggedOn }
     <Block>
       {#each $chats as chat, idx (chat.id)}
-      <Button large raised fill onClick={()=>{router.navigate(`/ChatInfo/${encodeURIComponent(chat.id)}/`)}}>
-          {chat.id}
-        {#if chat.peers.length}
-        <Badge color="black">
-          {chat.peers.length}
-        </Badge>
-        {/if}
-      </Button>
+      <div transition:fly>
+        <Button large raised fill onClick={()=>{router.navigate(`/ChatInfo/${encodeURIComponent(chat.id)}/`)}}>
+            {chat.id}
+          {#if chat.peers.length}
+          <Badge color="black">
+            {chat.peers.length}
+          </Badge>
+          {/if}
+        </Button>
+      </div>
       {:else}
       <p>Esperando la lista de chats...</p>
       {/each}

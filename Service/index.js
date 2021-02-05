@@ -87,13 +87,15 @@ async function sendMessagesUpdateNotification (updateObject) {
         }
     )
 
-    console.log('-> Messages update background notification');
+    console.log('-> Background notification');
+    console.log(` |-> Message to chat: ${destinationChat} `);
 
 }
 
 async function sendChatsUpdateNotification (updateObject) {
 
-    var peers = []
+    var peers = [];
+    var logMessageChatId = '';
 
     const update = {
         type: 'chats',
@@ -101,6 +103,7 @@ async function sendChatsUpdateNotification (updateObject) {
 
     switch (updateObject.operationType) {
         case 'insert':
+            logMessageChatId = updateObject.fullDocument.id;
             peers = [
                 updateObject.fullDocument.owner,
                 ...updateObject.fullDocument.peers,
@@ -112,7 +115,7 @@ async function sendChatsUpdateNotification (updateObject) {
         case 'update':
             const chats = mongoDB.collection('chats');
             const chat = await chats.findOne({_id: ObjectID(updateObject.documentKey._id)});
-            console.log(chat)
+            logMessageChatId = chat.id;
             peers = [
                 chat.owner,
                 ...chat.peers,
@@ -147,7 +150,8 @@ async function sendChatsUpdateNotification (updateObject) {
         }
     )
 
-    console.log('-> Chats update background notification');
+    console.log('-> Background notification');
+    console.log(` |-> Chat: ${logMessageChatId} `);
 
 }
 

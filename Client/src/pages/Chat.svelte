@@ -150,7 +150,7 @@
         return message.user === $identity ? 'sent' : 'received' ;
     }
 
-    function setUpdateHandlers () {
+    /*function setUpdateHandlers () {
         try {
             ws.addHandler(
                 {
@@ -167,7 +167,7 @@
         } catch (err) {
             console.error(err)
         }
-    }
+    }*/
 
     async function getChatIdx() {
         const chatUpdateResponse = await updateChats(chatId);
@@ -202,7 +202,7 @@
             getChatIdx();
         }
         if ( chatsUpdated === true ) {
-            setUpdateHandlers();
+            //setUpdateHandlers();
         }
     }
     $: {
