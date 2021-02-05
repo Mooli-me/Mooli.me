@@ -86,7 +86,7 @@
     installedAway = localStorage.getItem('installedAway') === null ? false : localStorage.getItem('installedAway');
   }
 
-  function setUpdateHandlers () {
+  async function setUpdateHandlers () {
     try {
       ws.addHandler(
         {

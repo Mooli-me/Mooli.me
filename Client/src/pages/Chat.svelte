@@ -190,6 +190,47 @@
         }
     }
 
+    async function setUpdateHandlers () {
+        try {
+        ws.addHandler(
+            {
+            tag: 'updates',
+            function: (obj)=>{
+                var chatIdx = -1;
+                switch (obj.type) {
+                case 'messages':
+                    const message = obj.doc;
+                    chatIdx = $chats.findIndex(
+                    chat => chat.id === message.chat
+                    );
+                    if ( chatIdx !== -1 ) {
+                    $chats[chatIdx].messages = [...$chats[chatIdx].messages, message];
+                    } else {
+                    console.error('Message update for unexistent chat');
+                    }
+                    break;
+                case 'chats':
+                    const updatedChat = obj.doc;
+                    chatIdx = $chats.findIndex(
+                    storedChat => storedChat.id === updatedChat.id
+                    );
+                    if ( chatIdx !== -1 ) {
+                    $chats[chatIdx] = updatedChat;
+                    } else {
+                    $chats = [...$chats, updatedChat];
+                    }
+                    break;
+                default:
+                    console.error('Unhandled update mensage:', obj);
+                    break;
+                }
+            }
+            }
+        );
+        } catch (err) {
+        console.error(err)
+        }
+    }
     $: { 
         attachmentsVisible = attachments.length > 0;
         placeholder = attachments.length > 0 ? $_('Chat.commentPlaceholder') : $_('Chat.messagePlaceholder');
@@ -217,6 +258,7 @@
         });
     });
 
+    if ( ! ws.pushHandlers.hasOwnProperty('updates') ) setUpdateHandlers();
 
 </script>
 
