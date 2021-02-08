@@ -251,13 +251,14 @@
             getChatIdx();
         }
         if ( chatsUpdated === true ) {
+            peerId = destId ? destId : $chats[chatIdx].owner;
+            console.log(destId,$chats[chatIdx].owner,peerId)
             //setUpdateHandlers();
         }
     }
     $: {
         if ( chatsUpdated === true && $chats[chatIdx].messages ) {
             messages = messagesData($chats[chatIdx]);
-            peerId = destId !== 'null' ? destId : $chats[chatIdx].owner;
         }
     }
 
@@ -276,8 +277,8 @@
     <Navbar  backLink="Back">
         <NavTitle>{$_('appNameTitle')} - {$_('Chat.title')} {$chats[chatIdx].id}</NavTitle>
         <NavRight>
-          {#if $session.loggedOn }
-          <Avatar id={$identity} size="2em"/>
+          {#if peerId}
+          <Avatar id={peerId} size="2em"/>
           {/if}
         </NavRight>
     </Navbar>
