@@ -63,7 +63,14 @@
 
     function messagesData (chat) {
         return chat.type === 'm2m' ? chat.messages : chat.messages.filter(
-            (msg) =>  msg.user === destId || msg.destination === destId || msg.user === $identity || msg.destination === $identity
+            (msg) => {
+                const chatOwner = $chats[chatIdx].owner;
+                if ( $identity === chatOwner ) {
+                    return msg.destination === null && msg.user === destId || msg.destination === destId && msg.user === $identity;
+                } else {
+                    return msg.destination === $identity || msg.user === $identity;
+                }
+            }
         );
     }
 
