@@ -47,6 +47,7 @@
     var chatIdx = 0;
     var chatsUpdated = false;
     var messages = [];
+    var peerId = null;
 
     /*var messagesData = [];
 
@@ -256,6 +257,7 @@
     $: {
         if ( chatsUpdated === true && $chats[chatIdx].messages ) {
             messages = messagesData($chats[chatIdx]);
+            peerId = destId !== 'null' ? destId : $chats[chatIdx].owner;
         }
     }
 
