@@ -252,8 +252,6 @@
         }
         if ( chatsUpdated === true ) {
             peerId = destId ? destId : $chats[chatIdx].owner;
-            console.log(destId,$chats[chatIdx].owner,peerId)
-            //setUpdateHandlers();
         }
     }
     $: {
