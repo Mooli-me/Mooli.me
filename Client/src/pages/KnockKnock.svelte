@@ -65,7 +65,15 @@
           if ( updateChatsResponse.ok ) {
             $chats = updateChatsResponse.message;
             chatsUpdated = true;
-            router.navigate(`/Chat/${encodeURIComponent(chatCode)}`);
+            const chat = $chats.find(
+              (chat) => chat.id === chatCode
+            )
+            console.log(chat.owner, identity);
+            if ( chat.owner === $identity ){
+              router.navigate(`/ChatInfo/${encodeURIComponent(chatCode)}/`);
+            } else {
+              router.navigate(`/Chat/${encodeURIComponent(chatCode)}`);
+            }
           } else {
             alert($_('KnockKnock.chatsUpdateError'))
           }
