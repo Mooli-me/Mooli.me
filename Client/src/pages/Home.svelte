@@ -193,18 +193,35 @@
     {#if $session.loggedOn }
     <Block>
       {#each $chats as chat, idx (chat.id)}
+
       <div transition:fly>
+        {#if chat.owner === $identity }
+
         <Button large raised fill onClick={()=>{router.navigate(`/ChatInfo/${encodeURIComponent(chat.id)}/`)}}>
-            {chat.id}
+          {chat.id}
           {#if chat.peers.length}
           <Badge color="black">
             {chat.peers.length}
           </Badge>
           {/if}
         </Button>
+
+        {:else}
+
+        <Button large raised fill onClick={()=>{router.navigate(`/Chat/${encodeURIComponent(chat.id)}/null/`)}}>
+          {chat.id}
+          {#if chat.peers.length}
+          <Badge color="black">
+            {chat.peers.length}
+          </Badge>
+          {/if}
+        </Button>
+        
+        {/if}
       </div>
       {:else}
       <p>Esperando la lista de chats...</p>
+
       {/each}
     </Block>
     {/if}
