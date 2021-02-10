@@ -68,7 +68,6 @@
             const chat = $chats.find(
               (chat) => chat.id === chatCode
             )
-            console.log(chat.owner, identity);
             if ( chat.owner === $identity ){
               router.navigate(`/ChatInfo/${encodeURIComponent(chatCode)}/`);
             } else {

@@ -6,9 +6,11 @@
     Navbar,
     NavTitle,
     NavRight,
+    NavLeft,
     Card,
     Block,
     Icon,
+    Link,
     Button,
     Badge,
   } from 'framework7-svelte';
@@ -96,7 +98,6 @@
     }
   }
 
-
   if ( $session.loggedOn === false ) {
     logIn();
   }
@@ -116,7 +117,12 @@
 
 <Page name="home"  pageContent=false>
 
-  <Navbar backLink="Back">
+  <Navbar>
+    <NavLeft>
+      <Link href='/'>
+        <Icon icon="icon-back"/>
+      </Link>
+    </NavLeft>
     <NavTitle>{$_('appNameTitle')} - {$_('ChatInfo.title')} {chatId}</NavTitle>
     <NavRight>
       {#if $session.loggedOn }

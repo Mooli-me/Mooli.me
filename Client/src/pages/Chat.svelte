@@ -6,6 +6,8 @@
         Navbar,
         NavTitle,
         NavRight,
+        NavLeft,
+        Link,
         Page,
         Messages,
         Message,
@@ -48,6 +50,7 @@
     var chatsUpdated = false;
     var messages = [];
     var peerId = null;
+    var backURL = '/';
 
     /*var messagesData = [];
 
@@ -252,6 +255,7 @@
         }
         if ( chatsUpdated === true ) {
             peerId = destId ? destId : $chats[chatIdx].owner;
+            backURL = $chats[chatIdx].owner === $identity ? `/ChatInfo/${chatId}/` : '/' ;
         }
     }
     $: {
@@ -272,7 +276,12 @@
 
 <Page>
 
-    <Navbar  backLink="Back">
+    <Navbar>
+        <NavLeft>
+            <Link href={backURL}>
+              <Icon icon="icon-back"/>
+            </Link>
+        </NavLeft>    
         <NavTitle>{$_('appNameTitle')} - {$_('Chat.title')} {$chats[chatIdx].id}</NavTitle>
         <NavRight>
           {#if peerId}
