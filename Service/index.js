@@ -219,33 +219,45 @@ async function signonHandler (ws,obj,code) {
     try {
         const users = mongoDB.collection('users');
         const chats = mongoDB.collection('chats');
-        const chat = {
-            id: crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}`).digest('base64').slice(0,5),
-            owner: obj.nameHash,
-            type: 'p2p',
-            peers: [],
-            messages: [],
-            peerRequests: [],
-            bannedIds: [],
-            isPublic: true,
-        };
-        const user = {
-            nameHash: obj.nameHash,
-            chats: [chat.id],
-        };
-        await chats.insertOne(chat);
-        await users.insertOne(user);
-        response = { 
-            code,
-            obj: {
-                message: {
-                    chats: [
-                        chat,
-                    ],
+        const existentUser = await users.findOne({nameHash: obj.nameHash});
+        if ( existentUser ) {
+            response = {
+                code,
+                obj: {
+                    message: 'Existent account',
+                    ok: true,
                 },
-                ok: true,
-            },
-        };
+            }
+            console.log( '| * Existent account');
+        } else {
+            const chat = {
+                id: crypto.createHash('sha1').update(`${Date.now().toString()}${serviceSecret}`).digest('base64').slice(0,5),
+                owner: obj.nameHash,
+                type: 'p2p',
+                peers: [],
+                messages: [],
+                peerRequests: [],
+                bannedIds: [],
+                isPublic: true,
+            };
+            const user = {
+                nameHash: obj.nameHash,
+                chats: [chat.id],
+            };
+            await chats.insertOne(chat);
+            await users.insertOne(user);
+            response = { 
+                code,
+                obj: {
+                    message: {
+                        chats: [
+                            chat,
+                        ],
+                    },
+                    ok: true,
+                },
+            };
+        }
     } catch (err) {
         console.error(err)
         response = { 
