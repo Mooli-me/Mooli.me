@@ -126,7 +126,7 @@
   {:else if unknownChat}
     <p>{$_('KnockKnock.unknownChat')} {chatCode}</p>
   {:else}
-    <img id="logo" alt="Mooli.me logo" src="/static/logo.png"/>
+    <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
     <p>Accediendo al chat...</p>
   {/if}
 
