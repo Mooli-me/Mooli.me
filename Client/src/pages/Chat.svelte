@@ -281,7 +281,7 @@
             <Link href={backURL}>
               <Icon icon="icon-back"/>
             </Link>
-        </NavLeft>    
+        </NavLeft>
         <NavTitle>{$_('appNameTitle')} - {$_('Chat.title')} {$chats[chatIdx].id}</NavTitle>
         <NavRight>
           {#if peerId}
