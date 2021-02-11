@@ -227,7 +227,7 @@
     {/if}
 
     {#if $session.guest }
-    <img id="logo" alt="Mooli.me logo" src="/static/logo.png"/>
+    <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
     <Card class="topic-card display-flex flex-direction-column align-content-space-around align-items-center">
       <span slot="content">
         <p>Con Mooli podrás abrir un canal de comunicación con otras personas sin necesidad de intercambiar datos personales.</p>
