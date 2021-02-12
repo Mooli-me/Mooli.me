@@ -10,7 +10,18 @@
   "icons": [
     {
       "src": "/static/icons/logo.svg",
-      "sizes": "any"
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/maskable-logo.svg",
+      "sizes": "any",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/icons/maskable-logo.png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ]
 }
