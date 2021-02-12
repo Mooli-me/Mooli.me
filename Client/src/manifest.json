@@ -10,16 +10,19 @@
   "icons": [
     {
       "src": "/static/icons/logo.svg",
+      "type": "image/svg+xml",
       "sizes": "any",
       "purpose": "any"
     },
     {
       "src": "/static/icons/maskable-logo.svg",
+      "type": "image/svg+xml",
       "sizes": "any",
       "purpose": "maskable"
     },
     {
       "src": "/static/icons/maskable-logo.png",
+      "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
     }
