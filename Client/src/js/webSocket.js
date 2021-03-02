@@ -10,6 +10,7 @@ var socketURL;
 const pongDelay = 500;
 const heartbeatDelay = 5000;
 const reconnectDelay = 3000;
+const loginDelay = 1000;
 
 
 if (window.location.hostname === "localhost") {
