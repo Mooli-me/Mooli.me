@@ -24,6 +24,7 @@
 
   import { signOn, login, updateChats } from '../js/aux.js';
 
+  const loginDelay = 3000;
 
   var router = f7.view.main.router;
 
@@ -60,13 +61,16 @@
 
   async function logIn () {
     const loginResponse =  await login($identity);
-      if ( loginResponse.ok ) {
-        const updateChatsResponse = await updateChats();
-        if ( updateChatsResponse.ok ) {
-          $chats = updateChatsResponse.message;
-          $session.loggedOn = true;
-        }
+    console.log('Login result:',loginResponse);
+    if ( loginResponse.ok ) {
+      const updateChatsResponse = await updateChats();
+      if ( updateChatsResponse.ok ) {
+        $chats = updateChatsResponse.message;
+        $session.loggedOn = true;
       }
+    } else {
+      setTimeout(logIn,loginDelay);
+    }
   }
 
   async function install () {
@@ -160,12 +164,6 @@
       if ( !$session.guest ) {
         logIn();
       }
-    }
-  )
-
-  window.addEventListener('reconnected',
-    async (ev)=>{
-      console.log('||| Reconnected',ev);
     }
   )
 

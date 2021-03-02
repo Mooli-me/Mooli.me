@@ -1,4 +1,9 @@
+import { get } from 'svelte/store';
 import { randomString } from './aux.js';
+import { login } from '../js/aux.js';
+import { identity } from '../js/store.js';
+
+
 
 var socketURL;
 
@@ -18,10 +23,6 @@ function WS (url,nameSeed) {
     url = url || `wss://${window.location.hostname}/`;
 
     const ws = {};
-
-    const reconnected = new Event('reconnected');
-
-    //ws.socket = new WebSocket(url);
 
     ws.heartbeat;
     ws.pendingPong;
@@ -52,8 +53,8 @@ function WS (url,nameSeed) {
                     () => {
                         console.log('||| Connected.');
                         ws.tryingToConnect = false;
-                        dispatchEvent(reconnected);
                         ws.sendPing();
+                        ws.login();
                     }
                 );
 
@@ -154,6 +155,11 @@ function WS (url,nameSeed) {
         }
         Object.defineProperty(ws.pushHandlers, handler.tag, {set: handler.function,configurable: true});
     };
+
+    ws.login = async ()=>{
+        const loginResponse =  await login(get(identity));
+        if ( ! loginResponse.ok ) setTimeout(ws.login,loginDelay);
+    }
 
     ws.connect();
     return ws;

@@ -676,7 +676,18 @@ expressApp.get(/.*/, function(req, res) {
     res.sendFile(__dirname + '/public/index.html');
 });
 
-httpServer.listen( PORT , ()=>{
-    const connection = httpServer.address()
-    console.log(`Address: ${connection.address} Port:${connection.port}`);
-}) ;
+
+async function startListen () {
+    if (mongoDB) {
+        httpServer.listen( PORT , ()=>{
+            const connection = httpServer.address()
+            console.log(`Address: ${connection.address} Port:${connection.port}`);
+        }) ;
+    } else {
+        console.log('Waintin for MongoDB for start listening...')
+        setTimeout(startListen,1000);
+    }
+}
+
+
+startListen();
