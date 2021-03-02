@@ -1,5 +1,13 @@
 import { ws } from './webSocket.js';
 
+export function randomString(len) {
+  const randomData = new Uint8Array(20);
+  crypto.getRandomValues(randomData);
+  const randomBuffer = Buffer.from(randomData);
+  const code = randomBuffer.toString('hex');
+  return code;
+}
+
 export async function sha512(data) {
   const utf8 = new TextEncoder("utf-8");
   const string = utf8.encode(data);

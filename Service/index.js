@@ -524,7 +524,17 @@ async function logoutHandler (ws,request,code) {
     ws.close();
 }
 
+/*async function pingHandler (ws,request,code) {
+    console.log('*-> Ping...');
+    code = 'pong';
+    const object = {};
+    const response = { code, object };
+    ws.objSend(response);
+    console.log('<-* Pong.');
+}*/
+
 const messageHandlers = {
+    //ping: pingHandler,
     signon: signonHandler,
     challenge: challengeHandler,
     login: loginHandler,
@@ -575,11 +585,22 @@ webSocketsServer.on('connection', async (ws) => {
                 ok: false,
             }
             ws.objSend(response);
+            console.error(response.message);
             return;
         }
 
         var code = request.code;
         var obj = request.obj;
+
+        if ( code === 'ping') {
+            console.log('*-> Ping...');
+            code = 'pong';
+            const obj = null;
+            const response = { code, obj };
+            ws.objSend(response);
+            console.log('<-* Pong.');
+            return;
+        }
 
         if ( ! obj.hasOwnProperty('msgType')) {
             const response = {

@@ -1,4 +1,11 @@
+import { randomString } from './aux.js';
+
 var socketURL;
+
+const pongDelay = 500;
+const heartbeatDelay = 5000;
+const reconnectDelay = 3000;
+
 
 if (window.location.hostname === "localhost") {
     socketURL = 'ws://localhost:3000/';
@@ -6,63 +13,106 @@ if (window.location.hostname === "localhost") {
     socketURL = `wss://${window.location.hostname}/`;
 }
 
-function randomString(len) {
-    const randomData = new Uint8Array(20);
-    crypto.getRandomValues(randomData);
-    const randomBuffer = Buffer.from(randomData);
-    const code = randomBuffer.toString('hex');
-    return code;
-}
-
-/*function pushMessagesHandler (obj) {
-    const handlers = {};
-    console.log(obj) 
-    // Add push handler to ws object with personalizable handler object list/events
-}*/
-
 function WS (url,nameSeed) {
-    const ws = {};
+
     url = url || `wss://${window.location.hostname}/`;
-    /*ws.queue = {
-        set updates(obj) { 
-            pushMessagesHandler(obj);
-        },
-    };*/
+
+    const ws = {};
+
+    //ws.socket = new WebSocket(url);
+
+    ws.heartbeat;
+    ws.pendingPong;
     ws.queue = {};
-    ws.pushHandlers = {};
-    ws.addHandler = (handler)=>{
-        
-        if ( ! handler.hasOwnProperty('tag') || ! handler.hasOwnProperty('function') ) {
-            console.error(`Handler must be a object {tag: string,function: function(obj)}`);
-            return;
-        }
+    ws.tryingToConnect = false;
 
-        /*console.log(ws.pushHandlers,handler);
-        if (ws.pushHandlers.hasOwnProperty(handler.tag)) {
-            console.log('borrando')
-            delete ws.pushHandlers[handler.tag];
-        }
-        console.log(ws.pushHandlers,handler);*/
-        Object.defineProperty(ws.pushHandlers, handler.tag, {set: handler.function,configurable: true});
-        //console.log(ws.pushHandlers,handler);
+    ws.pushHandlers = {
+        set pong(data) {
+            console.log('||| Pong arrives.');
+            clearTimeout(ws.pendingPong);
+            ws.heartbeat = setTimeout(ws.sendPing,heartbeatDelay);
+        },
+    };
 
-    };
-    ws.socket = new WebSocket(url);
-    ws.socket.onmessage = function (msg) {
-        /*async function saveResponse (msg,ws) {
-            const data = JSON.parse(msg.data);
-            ws.queue[data.code] = data.obj;
-        }*/
-        const data = JSON.parse(msg.data);
-        if ( ws.queue.hasOwnProperty(data.code) ) {
-            //saveResponse(msg,ws);
-            ws.queue[data.code] = data.obj;
-        } else if ( ws.pushHandlers.hasOwnProperty(data.code) ){
-            ws.pushHandlers[data.code] = data.obj;
-        } else {
-            console.error(`Unhandled message from server: ${msg.data}`)
+    ws.connect = async function () {
+        if ( ws.tryingToConnect != true ) {
+
+            console.log('||| Connecting...');
+            ws.tryingToConnect = true;
+            if (ws.pendingPong) clearTimeout(ws.pendingPong);
+
+            try {
+
+                ws.socket = new WebSocket(url);
+
+                ws.socket.addEventListener(
+                    'open',
+                    () => {
+                        console.log('||| Connected.');
+                        ws.tryingToConnect = false;
+                        ws.sendPing();
+                    }
+                );
+
+                ws.socket.addEventListener(
+                    'message',
+                    (msg) => {
+                        const data = JSON.parse(msg.data);
+                        if ( ws.queue.hasOwnProperty(data.code) ) {
+                            ws.queue[data.code] = data.obj;
+                            console.log(ws.queue)
+                            delete ws.queue[data.code];
+                        } else if ( ws.pushHandlers.hasOwnProperty(data.code) ){
+                            ws.pushHandlers[data.code] = data.obj;
+                        } else {
+                            console.error(`Unhandled message from server: ${msg.data}`)
+                        }
+                    }
+                )
+            
+                ws.socket.addEventListener(
+                    'error',
+                    (ev) => {
+                        console.log('||| ws.error: ',ev);
+                        ws.socket.close();
+                    }
+                );
+            
+                ws.socket.addEventListener(
+                    'close',
+                    (ev) => {
+                        console.log('||| ws.close: ',ev);
+                        clearTimeout(ws.pendingPong);
+                        ws.tryingToConnect = false;
+                        setTimeout(ws.connect,reconnectDelay);
+                    }
+                );
+
+            } catch (err) {
+
+                console.error(err);
+                ws.tryingToConnect = false;
+                setTimeout(ws.connect,reconnectDelay);
+
+            }
         }
-    };
+    }
+
+    ws.sendPing = async function () {
+        if ( ! ws.tryingToConnect ) {
+            console.log('||| Sending ping...')
+            const msg = { code: 'ping', obj: null };
+            const json = JSON.stringify(msg);
+            try {
+                ws.socket.send(json);
+                if ( ws.pendingPong ) clearTimeout(ws.pendingPong);
+                ws.pendingPong = setInterval(ws.close,pongDelay);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+
     ws.sendObj = function (obj) {
         try {
             const code = randomString(20);
@@ -81,6 +131,7 @@ function WS (url,nameSeed) {
                         Object.defineProperty(this.queue, code, 
                             {
                                 set: function(obj) { resolve(obj) },
+                                configurable: true,
                             }
                         );
                     } catch (err) {
@@ -94,6 +145,15 @@ function WS (url,nameSeed) {
         }
     }
 
+    ws.addHandler = (handler)=>{
+        if ( ! handler.hasOwnProperty('tag') || ! handler.hasOwnProperty('function') ) {
+            console.error(`Handler must be a object {tag: string,function: function(obj)}`);
+            return;
+        }
+        Object.defineProperty(ws.pushHandlers, handler.tag, {set: handler.function,configurable: true});
+    };
+
+    ws.connect();
     return ws;
 };
 
