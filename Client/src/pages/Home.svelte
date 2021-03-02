@@ -163,6 +163,12 @@
     }
   )
 
+  window.addEventListener('reconnected',
+    async (ev)=>{
+      console.log('||| Reconnected',ev);
+    }
+  )
+
   $: {
     if (installable) {
       installAction = install;

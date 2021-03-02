@@ -19,6 +19,8 @@ function WS (url,nameSeed) {
 
     const ws = {};
 
+    const reconnected = new Event('reconnected');
+
     //ws.socket = new WebSocket(url);
 
     ws.heartbeat;
@@ -28,7 +30,7 @@ function WS (url,nameSeed) {
 
     ws.pushHandlers = {
         set pong(data) {
-            console.log('||| Pong arrives.');
+            //console.log('||| Pong arrives.');
             clearTimeout(ws.pendingPong);
             ws.heartbeat = setTimeout(ws.sendPing,heartbeatDelay);
         },
@@ -50,6 +52,7 @@ function WS (url,nameSeed) {
                     () => {
                         console.log('||| Connected.');
                         ws.tryingToConnect = false;
+                        dispatchEvent(reconnected);
                         ws.sendPing();
                     }
                 );
@@ -60,7 +63,6 @@ function WS (url,nameSeed) {
                         const data = JSON.parse(msg.data);
                         if ( ws.queue.hasOwnProperty(data.code) ) {
                             ws.queue[data.code] = data.obj;
-                            console.log(ws.queue)
                             delete ws.queue[data.code];
                         } else if ( ws.pushHandlers.hasOwnProperty(data.code) ){
                             ws.pushHandlers[data.code] = data.obj;
@@ -100,7 +102,7 @@ function WS (url,nameSeed) {
 
     ws.sendPing = async function () {
         if ( ! ws.tryingToConnect ) {
-            console.log('||| Sending ping...')
+            //console.log('||| Sending ping...')
             const msg = { code: 'ping', obj: null };
             const json = JSON.stringify(msg);
             try {

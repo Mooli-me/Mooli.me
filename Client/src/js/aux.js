@@ -1,3 +1,4 @@
+import { get } from 'svelte/store';
 import { ws } from './webSocket.js';
 
 export function randomString(len) {

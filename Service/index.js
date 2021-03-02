@@ -593,12 +593,12 @@ webSocketsServer.on('connection', async (ws) => {
         var obj = request.obj;
 
         if ( code === 'ping') {
-            console.log('*-> Ping...');
+            //console.log('*-> Ping...');
             code = 'pong';
             const obj = null;
             const response = { code, obj };
             ws.objSend(response);
-            console.log('<-* Pong.');
+            //console.log('<-* Pong.');
             return;
         }
 

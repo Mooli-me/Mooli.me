@@ -27,6 +27,7 @@
     if ( ! $session.loggedOn ) {
       router.navigate('/Login/');
     }
+    if ( $ws ) console.log('WS!');
   }
 
   async function updateChats (chat=null, from=null) {
