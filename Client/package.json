@@ -22,6 +22,7 @@
   ],
   "dependencies": {
     "@dicebear/avatars": "^4.5.2",
+    "@dicebear/avatars-identicon-sprites": "^4.5.4",
     "@dicebear/avatars-jdenticon-sprites": "^4.5.2",
     "dom7": "^2.1.5",
     "framework7": "^5.7.14",
