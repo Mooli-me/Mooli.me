@@ -193,7 +193,7 @@
   </Navbar>
 
   <PageContent class="display-flex flex-direction-column align-content-space-around align-items-center" style="padding-top: 0px;">
-
+  
     {#if $session.loggedOn }
     <Block>
       {#each $chats as chat, idx (chat.id)}
@@ -214,11 +214,6 @@
 
         <Button large raised fill onClick={()=>{router.navigate(`/Chat/${encodeURIComponent(chat.id)}/null/`)}}>
           {chat.id}
-          {#if chat.peers.length}
-          <Badge color="black">
-            {chat.peers.length}
-          </Badge>
-          {/if}
         </Button>
         
         {/if}
@@ -232,7 +227,7 @@
 
     {#if $session.guest }
     <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
-    <Card class="topic-card display-flex flex-direction-column align-content-space-around align-items-center">
+    <Card class="topic-card display-flex flex-direction-column align-content-space-around align-items-center justify-items-space-evenly">
       <span slot="content">
         <p>Con Mooli podrás abrir un canal de comunicación con otras personas sin necesidad de intercambiar datos personales.</p>
         <p>Si tu navegador lo permite, podrás instalar Mooli como una app y conservar tus chats.</p>
