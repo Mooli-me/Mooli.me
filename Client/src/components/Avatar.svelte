@@ -9,6 +9,7 @@
     /**
      * Avatars node module documentation:
      * https://www.npmjs.com/package/@dicebear/avatars-jdenticon-sprites
+     * https://avatars.dicebear.com/styles/identicon
     */
 
     let options = {
@@ -19,7 +20,7 @@
         //grayscaleLightness: [0.2,0.7],
         //colorSaturation: 1,
         //grayscaleSaturation: 1,
-        colorLevel: 50,
+        //colorLevel: 50,
     };
     let avatars = new Avatars(sprites, options);
     let svg = avatars.create(id);
