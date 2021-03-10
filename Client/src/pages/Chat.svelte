@@ -113,7 +113,10 @@
         }
         attachments = attachments;
     } */
-    async function sendMessage() {
+    async function sendMessage(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        ev.stopImmediatePropagation();
         const text = messageText.replace(/\n/g, '<br>').trim();
         const messagesToSend = [];
         /*
@@ -150,11 +153,12 @@
         messagebarInstance.clear();
 
         // Focus area
-        if (text.length) messagebarInstance.focus();
+        //if (text.length) messagebarInstance.focus();
+        messagebarInstance.focus();
 
         // Mock response
-        if (responseInProgress) return;
-        responseInProgress = true;
+        /*if (responseInProgress) return;
+        responseInProgress = true;*/
     }
 
     function messageType(message) {
@@ -308,12 +312,13 @@
         </a>
         -->
 
-        <span class="link icon-only" slot="inner-end" on:click={sendMessage}>
-        <Icon
-            ios="f7:arrow_up_circle_fill"
-            aurora="f7:arrow_up_circle_fill"
-            md="material:send"
-        />
+        <!--span class="link icon-only" slot="inner-end" on:click={sendMessage}-->
+        <span id="sendButton" class="link icon-only" slot="inner-end" on:touchstart={sendMessage} on:click={sendMessage}>
+            <Icon
+                ios="f7:arrow_up_circle_fill"
+                aurora="f7:arrow_up_circle_fill"
+                md="material:send"
+            />
         </span>
 
         <!--
