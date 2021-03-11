@@ -1,5 +1,4 @@
 
-import Main from '../pages/Main.svelte';
 import Login from '../pages/Login.svelte';
 import Home from '../pages/Home.svelte';
 import SignOn from '../pages/SignOn.svelte';
@@ -43,10 +42,6 @@ var routes = [
     /*redirect: function (route, resolve, reject) {
       resolve( sessionVal.guest ? '/FirstRun/' : '/Login/');
     }*/
-  },
-  {
-    path: '/Main/',
-    component: Main,
   },
   {
     path: '/Login/',
