@@ -4,7 +4,11 @@
     import sprites from '@dicebear/avatars-identicon-sprites';
 
     export var id;
-    export var size = null;
+    export var badge = null;
+    export var name = null;
+    export var size = "4em";
+    export var bgColor = "inherit";
+    export var badgeColor = "white";
 
     /**
      * Avatars node module documentation:
@@ -26,7 +30,48 @@
     let svg = avatars.create(id);
 </script>
 
-{@html svg}
+<div id="avatar" style="--bgColor: {bgColor}">
+    {@html svg}
+    {#if badge}
+    <div id="badge" style="--badgeColor: {badgeColor}">
+        <p>{badge}</p>
+    </div>
+    {/if}
+    {#if name}
+    <div id="name">
+        {name}
+    </div>
+    {/if}
+</div>
 
-<style></style>
+<style>
+    div#avatar {
+        display: flex;
+        position: relative;
+        border-radius: 50%;
+        background-color: var(--bgColor);
+        width: min-content;
+        height: min-content;
+        padding: 1em;
+        justify-content: center;
+    }
+    div#badge {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        border-radius: 50%;
+        font-size: smaller;
+        width: 2em;
+        height: 2em;
+        background-color: var(--badgeColor);
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+    div#name {
+        position: absolute;
+        top: 100%;
+        width: min-content;
+    }
+</style>
 
