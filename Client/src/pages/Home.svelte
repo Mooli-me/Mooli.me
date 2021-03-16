@@ -16,6 +16,8 @@
   
   import {_} from 'svelte-i18n';
 
+  import TabbedSections from '../components/TabbedSections.svelte';
+  import ChatIcon from '../components/ChatIcon.svelte';
   import Avatar from '../components/Avatar.svelte';
 
   import { identity, chats, session, windowStorage } from '../js/store.js';
@@ -35,6 +37,7 @@
   var standalone = false;
   var installAction = null;
   var installButtonColor = "blue";
+  var tabs = [];
 
   async function signIn () {
     const id = sessionStorage.getItem('identity');
@@ -132,6 +135,15 @@
     }
   }
 
+  function chatClickHandler (ev) {
+    var chat = ev.detail;
+    if (chat.owner === $identity) {
+      router.navigate(`/ChatInfo/${encodeURIComponent(chat.id)}/`)
+    } else {
+      router.navigate(`/Chat/${encodeURIComponent(chat.id)}/null/`)
+    }
+  }
+
   window.addEventListener('appinstalled', async (ev) => {
     installedNow = true;
     installedAway = true;
@@ -177,6 +189,24 @@
     }
   }
 
+  $: {
+    let ownGalleries = [];
+    let guestGalleries = [];
+    if ($session.loggedOn) $chats.forEach(
+      chat => {
+        if (chat.owner === $identity) {
+          ownGalleries.push(chat);
+        } else {
+          guestGalleries.push(chat);
+        }
+      }
+    );
+    tabs = [
+      {title: "Mis galerías", contents: ownGalleries},
+      {title: "Otras galerías", contents: guestGalleries},
+    ];
+  }
+
   setUpdateHandlers();
 
 </script>
@@ -195,7 +225,7 @@
   <PageContent class="display-flex flex-direction-column align-content-space-around align-items-center" style="padding-top: 0px;">
   
     {#if $session.loggedOn }
-    <Block>
+    <!--Block>
       {#each $chats as chat, idx (chat.id)}
 
       <div transition:fly>
@@ -222,7 +252,8 @@
       <p>Esperando la lista de chats...</p>
 
       {/each}
-    </Block>
+    </Block-->
+    <TabbedSections sections="{tabs}" childComponent="{ChatIcon}" size="4em" bgColor="pink" badgeColor="indigo" on:click="{chatClickHandler}"/>
     {/if}
 
     {#if $session.guest }

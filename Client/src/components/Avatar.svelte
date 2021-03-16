@@ -18,6 +18,7 @@
     export var badgeColor = "white";
 
     const dispatch = createEventDispatcher();
+    
     let options = {
         //hues: 256,
         width: size || 300,
