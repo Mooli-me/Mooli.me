@@ -9,9 +9,14 @@
 	<ViewLayout>
 		<div slot="hleft"></div>
 		<div slot="hcenter"></div>
-		<DropDownMenu slot="hright"/>
+		<DropDownMenu slot="hright">
+			<div slot="menuContents">
+				<p><a>Login</a></p>
+				<p><a>Crear galería anónima<a/></p>
+			</div>
+		</DropDownMenu>
 		<div slot="main">
-			<img alt="logo" src="/static/logo.svg"/>
+			<img alt="logo" src="/static/logotext.svg"/>
 			<div id="form">
 				<p>Te han invitado a una galería?</p>
 				<Input type="text" placeholder="Escribe tú código"/>
@@ -38,7 +43,6 @@
 		max-height: 60%;
 	}
 	* {
-		background-color: var(--background-color);
 		color: var(--font-color);
 	}
 	:global(body) {
@@ -46,8 +50,8 @@
 		margin: 0px;
 	}
 	:global(*) {
-		--bars-background-color: #202020;
-		--background-color: black;
-		--font-color: grey;
+		--bars-background-color: #f6d5ffff;
+		--background-color: white;
+		--font-color: #ab37c8ff;
 	}
 </style>
