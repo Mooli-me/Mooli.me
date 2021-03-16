@@ -1,4 +1,3 @@
-
 import Login from '../pages/Login.svelte';
 import Home from '../pages/Home.svelte';
 import SignOn from '../pages/SignOn.svelte';
