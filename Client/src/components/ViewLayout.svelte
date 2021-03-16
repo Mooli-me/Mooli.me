@@ -1,6 +1,3 @@
-<script>
-
-</script>
 
 <div id="viewport">
 
@@ -59,11 +56,10 @@
 
     div {
         box-sizing: border-box;
-        position: relative;
     }
     
     div#viewport {
-        width: 100%;
+        width: 100vw;
         height: 100vh;
         display: flex;
         flex-direction: column;
@@ -89,7 +85,7 @@
     div.bar {
         width: 100%;
         height: 4em;
-        background-color: var(--bars-background-color);
+        background-color: #202020;
         flex-direction: row;
         flex-wrap: nowrap;
         align-items: stretch;
