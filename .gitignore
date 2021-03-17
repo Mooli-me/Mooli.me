@@ -108,3 +108,7 @@ dist
 
 #Compiled client app
 Service/public/
+
+Svelte/public/build/bundle.css
+Svelte/public/build/bundle.js
+Svelte/public/build/bundle.js.map

@@ -12,10 +12,13 @@
 
 <style>
     button {
-        background-color: white;
-        border-radius: 1.5em;
-        height: 3em;
+        background-color: #ab37c8ff;
+        border-radius: 0.5em;
+        border-color: #ab37c8ff;
+        height: 2.5em;
         min-width: 5em;
+        color: #ffd5d5ff;
+        font-weight: bold;
     }
     button:hover {
         background-color: black;

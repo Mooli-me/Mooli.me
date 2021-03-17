@@ -60,6 +60,7 @@
     div {
         box-sizing: border-box;
         position: relative;
+        background-color: var(--background-color);
     }
     
     div#viewport {
@@ -89,7 +90,7 @@
     div.bar {
         width: 100%;
         height: 4em;
-        background-color: var(--bars-background-color);
+        background-color: var(--background-color);
         flex-direction: row;
         flex-wrap: nowrap;
         align-items: stretch;

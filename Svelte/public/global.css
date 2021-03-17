@@ -18,7 +18,8 @@ a {
 }
 
 a:hover {
-	text-decoration: underline;
+	background-color: white;
+	padding: 0 1em;
 }
 
 a:visited {

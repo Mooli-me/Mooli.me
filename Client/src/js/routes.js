@@ -1,8 +1,3 @@
-
-<<<<<<< HEAD
-=======
-//import Main from '../pages/Main.svelte';
->>>>>>> TabbedSection.svelte shows owned and foreign chats in a separated way.
 import Login from '../pages/Login.svelte';
 import Home from '../pages/Home.svelte';
 import SignOn from '../pages/SignOn.svelte';
@@ -47,13 +42,6 @@ var routes = [
       resolve( sessionVal.guest ? '/FirstRun/' : '/Login/');
     }*/
   },
-<<<<<<< HEAD
-=======
-  /*{
-    path: '/Main/',
-    component: Main,
-  },*/
->>>>>>> TabbedSection.svelte shows owned and foreign chats in a separated way.
   {
     path: '/Login/',
     component: Login,
