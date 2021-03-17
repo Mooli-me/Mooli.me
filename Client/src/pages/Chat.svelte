@@ -259,7 +259,7 @@
         }
         if ( chatsUpdated === true ) {
             peerId = destId ? destId : $chats[chatIdx].owner;
-            backURL = $chats[chatIdx].owner === $identity ? `/ChatInfo/${chatId}/` : '/' ;
+            backURL = $chats[chatIdx].owner === $identity ? `/ChatInfo/${encodeURIComponent(chatId)}/` : '/' ;
         }
     }
     $: {
