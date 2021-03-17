@@ -3,27 +3,76 @@
 	import Button from './components/Button.svelte';
 	import Input from './components/Input.svelte';
 	import DropDownMenu from './components/DropDownMenu.svelte';
+
+	import TabbedSections from './components/TabbedSections.svelte';
+	import ChatIcon from './components/ChatIcon.svelte';
+
+	//id="{item.id}" name="{item.id}" badge="{item.peers.length}
+	const sections = [
+		{
+			title: "Mis chats",
+			contents: [
+				{
+					id: 'SDFS',
+					peers: [1,2],
+					owner: 'mio',
+				},
+				{
+					id: 'HREN',
+					peers: [1,2,3],
+					owner: 'mio',
+				},
+			],
+		},
+		{
+			title: "Otros chats",
+			contents:[
+				{
+					id: 'WERTW',
+					peers: [1,2],
+					owner: 'no',
+				},
+				{
+					id: 'FJGH',
+					peers: [1,2],
+					owner: 'no',
+				},
+			],
+		},
+	]
+
+	var section = "Principal";
+
 </script>
 
 <main>
-	<ViewLayout>
-		<div slot="hleft"></div>
-		<div slot="hcenter"></div>
-		<DropDownMenu slot="hright">
-			<div slot="menuContents">
-				<p><a>Login</a></p>
-				<p><a>Crear galería anónima<a/></p>
+	<p on:click="{()=>{section="Principal"}}">Principal</p>
+	<p on:click="{()=>{section="Chats"}}">Chats</p>
+	<hr/>
+	{#if section === "Principal"}
+		<ViewLayout>
+			<div slot="hleft"></div>
+			<div slot="hcenter"></div>
+			<DropDownMenu slot="hright">
+				<div slot="menuContents">
+					<p><a>Login</a></p>
+					<p><a>Crear galería anónima<a/></p>
+				</div>
+			</DropDownMenu>
+			<div slot="main">
+				<img alt="logo" src="/static/logotext.svg"/>
+				<div id="form">
+					<p>Te han invitado a una galería?</p>
+					<Input type="text" placeholder="Escribe tú código"/>
+					<Button>entrar</Button>
+				</div>
 			</div>
-		</DropDownMenu>
-		<div slot="main">
-			<img alt="logo" src="/static/logotext.svg"/>
-			<div id="form">
-				<p>Te han invitado a una galería?</p>
-				<Input type="text" placeholder="Escribe tú código"/>
-				<Button>entrar</Button>
-			</div>
-		</div>
-	</ViewLayout>
+		</ViewLayout>
+	{/if}
+	{#if section === "Chats"}
+		<TabbedSections sections="{sections}" childComponent="{ChatIcon}"/>
+	{/if}
+
 </main>
 
 <style>
