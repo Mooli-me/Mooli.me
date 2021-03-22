@@ -23,7 +23,7 @@
 
   import QR from '../components/QR.svelte';
 
-  import { identity, chats, session } from '../js/store.js';
+  import { identity, chats, session, names } from '../js/store.js';
 
   import { login, pubIdentity, updateChats } from '../js/aux.js';
 
@@ -123,7 +123,7 @@
         <Icon icon="icon-back"/>
       </Link>
     </NavLeft>
-    <NavTitle>{$_('appNameTitle')} - {$_('ChatInfo.title')} {chatId}</NavTitle>
+    <NavTitle>{$_('appNameTitle')} - {$_('ChatInfo.title')} {$names[chatId] || chatId}</NavTitle>
     <NavRight>
       {#if $session.loggedOn }
       <Avatar id={$identity} size="2em"/>
