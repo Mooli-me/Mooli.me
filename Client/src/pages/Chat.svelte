@@ -21,7 +21,7 @@
 
     import { avatar } from '../js/AvatarURI.js';
 
-    import { identity, session, chats } from '../js/store.js';
+    import { identity, session, chats, names } from '../js/store.js';
 
     import { ws } from '../js/webSocket.js';
 
@@ -246,6 +246,11 @@
         console.error(err)
         }
     }
+
+    function avatarClickHandler (id) {
+        router.navigate(`/CustomName/${encodeURIComponent(id)}/`);
+    }
+
     $: { 
         attachmentsVisible = attachments.length > 0;
         placeholder = attachments.length > 0 ? $_('Chat.commentPlaceholder') : $_('Chat.messagePlaceholder');
@@ -286,10 +291,16 @@
               <Icon icon="icon-back"/>
             </Link>
         </NavLeft>
-        <NavTitle>{$_('appNameTitle')} - {$_('Chat.title')} {$chats[chatIdx].id}</NavTitle>
+        <NavTitle>
+            {$_('appNameTitle')} - <span on:click={()=>avatarClickHandler($chats[chatIdx].id)}> {$names[$chats[chatIdx].id] || $chats[chatIdx].id} <img id="editNameIcon" alt="Cambiar nombre" src="/static/icons/lapiz.svg"/></span>
+        </NavTitle>
         <NavRight>
           {#if peerId}
-          <Avatar id={peerId} size="2em"/>
+            <Avatar
+                id={$chats[chatIdx].id}
+                size="2em"
+                on:click={()=>avatarClickHandler($chats[chatIdx].id)}
+            />
           {/if}
         </NavRight>
     </Navbar>
@@ -403,5 +414,9 @@
     }
     :global(div.message-name) {
         display: none;
+    }
+    img#editNameIcon {
+        height: 1em;
+        vertical-align: text-bottom
     }
 </style>
