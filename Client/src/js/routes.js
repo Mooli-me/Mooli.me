@@ -5,6 +5,7 @@ import Peers from '../pages/Peers.svelte';
 import ChatInfo from '../pages/ChatInfo.svelte';
 import Chat from '../pages/Chat.svelte';
 import KnockKnock from '../pages/KnockKnock.svelte';
+import CustomName from '../pages/CustomName.svelte';
 
 import { identity, session } from '../js/store.js';
 var identityVal, sessionVal;
@@ -61,6 +62,10 @@ var routes = [
   {
     path: '/Chat/:chatId/:destId/',
     component: Chat,
+  },
+  {
+    path: '/CustomName/:id/',
+    component: CustomName,
   },
   {
     path: '/:chatCode',

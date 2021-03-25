@@ -20,7 +20,7 @@
   import ChatIcon from '../components/ChatIcon.svelte';
   import Avatar from '../components/Avatar.svelte';
 
-  import { identity, chats, session, windowStorage } from '../js/store.js';
+  import { identity, chats, session, names } from '../js/store.js';
 
   import { ws } from '../js/webSocket.js';
 
@@ -51,6 +51,12 @@
       (chats)=>{
         const chatsJSON = JSON.stringify(chats);
         localStorage.setItem('chats', chatsJSON);
+      }
+    );
+    names.subscribe(
+      (names)=>{
+        const namesJSON = JSON.stringify(names);
+        localStorage.setItem('names', namesJSON);
       }
     );
     const signOnResponse = await signOn($identity);
