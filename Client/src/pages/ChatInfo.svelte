@@ -7,12 +7,10 @@
     NavTitle,
     NavRight,
     NavLeft,
-    Card,
     Block,
     Icon,
     Link,
     Button,
-    Badge,
   } from 'framework7-svelte';
 
   import { scale } from 'svelte/transition';
@@ -36,6 +34,8 @@
   var copied = false;
 
   var chat, chatIdx, chatURL;
+
+  var name = $names[chatId] || '';
 
   function copyToClipboard(url) {
     navigator.clipboard.writeText(url).then(
@@ -115,8 +115,9 @@
     chatURL = `${location.protocol}//${location.host}/${encodeURIComponent($chats[chatIdx].id)}`
   }
 
-
-
+  $: {
+        $names[chatId] = name;
+    }
 </script>
 
 <Page name="home"  pageContent=false>
@@ -139,13 +140,10 @@
 
   <PageContent class="display-flex flex-direction-column align-content-space-around align-items-center" style="padding-top: 0px;">
 
-    <p id="chatType">
-    {#if $chats[chatIdx].type === 'p2p'}
-    {$_('ChatInfo.privateChat')}
-    {:else}
-    {$_('ChatInfo.groupChat')}
-    {/if}
-    </p>
+    <div id='visual' on:click={()=>{copyToClipboard(chatURL)}}>
+      <Avatar size="100px" id={$chats[chatIdx].id}/>
+      <QR data={chatURL} size=100/>
+    </div>
 
     <p id="chatURL" on:click={()=>{copyToClipboard(chatURL)}}>
       {chatURL}
@@ -156,7 +154,15 @@
       {/if}
     </p>
 
-    <QR data={chatURL} size=200/>
+    <input type="text" placeholder="Escribe tu nombre para esta galería" bind:value={name}>
+
+    <p id="chatType">
+      {#if $chats[chatIdx].type === 'p2p'}
+      {$_('ChatInfo.privateChat')}
+      {:else}
+      {$_('ChatInfo.groupChat')}
+      {/if}
+    </p>
 
     <Block class="display-flex flex-direction-col align-content-space-around align-items-center" style="flex-wrap: wrap">
       <p>{$_('ChatInfo.mooliesInTheGallery')}</p>
@@ -180,6 +186,7 @@
     cursor: pointer;
     font-size: larger;
     font-weight: bolder;
+    margin: 0;
   }
   #chatType {
     font-weight: bold;
@@ -187,5 +194,19 @@
   img#editNameIcon {
       height: 1em;
       vertical-align: text-bottom
+  }
+  div#visual {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content:center;
+    width: 100%;
+  }
+  input {
+    border-style: solid;
+    border-radius: 0.5em;
+    text-align: center;
+    font-size: large;
+    padding: 0.5em
   }
 </style>
