@@ -18,6 +18,8 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "@dicebear/avatars": "^4.5.4",
+    "@dicebear/avatars-identicon-sprites": "^4.5.4",
     "sirv-cli": "^1.0.0"
   }
 }
