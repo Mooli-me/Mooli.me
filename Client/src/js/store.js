@@ -6,36 +6,34 @@ async function createGuestId () {
 	const sessionVal = get(session);
 	const id = await newIdentity();
 	identity.set(id);
+	sessionVal.guest = true;
 	session.set(sessionVal);
 }
 
-/**
- * Reading from localStorage or initializing.
- */
+function getSaved (storage) {
+	const savedJSON = window.localStorage.getItem(storage) || "null";
+	const savedData = JSON.parse(savedJSON);
+	return savedData;
+}
 
-const savedIdentityJSON = window.localStorage.getItem('identity') || "null";
-const savedIdentity = JSON.parse(savedIdentityJSON);
-
-const savedChatsJSON = window.localStorage.getItem('chats') || "null";
-const savedChats = JSON.parse(savedChatsJSON);
+export var windowStorage = localStorage.getItem('identity') ? localStorage : sessionStorage;
 
 /**
  * Declare and export stores.
  */
 
-export const identity = writable(savedIdentity);
-export const chats = writable(savedChats);
+export const identity = writable(getSaved('identity') || '' );
+export const chats = writable(getSaved('chats') || [] );
+export const names = writable(getSaved('names') || {} );
 
 export const session = writable(
 	{
 		loggedOn: false,
 		pubIdentity: '',
 		updating: false,
-		guest: savedIdentity ? false : true,
+		guest: get(identity) ? false : true,
 	}
 );
-
-export var windowStorage = ! savedIdentity ? sessionStorage : localStorage;
 
 /**
  * Update localStorage on stores changes.
@@ -53,9 +51,15 @@ chats.subscribe(
 		windowStorage.setItem('chats', chatsJSON);
 	}
 );
+names.subscribe(
+	(names)=>{
+		const namesJSON = JSON.stringify(names);
+		windowStorage.setItem('names', namesJSON);
+	}
+);
 
 /**
  * Create identity if no identity found.
  */
 
-if ( ! savedIdentity ) createGuestId();
+if ( ! get(identity) ) createGuestId();

@@ -23,7 +23,7 @@
 
   import QR from '../components/QR.svelte';
 
-  import { identity, chats, session } from '../js/store.js';
+  import { identity, chats, session, names } from '../js/store.js';
 
   import { login, pubIdentity, updateChats } from '../js/aux.js';
 
@@ -98,6 +98,10 @@
     }
   }
 
+  function avatarClickHandler (id) {
+    router.navigate(`/CustomName/${encodeURIComponent(id)}/`);
+  }
+
   if ( $session.loggedOn === false ) {
     logIn();
   }
@@ -123,7 +127,9 @@
         <Icon icon="icon-back"/>
       </Link>
     </NavLeft>
-    <NavTitle>{$_('appNameTitle')} - {$_('ChatInfo.title')} {chatId}</NavTitle>
+    <NavTitle>
+      {$_('appNameTitle')} - <span on:click={()=>avatarClickHandler(chatId)}> {$names[chatId] || chatId} <img id="editNameIcon" alt="Cambiar nombre" src="/static/icons/lapiz.svg"/></span>
+    </NavTitle>
     <NavRight>
       {#if $session.loggedOn }
       <Avatar id={$identity} size="2em"/>
@@ -177,5 +183,9 @@
   }
   #chatType {
     font-weight: bold;
+  }
+  img#editNameIcon {
+      height: 1em;
+      vertical-align: text-bottom
   }
 </style>
