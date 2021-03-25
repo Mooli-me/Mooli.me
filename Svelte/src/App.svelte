@@ -1,4 +1,7 @@
 <script>
+
+	import { path } from './js/SvelteNavigate.js';
+
 	import ViewLayout from './components/ViewLayout.svelte';
 	import Button from './components/Button.svelte';
 	import Input from './components/Input.svelte';
@@ -7,7 +10,17 @@
 	import TabbedSections from './components/TabbedSections.svelte';
 	import ChatIcon from './components/ChatIcon.svelte';
 
-	//id="{item.id}" name="{item.id}" badge="{item.peers.length}
+	import CustomName from './components/CustomName.svelte';
+
+	import { names } from './js/store.js';
+
+	/*const routes = {
+		'': Patients,
+		Tests,
+		Patients,
+		Patient,
+	}*/
+
 	const sections = [
 		{
 			title: "Mis chats",
@@ -43,11 +56,19 @@
 
 	var section = "Principal";
 
+	var name;
+	var id = 'DefR'
+	$names = {
+		DefR: "Mi chat"
+	}
+
+
 </script>
 
 <main>
 	<p on:click="{()=>{section="Principal"}}">Principal</p>
 	<p on:click="{()=>{section="Chats"}}">Chats</p>
+	<p on:click="{()=>{section="CustomName"}}">Custom names</p>
 	<hr/>
 	{#if section === "Principal"}
 		<ViewLayout>
@@ -72,6 +93,23 @@
 	{#if section === "Chats"}
 		<TabbedSections sections="{sections}" childComponent="{ChatIcon}"/>
 	{/if}
+	{#if section === "CustomName"}
+		<ViewLayout>
+			<div slot="hleft"></div>
+			<div slot="hcenter"></div>
+			<DropDownMenu slot="hright">
+				<div slot="menuContents">
+					<p><a>Login</a></p>
+					<p><a>Crear galería anónima<a/></p>
+				</div>
+			</DropDownMenu>
+			<div slot="main">
+				<CustomName id=DefR/>
+			</div>
+		</ViewLayout>
+	{/if}
+	
+	<!--svelte:component this={ routes[$path[0]] || Tests }/-->
 
 </main>
 
