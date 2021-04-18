@@ -30,10 +30,6 @@
     export var chatId;
     export var destId;
 
-    /*console.log('input:', destId, typeof destId)
-    destId = destId === 'null' ? null : destId;
-    console.log('out:', destId, typeof destId)*/
-    
     var router = f7.view.main.router;
 
     let messagebarComponent;
@@ -130,7 +126,6 @@
         });
         */
         if (text.length) {
-            console.log(destId, typeof destId);
             const request = {
                 msgType: 'put',
                 msg: {
@@ -141,7 +136,6 @@
                     content: text,
                 }
             };
-            console.log(request);
             const response = await ws.sendObj(request);
         }
         else {
@@ -201,7 +195,6 @@
 
     async function logIn () {
         const loginResponse =  await login($identity);
-        console.log(loginResponse)
         if ( loginResponse.ok ) {
             $session.loggedOn = true;
         } else {
@@ -255,9 +248,7 @@
         router.navigate(`/CustomName/${encodeURIComponent(id)}/`);
     }
     $: {
-        console.log('input:', destId, typeof destId)
         destId = destId === 'null' ? null : destId;
-        console.log('out:', destId, typeof destId)
     }
     $: { 
         attachmentsVisible = attachments.length > 0;
