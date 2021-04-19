@@ -24,6 +24,7 @@
     "@dicebear/avatars": "^4.5.2",
     "@dicebear/avatars-identicon-sprites": "^4.5.4",
     "@dicebear/avatars-jdenticon-sprites": "^4.5.2",
+    "chokidar": "^3.5.1",
     "dom7": "^2.1.5",
     "framework7": "^5.7.14",
     "framework7-icons": "^3.0.1",
