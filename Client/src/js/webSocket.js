@@ -1,7 +1,7 @@
 import { get } from 'svelte/store';
 import { randomString } from './aux.js';
 import { newIdentity, signOn, login } from '../js/aux.js';
-import { identity } from '../js/store.js';
+import { identity, session } from '../js/store.js';
 
 
 
@@ -158,12 +158,21 @@ function WS (url,nameSeed) {
     };
 
     ws.login = async ()=>{
+        var sessionData;
         if ( ! get(identity) ) {
             identity.set(await newIdentity());
             signOn(get(identity));
         }
         const loginResponse =  await login(get(identity));
-        if ( ! loginResponse.ok ) setTimeout(ws.login,loginDelay);
+        if ( loginResponse.ok ) {
+            sessionData = get(session);
+            sessionData.loggedOn = true;
+            sessionData.pubIdentity = get(identity);
+            session.set(sessionData);
+        } else {
+            setTimeout(ws.login,loginDelay);
+        }
+
     };
 
     ws.connect();
