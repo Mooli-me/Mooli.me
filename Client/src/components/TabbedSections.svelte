@@ -34,7 +34,7 @@
             {#each section.contents as item}
             <svelte:component this="{childComponent}" on:click="{() => dispatch('click',item)}" item="{item}" {...$$restProps}/>
             {:else}
-            <p>No hay galerías en esta categoría, por el momento.</p>
+            <p>Nada que mostrar aquí, por el momento.</p>
             {/each}
         {/if}
     {/each}

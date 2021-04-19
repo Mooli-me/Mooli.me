@@ -26,6 +26,8 @@
 
   import { signOn, login, updateChats } from '../js/aux.js';
 
+  import AnonymousWarning from '../components/AnonymousWarning.svelte';
+
   const loginDelay = 3000;
 
   var router = f7.view.main.router;
@@ -150,53 +152,25 @@
     }
   }
 
-  /*window.addEventListener('appinstalled', async (ev) => {
-    installedNow = true;
-    installedAway = true;
-    localStorage.setItem('installedAway',true)
-    checkInstallationEvent();
-  });*/
-
-  /*window.addEventListener('DOMContentLoaded', 
-    async (ev) => {
-      if (navigator.standalone) {
-        // displayMode = 'standalone-ios';
-        standalone = true;
-      }
-      if (window.matchMedia('(display-mode: standalone)').matches) {
-        //displayMode = 'standalone';
-        standalone = true;
-      }
-    }
-  );*/
-
-  /*window.addEventListener('beforeinstallprompt', async (ev) => {
-    ev.preventDefault();
-    pwaInstall = ev;
-    installable = true;
-  });*/
-
-  //window.addEventListener('load', update);
-
   $: {
     if ($session.loggedOn) update();
   }
 
   $: {
     let ownGalleries = [];
-    let guestGalleries = [];
+    let questChats = [];
     if ($session.loggedOn) $chats.forEach(
       chat => {
         if (chat.owner === $identity) {
           ownGalleries.push(chat);
         } else {
-          guestGalleries.push(chat);
+          questChats.push(chat);
         }
       }
     );
     tabs = [
-      {title: "Chats", contents: guestGalleries},
-      {title: "Mis galerías", contents: ownGalleries},
+      {title: "Chats", contents: questChats},
+      {title: "Tus galerías", contents: ownGalleries},
     ];
   }
 
@@ -218,11 +192,17 @@
   <PageContent class="display-flex flex-direction-column align-content-space-around align-items-center" style="padding-top: 0px;">
   
     {#if $session.loggedOn }
-    <TabbedSections sections="{tabs}" childComponent="{ChatIcon}" size="4em" bgColor="pink" badgeColor="indigo" on:click="{chatClickHandler}"/>
-    {/if}
-
-    {#if $session.guest }
+      {#if $chats.length === 1}
+      <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
+      <button>Introduce el código de una galería para contactar con su porpietario.</button>
+      <button>Inicia sesión para crear tus propias galerías y que otras personas contacten contigo.</button>
+      {:else}
+      <TabbedSections sections="{tabs}" childComponent="{ChatIcon}" size="4em" bgColor="pink" badgeColor="indigo" on:click="{chatClickHandler}"/>
+      {/if}
+      <AnonymousWarning/>
+    {:else}
     <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
+    <p>Conectando...</p>
     {/if}
 
   </PageContent>
@@ -234,11 +214,8 @@
     width: 80vw;
     max-width: 200px;
   }
-  :global(.topic-card) {
-    width: 30em;
-    max-width: 80vw;
-  }
-  :global(.avatar-icon) {
-    max-height: 2em;
+  button {
+    padding: 2em;
+    max-width: 80%;
   }
 </style>
