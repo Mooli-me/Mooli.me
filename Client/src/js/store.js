@@ -1,14 +1,14 @@
 import { writable, get } from 'svelte/store';
 
-import { newIdentity } from './aux.js';
+//import { newIdentity } from './aux.js';
 
-async function createGuestId () {
+/*async function createGuestId () {
 	const sessionVal = get(session);
 	const id = await newIdentity();
 	identity.set(id);
 	sessionVal.guest = true;
 	session.set(sessionVal);
-}
+}*/
 
 function getSaved (storage) {
 	const savedJSON = window.localStorage.getItem(storage) || "null";
@@ -16,22 +16,27 @@ function getSaved (storage) {
 	return savedData;
 }
 
-export var windowStorage = localStorage.getItem('identity') ? localStorage : sessionStorage;
+//export var windowStorage = window.localStorage.getItem('identity') ? localStorage : sessionStorage;
+export var windowStorage = sessionStorage;
 
 /**
  * Declare and export stores.
  */
 
-export const identity = writable(getSaved('identity') || '' );
+/*export const identity = writable(getSaved('identity') || '' );
 export const chats = writable(getSaved('chats') || [] );
-export const names = writable(getSaved('names') || {} );
+export const names = writable(getSaved('names') || {} );*/
+export const identity = writable(null);
+export const chats = writable([]);
+export const names = writable({});
 
 export const session = writable(
 	{
 		loggedOn: false,
 		pubIdentity: '',
 		updating: false,
-		guest: get(identity) ? false : true,
+		//guest: get(identity) ? false : true,
+		guest: true,
 	}
 );
 
@@ -62,4 +67,4 @@ names.subscribe(
  * Create identity if no identity found.
  */
 
-if ( ! get(identity) ) createGuestId();
+//if ( ! get(identity) ) createGuestId();
