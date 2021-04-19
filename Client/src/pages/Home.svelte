@@ -31,12 +31,6 @@
   var router = f7.view.main.router;
 
   var pwaInstall = null;
-  var installable = false;
-  var installedAway = false;
-  var installedNow = false;
-  var standalone = false;
-  var installAction = null;
-  var installButtonColor = "blue";
   var tabs = [];
 
   async function signIn () {
@@ -82,8 +76,15 @@
     }
   }
 
-  async function install () {
-    signIn();
+  async function update () {
+    const updateChatsResponse = await updateChats();
+    if ( updateChatsResponse.ok ) {
+      $chats = updateChatsResponse.message;
+    }
+  }
+
+  /*async function install () {
+    //signIn();
     pwaInstall.prompt();
     pwaInstall.userChoice.then((choiceResult) => {
       if (choiceResult.outcome === 'accepted') {
@@ -92,12 +93,11 @@
         console.log('User dismissed the install prompt');
       }
     });
+  }*/
 
-  }
-
-  async function checkInstallationEvent() {
+  /*async function checkInstallationEvent() {
     installedAway = localStorage.getItem('installedAway') === null ? false : localStorage.getItem('installedAway');
-  }
+  }*/
 
   async function setUpdateHandlers () {
     try {
@@ -150,14 +150,14 @@
     }
   }
 
-  window.addEventListener('appinstalled', async (ev) => {
+  /*window.addEventListener('appinstalled', async (ev) => {
     installedNow = true;
     installedAway = true;
     localStorage.setItem('installedAway',true)
     checkInstallationEvent();
-  });
+  });*/
 
-  window.addEventListener('DOMContentLoaded', 
+  /*window.addEventListener('DOMContentLoaded', 
     async (ev) => {
       if (navigator.standalone) {
         // displayMode = 'standalone-ios';
@@ -168,31 +168,18 @@
         standalone = true;
       }
     }
-  );
+  );*/
 
-  window.addEventListener('beforeinstallprompt', async (ev) => {
+  /*window.addEventListener('beforeinstallprompt', async (ev) => {
     ev.preventDefault();
     pwaInstall = ev;
     installable = true;
-  });
+  });*/
 
-  window.addEventListener('load',
-    async (ev) => {
-      checkInstallationEvent();
-      if ( !$session.guest ) {
-        logIn();
-      }
-    }
-  )
+  //window.addEventListener('load', update);
 
   $: {
-    if (installable) {
-      installAction = install;
-      installButtonColor = 'blue';
-    } else {
-      installAction = null;
-      installButtonColor = 'gray';
-    }
+    if ($session.loggedOn) update();
   }
 
   $: {
@@ -208,8 +195,8 @@
       }
     );
     tabs = [
+      {title: "Chats", contents: guestGalleries},
       {title: "Mis galerías", contents: ownGalleries},
-      {title: "Otras galerías", contents: guestGalleries},
     ];
   }
 
@@ -231,63 +218,12 @@
   <PageContent class="display-flex flex-direction-column align-content-space-around align-items-center" style="padding-top: 0px;">
   
     {#if $session.loggedOn }
-    <!--Block>
-      {#each $chats as chat, idx (chat.id)}
-
-      <div transition:fly>
-        {#if chat.owner === $identity }
-
-        <Button large raised fill onClick={()=>{router.navigate(`/ChatInfo/${encodeURIComponent(chat.id)}/`)}}>
-          {chat.id}
-          {#if chat.peers.length}
-          <Badge color="black">
-            {chat.peers.length}
-          </Badge>
-          {/if}
-        </Button>
-
-        {:else}
-
-        <Button large raised fill onClick={()=>{router.navigate(`/Chat/${encodeURIComponent(chat.id)}/null/`)}}>
-          {chat.id}
-        </Button>
-        
-        {/if}
-      </div>
-      {:else}
-      <p>Esperando la lista de chats...</p>
-
-      {/each}
-    </Block-->
     <TabbedSections sections="{tabs}" childComponent="{ChatIcon}" size="4em" bgColor="pink" badgeColor="indigo" on:click="{chatClickHandler}"/>
     {/if}
 
     {#if $session.guest }
     <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
-    <Card class="topic-card display-flex flex-direction-column align-content-space-around align-items-center justify-items-space-evenly">
-      <span slot="content">
-        <p>Con Mooli podrás abrir un canal de comunicación con otras personas sin necesidad de intercambiar datos personales.</p>
-        <p>Si tu navegador lo permite, podrás instalar Mooli como una app y conservar tus chats.</p>
-        <p>En cualquier caso, también puedes crear un chat para uso puntual.</p>
-      </span>
-      <span slot="footer">
-        {#if !installable}<p>Tu navegador no es compatible con PWA. No puedes instalar Mooli.</p>{/if}
-        <Button large color="{installButtonColor}" onClick={installAction}>
-        {#if installable}
-          Instalar ahora
-        {:else}
-          Navegador no compatible
-        {/if}
-        </Button>
-        <Button large onClick={signIn}>
-          Crear un chat efímero
-        </Button>
-      </span>
-    </Card>
     {/if}
-
-
-
 
   </PageContent>
 
