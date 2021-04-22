@@ -4,8 +4,11 @@
     Page,
     PageContent,
     Navbar,
+    NavLeft,
     NavTitle,
+    Link,
     Preloader,
+    Icon,
   } from 'framework7-svelte';
 
   import {_} from 'svelte-i18n';
@@ -39,16 +42,7 @@
     return resultOk
   }
 
-  async function requestChatAccess (id,chat) {
-    if ( ! $session.loggedOn ) {
-      const loginOk = await guestLogin(id)
-      if ( loginOk ) {
-        $session.loggedOn = true;
-      } else {
-        alert($_('KnockKnock.loginError'));
-        return
-      }
-    }
+  async function requestChatAccess (chat) {
     const request = {
       msgType: 'chatAccess',
       chat,
@@ -68,11 +62,12 @@
             const chat = $chats.find(
               (chat) => chat.id === chatCode
             )
-            if ( chat.owner === $identity ){
+            /*if ( chat.owner === $identity ){
               router.navigate(`/ChatInfo/${encodeURIComponent(chatCode)}/`);
             } else {
               router.navigate(`/Chat/${encodeURIComponent(chatCode)}`);
-            }
+            }*/
+            router.navigate(`/Chat/${encodeURIComponent(chatCode)}/null/`);
           } else {
             alert($_('KnockKnock.chatsUpdateError'))
           }
@@ -83,7 +78,6 @@
         default:
           alert($_('KnockKnock.unknownResponse'));
           serverError = $_('KnockKnock.unknownResponse');
-          break;
       }
     } else {
       serverError = chatAccessResponse.message;
@@ -91,8 +85,9 @@
     }
   }
 
+  /*
   $: {
-    $session.updating = ! ( $session.loggedOn && accessRequested  && $chats ) && ! serverError && ! unknownChat;
+      $session.updating = ! ( $session.loggedOn && accessRequested  && $chats ) && ! serverError && ! unknownChat;
     if ( $identity && ! accessRequested ) {
       accessRequested = true;
       requestChatAccess($identity,chatCode);
@@ -101,29 +96,28 @@
       router.navigate(`/Chat/${encodeURIComponent(chatCode)}/null/`);
     }
   }
+*/
+
+  $: {
+    if ( $session.loggedOn ) requestChatAccess(chatCode);
+  }
+
 </script>
 
 <Page name="knockknock" pageContent=false>
 
   <Navbar>
+    <NavLeft>
+      <Link href='/'>
+        <Icon icon="icon-back"/>
+      </Link>
+    </NavLeft>
     <NavTitle>{$_('appNameTitle')} - {$_('KnockKnock.enteringTo')} {chatCode} </NavTitle>
   </Navbar>
 
   <PageContent class="display-flex flex-direction-column justify-content-center align-content-space-around align-items-center">
 
-  {#if $session.updating }
-    {#if ! $identity}
-    <p>{$_('KnockKnock.creatingIdentity')}</p>
-    {:else if ! $session.loggedOn}
-    <p>{$_('KnockKnock.startingSession')}</p>
-    {:else if accessRequested}
-    <p>{$_('KnockKnock.requestingAccess')}</p>
-    {/if}
-    <Preloader size={100}/>
-  {:else if serverError}
-    <p>{$_('KnockKnock.serverError')}</p>
-    <p>{serverError}</p>
-  {:else if unknownChat}
+  {#if unknownChat}
     <p>{$_('KnockKnock.unknownChat')} {chatCode}</p>
   {:else}
     <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>

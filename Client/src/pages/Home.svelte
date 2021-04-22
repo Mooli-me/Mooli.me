@@ -34,6 +34,7 @@
 
   var pwaInstall = null;
   var tabs = [];
+  var galleryCode;
 
   async function signIn () {
     const id = sessionStorage.getItem('identity');
@@ -84,22 +85,6 @@
       $chats = updateChatsResponse.message;
     }
   }
-
-  /*async function install () {
-    //signIn();
-    pwaInstall.prompt();
-    pwaInstall.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User install');
-      } else {
-        console.log('User dismissed the install prompt');
-      }
-    });
-  }*/
-
-  /*async function checkInstallationEvent() {
-    installedAway = localStorage.getItem('installedAway') === null ? false : localStorage.getItem('installedAway');
-  }*/
 
   async function setUpdateHandlers () {
     try {
@@ -152,6 +137,10 @@
     }
   }
 
+  function enterTheGallery (ev) {
+    if (galleryCode) router.navigate(`/${encodeURIComponent(galleryCode)}`)
+  }
+
   $: {
     if ($session.loggedOn) update();
   }
@@ -183,28 +172,30 @@
   <Navbar>
     <NavTitle>{$_('appNameTitle')} - {$_('Home.title')}</NavTitle>
     <NavRight>
-      {#if $session.loggedOn }
-      <Avatar id={$identity} size="2em"/>
-      {/if}
+      Menú?
     </NavRight>
   </Navbar>
 
-  <PageContent class="display-flex flex-direction-column align-content-space-around align-items-center" style="padding-top: 0px;">
+  <PageContent class="display-flex flex-direction-column justify-content-space-evenly align-content-space-around align-items-center" style="padding-top: 0px;">
   
     {#if $session.loggedOn }
       {#if $chats.length === 1}
       <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
-      <button>Introduce el código de una galería para contactar con su porpietario.</button>
+      <div id="InputCode" class="card">
+        <div id="form">
+          <input id="galleryCode" type="text" maxlength="6" bind:value={galleryCode} placeholder="Código para entrar en galería"/>
+          <img id="go" src="/static/icons/go.svg" on:click={enterTheGallery} alt="Go"/>
+        </div>
+      </div>
       <button>Inicia sesión para crear tus propias galerías y que otras personas contacten contigo.</button>
       {:else}
       <TabbedSections sections="{tabs}" childComponent="{ChatIcon}" size="4em" bgColor="pink" badgeColor="indigo" on:click="{chatClickHandler}"/>
       {/if}
-      <AnonymousWarning/>
     {:else}
-    <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
-    <p>Conectando...</p>
+      <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
+      <p>Conectando...</p>
     {/if}
-
+    <AnonymousWarning/>
   </PageContent>
 
 </Page>
@@ -217,5 +208,29 @@
   button {
     padding: 2em;
     max-width: 80%;
+  }
+  div.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: center;
+  }
+  div#form {
+    display: flex;
+    flex-direction: row;
+  }
+  input#galleryCode {
+    background-color: white;
+    color: black;
+    padding: 1em;
+    font-size: large;
+    text-align: center;
+    width: 100%;
+    flex-grow: 1;
+  }
+  img#go {
+    width: 3em;
+    flex-grow: 0;
+    background-color: white;
   }
 </style>
