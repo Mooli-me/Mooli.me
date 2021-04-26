@@ -19,6 +19,7 @@
   import TabbedSections from '../components/TabbedSections.svelte';
   import ChatIcon from '../components/ChatIcon.svelte';
   import Avatar from '../components/Avatar.svelte';
+  import ChatCodeInput from '../components/ChatCodeInput.svelte';
 
   import { identity, chats, session, names } from '../js/store.js';
 
@@ -34,7 +35,6 @@
 
   var pwaInstall = null;
   var tabs = [];
-  var galleryCode;
 
   async function signIn () {
     const id = sessionStorage.getItem('identity');
@@ -137,10 +137,6 @@
     }
   }
 
-  function enterTheGallery (ev) {
-    if (galleryCode) router.navigate(`/${encodeURIComponent(galleryCode)}`)
-  }
-
   $: {
     if ($session.loggedOn) update();
   }
@@ -181,16 +177,10 @@
     {#if $session.loggedOn }
       {#if $chats.length === 1}
       <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
-      <div id="InputCode" class="card">
-        <div id="form">
-          <input id="galleryCode" type="text" maxlength="6" bind:value={galleryCode} placeholder="Código para entrar en galería"/>
-          <img id="go" src="/static/icons/go.svg" on:click={enterTheGallery} alt="Go"/>
-        </div>
-      </div>
-      <button>Inicia sesión para crear tus propias galerías y que otras personas contacten contigo.</button>
       {:else}
       <TabbedSections sections="{tabs}" childComponent="{ChatIcon}" size="4em" bgColor="pink" badgeColor="indigo" on:click="{chatClickHandler}"/>
       {/if}
+      <ChatCodeInput/>
     {:else}
       <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
       <p>Conectando...</p>
@@ -208,29 +198,5 @@
   button {
     padding: 2em;
     max-width: 80%;
-  }
-  div.card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-content: center;
-  }
-  div#form {
-    display: flex;
-    flex-direction: row;
-  }
-  input#galleryCode {
-    background-color: white;
-    color: black;
-    padding: 1em;
-    font-size: large;
-    text-align: center;
-    width: 100%;
-    flex-grow: 1;
-  }
-  img#go {
-    width: 3em;
-    flex-grow: 0;
-    background-color: white;
   }
 </style>
