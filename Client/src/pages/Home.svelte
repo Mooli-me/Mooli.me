@@ -20,6 +20,7 @@
   import ChatIcon from '../components/ChatIcon.svelte';
   import Avatar from '../components/Avatar.svelte';
   import ChatCodeInput from '../components/ChatCodeInput.svelte';
+  import ChatsList from '../components/ChatsList.svelte';
 
   import { identity, chats, session, names } from '../js/store.js';
 
@@ -178,7 +179,10 @@
       {#if $chats.length === 1}
       <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
       {:else}
+      <!--
       <TabbedSections sections="{tabs}" childComponent="{ChatIcon}" size="4em" bgColor="pink" badgeColor="indigo" on:click="{chatClickHandler}"/>
+      -->
+      <ChatsList/>
       {/if}
       <ChatCodeInput/>
     {:else}
