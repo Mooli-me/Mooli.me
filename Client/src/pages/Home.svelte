@@ -138,24 +138,28 @@
     }
   }
 
+  function goToChatInfo () {
+    router.navigate(`/ChatInfo/${encodeURIComponent($chats[0].id)}/`)
+  }
+
   $: {
     if ($session.loggedOn) update();
   }
 
   $: {
     let ownGalleries = [];
-    let questChats = [];
+    let guestChats = [];
     if ($session.loggedOn) $chats.forEach(
       chat => {
         if (chat.owner === $identity) {
           ownGalleries.push(chat);
         } else {
-          questChats.push(chat);
+          guestChats.push(chat);
         }
       }
     );
     tabs = [
-      {title: "Chats", contents: questChats},
+      {title: "Chats", contents: guestChats},
       {title: "Tus galerías", contents: ownGalleries},
     ];
   }
@@ -169,19 +173,16 @@
   <Navbar>
     <NavTitle>{$_('appNameTitle')} - {$_('Home.title')}</NavTitle>
     <NavRight>
-      Menú?
+      <img class="button" src="/static/icons/qr.svg" alt="Galleries" on:click={goToChatInfo}/>
     </NavRight>
   </Navbar>
 
   <PageContent class="display-flex flex-direction-column justify-content-space-evenly align-content-space-around align-items-center" style="padding-top: 0px;">
   
     {#if $session.loggedOn }
-      {#if $chats.length === 1}
+      {#if ($chats.length === 1) && ($chats[0].peers.length === 0 ) }
       <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
       {:else}
-      <!--
-      <TabbedSections sections="{tabs}" childComponent="{ChatIcon}" size="4em" bgColor="pink" badgeColor="indigo" on:click="{chatClickHandler}"/>
-      -->
       <ChatsList/>
       {/if}
       <ChatCodeInput/>
@@ -198,9 +199,5 @@
   img#logo {  
     width: 80vw;
     max-width: 200px;
-  }
-  button {
-    padding: 2em;
-    max-width: 80%;
   }
 </style>

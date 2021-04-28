@@ -13,21 +13,24 @@
         router.navigate('Chat'+url)
     }
 
-    $: if ($chats) {
+    $: {
         myChats = [];
         $chats.forEach(
             chat=>{
-                var chatObj = {};
+                var chatObj;
                 if (chat.owner === $session.pubIdentity) {
                     chat.peers.forEach(
                         peer=>{
+                            chatObj = {};
                             chatObj.URL = `/${encodeURIComponent(chat.id)}/${encodeURIComponent(peer)}/`;
                             chatObj.id = peer;
                             chatObj.name = `${$names[peer] ? $names[peer] : '...'} - ${$names[chat.id] ? $names[chat.id] : chat.id}`;
                             myChats = [...myChats, chatObj];
+                            console.log(myChats)
                         }
                     )
                 } else {
+                    chatObj = {};
                     chatObj.URL = `/${encodeURIComponent(chat.id)}/null/`;
                     chatObj.id = chat.owner;
                     chatObj.name = $names[chat.owner] ? $names[chat.owner] : '...';
@@ -38,7 +41,7 @@
     }
 </script>
 <div>
-{#each myChats as item}
+{#each myChats as item (item.id) }
     <Avatar 
         id={item.id} 
         name={item.name}
