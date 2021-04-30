@@ -50,19 +50,6 @@
     var peerId = null;
     var backURL = '/';
 
-    /*var messagesData = [];
-
-    var chat = {
-        id: '',
-        messages: [''],
-        bannedIds: [],
-        isPublic: false,
-        owner: session.publicId,
-        peerRequests: [],
-        peers: [session.publicId],
-        type: 'm2m',
-    };*/
-
     function messagesData (chat) {
         return chat.type === 'm2m' ? chat.messages : chat.messages.filter(
             (msg) => {
@@ -163,25 +150,6 @@
         return message.user === $identity ? 'sent' : 'received' ;
     }
 
-    /*function setUpdateHandlers () {
-        try {
-            ws.addHandler(
-                {
-                    tag: 'updates',
-                    function: (obj)=>{
-                        if ( obj.type === 'messages' ) {
-                            $chats[chatIdx].messages = [...$chats[chatIdx].messages, obj.doc];
-                        } else {
-                            console.error('Unhandled update mensage:', obj);
-                        }
-                    }
-                }
-            );
-        } catch (err) {
-            console.error(err)
-        }
-    }*/
-
     async function getChatIdx() {
         const chatUpdateResponse = await updateChats(chatId);
         if ( chatUpdateResponse.ok ) {
@@ -247,13 +215,22 @@
     function avatarClickHandler (id) {
         router.navigate(`/CustomName/${encodeURIComponent(id)}/`);
     }
+
+    onMount(() => {
+        f7ready(() => {
+        messagebarInstance = messagebarComponent.instance();
+        });
+    });
+
     $: {
         destId = destId === 'null' ? null : destId;
     }
+
     $: { 
         attachmentsVisible = attachments.length > 0;
         placeholder = attachments.length > 0 ? $_('Chat.commentPlaceholder') : $_('Chat.messagePlaceholder');
     }
+
     $: {
         if ( $session.loggedOn === false && $identity ) {
             logIn();
@@ -266,17 +243,13 @@
             //backURL = $chats[chatIdx].owner === $identity ? `/ChatInfo/${encodeURIComponent(chatId)}/` : '/' ;
         }
     }
+
     $: {
         if ( chatsUpdated === true && $chats[chatIdx].messages ) {
             messages = messagesData($chats[chatIdx]);
         }
     }
 
-    onMount(() => {
-        f7ready(() => {
-        messagebarInstance = messagebarComponent.instance();
-        });
-    });
 
     if ( ! ws.pushHandlers.hasOwnProperty('updates') ) setUpdateHandlers();
 
@@ -291,14 +264,14 @@
             </Link>
         </NavLeft>
         <NavTitle>
-            {$_('appNameTitle')} - <span on:click={()=>avatarClickHandler($chats[chatIdx].id)}> {$names[$chats[chatIdx].id] || $chats[chatIdx].id} <img id="editNameIcon" alt="Cambiar nombre" src="/static/icons/lapiz.svg"/></span>
+            {$_('appNameTitle')} - <span on:click={()=>avatarClickHandler(peerId)}> {$names[peerId] || '...'} <img id="editNameIcon" alt="Cambiar nombre" src="/static/icons/lapiz.svg"/></span>
         </NavTitle>
         <NavRight>
           {#if peerId}
             <Avatar
-                id={$chats[chatIdx].id}
+                id={peerId}
                 size="2em"
-                on:click={()=>avatarClickHandler($chats[chatIdx].id)}
+                on:click={()=>avatarClickHandler(peerId)}
             />
           {/if}
         </NavRight>
