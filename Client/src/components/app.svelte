@@ -41,13 +41,14 @@
     },
     // For keep url in browsers
     view: {
-      //pushState: true,
-      ////pushStateRoot: window.location.hostname === 'localhost' ? 'http://localhost:8080' : 'https://mooli.me',
-      //pushStateRoot: location.origin,
-      //pushStateSeparator: '',
-      browserHistory: true,
-      browserHistoryRoot: window.location.hostname === 'localhost' ? 'http://localhost:8080' : 'https://mooli.me',
-      browserHistorySeparator: '',
+      pushState: true,
+      //pushStateRoot: window.location.hostname === 'localhost' ? 'http://localhost:8080' : 'https://mooli.me',
+      pushStateRoot: location.origin,
+      pushStateSeparator: '',
+      //browserHistory: true,
+      ////browserHistoryRoot: window.location.hostname === 'localhost' ? 'http://localhost:8080' : 'https://mooli.me',
+      //browserHistoryRoot: location.origin,
+      //browserHistorySeparator: '',
     }
   };
 
