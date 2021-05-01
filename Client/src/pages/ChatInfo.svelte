@@ -150,7 +150,6 @@
     </p>
     
     <div id='visual' on:click={()=>{copyToClipboard(chatURL)}}>
-      <Avatar size="100px" id={$chats[chatIdx].id}/>
       <QR data={chatURL} size=100/>
     </div>
     <p id="chatURL" on:click={()=>{copyToClipboard(chatURL)}}>
