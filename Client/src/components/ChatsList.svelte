@@ -10,7 +10,7 @@
 
     function chatClickHandler (url) {
         console.log(url)
-        router.navigate('Chat'+url)
+        router.navigate('/Chat'+url)
     }
 
     $: {

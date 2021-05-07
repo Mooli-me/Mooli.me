@@ -35,6 +35,7 @@
     }
     response = await ws.sendObj(request);
     if ( response.ok ) {
+      $identity = request.nameHash;
       $session.loggedOn = true;
       $session.pubIdentity = request.nameHash;
       $session.guest = false;
