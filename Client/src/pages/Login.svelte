@@ -23,6 +23,7 @@
   let router = f7.view.main.router;
   let password = '';
   let username = '';
+  let newAccount = false;
   let error;
 
   async function login () {
@@ -36,21 +37,33 @@
     if ( response.ok ) {
       $session.loggedOn = true;
       $session.pubIdentity = request.nameHash;
+      $session.guest = false;
       router.navigate('/Home/');
     } else {
       if (response.message === "Inexistent nameHash") {
-        const request = {
-          msgType: 'signon',
-          nameHash,
-        };
-        response = await ws.sendObj(request);
-        if (response.ok) {
-          login()
-        } else {
-          error = "No se ha podido crear la cuenta de usuario";
-        }
+        newAccount = true;
       }
     }
+  }
+
+  async function signUp () {
+    const nameHash = await sha512(`${username}:${password}`);
+    const request = {
+      msgType: 'signon',
+      nameHash,
+    };
+    const response = await ws.sendObj(request);
+    if (response.ok) {
+      login()
+    } else {
+      error = "No se ha podido crear la cuenta de usuario";
+    }
+  }
+
+  function clean () {
+    username = '';
+    password = '';
+    newAccount = '';
   }
 
 </script>
@@ -60,38 +73,62 @@
     <NavTitle>{$_('appNameTitle')} - {$_('Login.title')}</NavTitle>
 </Navbar>
 
-  <Block>
-    {#await sha512(`${username}:${password}`) }
-    <Avatar id=''/>
-    {:then hash }
-    <Avatar id={hash}/>
-    {/await}
-    <p>Este avatar representa tu identidad.</p>
-  </Block>
+<div class="card">
 
+    <div id="avatar">
+      {#await sha512(`${username}:${password}`) then hash }
+      <Avatar id={hash}/>
+      {/await}
+      <p>Este avatar representa tu identidad.</p>
+    </div>
 
-      <List>
-        <ListInput
-        outline
-        placeholder={$_('Login.usernamePlaceholder')}
-        type="text"
-        clearButton
-        onInput={ (event) => username = event.target.value }
-        />
-        <ListInput
-        outline
-        placeholder={$_('Login.passwordPlaceholder')}
-        type="password"
-        clearButton
-        onInput={ (event) => password = event.target.value }
-        />
-        {#if error}
-        <p>{error}</p>
-        {/if}
-      </List>
+    <input
+    placeholder={$_('Login.usernamePlaceholder')}
+    type="text"
+    bind:value = {username}
+    />
+    <input
+    placeholder={$_('Login.passwordPlaceholder')}
+    type="password"
+    bind:value = {password}
+    />
+    {#if newAccount}
+    <p>Este nombre de usuario y contraseñas nunca se han usado.</p>
+    <Button large round fill on:click="{signUp}">
+      {$_('Login.signUpButton')}
+    </Button>
+    <Button large round fill on:click="{clean}">
+      {$_('Login.clearButton')}
+    </Button>
+    {:else}
+    <Button large round fill on:click="{login}">
+      {$_('Login.enterButton')}
+    </Button>
+    {/if}
+    {#if error}
+    <p>{error}</p>
+    {/if}
+  </div>
 
-
-  <Button large round fill on:click="{login}">
-    {$_('Login.enterButton')}
-  </Button>
 </Page>
+
+<style>
+  div.card {
+      display: flex;
+      height: 80vh;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+  }
+
+  input {
+      background-color: white;
+      color: black;
+      margin: 0.5em;
+      padding: 1em;
+      font-size: large;
+      text-align: center;
+      width: 80%;
+      flex-grow: 0;
+  }
+</style>

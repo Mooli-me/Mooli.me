@@ -13,6 +13,8 @@ export const translations = {
             usernamePlaceholder: 'Aquí tu nombre de usuario.',
             passwordPlaceholder: 'Aquí tu contraseña.',
             enterButton: 'Entrar',
+            signUpButton: 'Crear cuenta y entrar',
+            clearButton: 'Empezar de nuevo',
         },
         Main: {
             yourGalleries: 'Tus galerías',
