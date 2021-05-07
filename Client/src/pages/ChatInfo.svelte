@@ -124,7 +124,7 @@
 
   <Navbar>
     <NavLeft>
-      <Link href='/'>
+      <Link href='/Home/'>
         <Icon icon="icon-back"/>
       </Link>
     </NavLeft>

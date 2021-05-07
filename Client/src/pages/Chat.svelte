@@ -48,7 +48,7 @@
     var chatsUpdated = false;
     var messages = [];
     var peerId = null;
-    var backURL = '/';
+    var backURL = '/Home/';
 
     function messagesData (chat) {
         return chat.type === 'm2m' ? chat.messages : chat.messages.filter(

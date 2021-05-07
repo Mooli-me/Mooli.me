@@ -48,7 +48,6 @@
       chat,
     };
     const chatAccessResponse = await ws.sendObj(request);
-
     if ( chatAccessResponse.ok ) {
       switch (chatAccessResponse.message) {
         case 'await':
@@ -98,9 +97,10 @@
   }
 */
 
-  $: {
-    if ( $session.loggedOn ) requestChatAccess(chatCode);
-  }
+  $: if ( $session.loggedOn ) {
+    requestChatAccess(chatCode)
+  };
+  console.log('*************************************************************')
 
 </script>
 

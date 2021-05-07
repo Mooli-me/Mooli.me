@@ -55,7 +55,7 @@ function WS (url,nameSeed) {
                         console.log('||| Connected.');
                         ws.tryingToConnect = false;
                         ws.sendPing();
-                        ws.login();
+                        //ws.login();
                     }
                 );
 

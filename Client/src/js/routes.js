@@ -38,14 +38,14 @@ var routes = [
   },*/
   {
     path: '/',
+    component: Login,
+  },
+  {
+    path: '/Home/',
     component: Home,
     /*redirect: function (route, resolve, reject) {
       resolve( sessionVal.guest ? '/FirstRun/' : '/Login/');
     }*/
-  },
-  {
-    path: '/Login/',
-    component: Login,
   },
   {
     path: '/SignOn/',

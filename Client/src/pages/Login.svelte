@@ -20,23 +20,39 @@
 
   import { ws } from '../js/webSocket.js';
 
-  var router = f7.view.main.router;
-  var password = '';
+  let router = f7.view.main.router;
+  let password = '';
+  let username = '';
+  let error;
 
   async function login () {
+    const nameHash = await sha512(`${username}:${password}`);
+    let response;
     var request = {
       msgType: 'login',
-      nameHash: await sha512(`${$identity}:${password}`),
+      nameHash,
     }
-    const response = await ws.sendObj(request);
+    response = await ws.sendObj(request);
     if ( response.ok ) {
       $session.loggedOn = true;
       $session.pubIdentity = request.nameHash;
-      router.navigate('/Main/');
+      router.navigate('/Home/');
     } else {
-
+      if (response.message === "Inexistent nameHash") {
+        const request = {
+          msgType: 'signon',
+          nameHash,
+        };
+        response = await ws.sendObj(request);
+        if (response.ok) {
+          login()
+        } else {
+          error = "No se ha podido crear la cuenta de usuario";
+        }
+      }
     }
   }
+
 </script>
 
 <Page name="Login">
@@ -45,15 +61,23 @@
 </Navbar>
 
   <Block>
-    {#await sha512(`${$identity}:${password}`) }
+    {#await sha512(`${username}:${password}`) }
     <Avatar id=''/>
     {:then hash }
     <Avatar id={hash}/>
     {/await}
+    <p>Este avatar representa tu identidad.</p>
   </Block>
 
 
       <List>
+        <ListInput
+        outline
+        placeholder={$_('Login.usernamePlaceholder')}
+        type="text"
+        clearButton
+        onInput={ (event) => username = event.target.value }
+        />
         <ListInput
         outline
         placeholder={$_('Login.passwordPlaceholder')}
@@ -61,6 +85,9 @@
         clearButton
         onInput={ (event) => password = event.target.value }
         />
+        {#if error}
+        <p>{error}</p>
+        {/if}
       </List>
 
 

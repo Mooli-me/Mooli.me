@@ -10,7 +10,8 @@ export const translations = {
         },
         Login: {
             title: 'Entrando a las galerías',
-            passwordPlaceholder: 'Pon aquí tu contraseña.',
+            usernamePlaceholder: 'Aquí tu nombre de usuario.',
+            passwordPlaceholder: 'Aquí tu contraseña.',
             enterButton: 'Entrar',
         },
         Main: {
