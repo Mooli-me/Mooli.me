@@ -7,7 +7,7 @@
     NavLeft,
     NavTitle,
     Link,
-    Preloader,
+    Button,
     Icon,
   } from 'framework7-svelte';
 
@@ -17,7 +17,7 @@
 
   import { ws } from '../js/webSocket.js';
 
-  import { pubIdentity, signOn, login, updateChats } from '../js/aux.js';
+  import { newIdentity, signOn, login, updateChats } from '../js/aux.js';
 
   export var chatCode;
 
@@ -27,20 +27,6 @@
   var chatsUpdated = false;
   var unknownChat = false;
   var serverError =  false;
-
-  async function guestLogin (id) {
-    /*$session.pubIdentity = await pubIdentity(id);
-    const signOnResponse = await signOn($session.pubIdentity);
-    const loginResponse = await login($session.pubIdentity);
-    */
-    const signOnResponse = await signOn($identity);
-    const loginResponse = await login($identity);
-    const resultOk = signOnResponse.ok && loginResponse.ok
-    if ( resultOk ) {
-      $session.loggedOn = true;
-    }
-    return resultOk
-  }
 
   async function requestChatAccess (chat) {
     const request = {
@@ -84,6 +70,24 @@
     }
   }
 
+  function userSession () {
+    router.navigate(`/Login/${chatCode}/`)
+  }
+
+  async function anonymousSession () {
+    let signOnResponse, loginResponse;
+    do {
+      $identity = await newIdentity();
+      signOnResponse = await signOn($identity);
+    } while ( ! signOnResponse.ok );
+    do {
+      loginResponse = await login($identity);
+    } while ( ! loginResponse.ok )
+    $session.loggedOn = true;
+    $session.guest = true;
+    $session.pubIdentity = $identity;
+  }
+
   /*
   $: {
       $session.updating = ! ( $session.loggedOn && accessRequested  && $chats ) && ! serverError && ! unknownChat;
@@ -100,7 +104,6 @@
   $: if ( $session.loggedOn ) {
     requestChatAccess(chatCode)
   };
-  console.log('*************************************************************')
 
 </script>
 
@@ -117,11 +120,27 @@
 
   <PageContent class="display-flex flex-direction-column justify-content-center align-content-space-around align-items-center">
 
-  {#if unknownChat}
-    <p>{$_('KnockKnock.unknownChat')} {chatCode}</p>
+  {#if $session.loggedOn}
+    {#if unknownChat}
+      <p>{$_('KnockKnock.unknownChat')} {chatCode}</p>
+    {:else}
+      <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
+      <p>Accediendo al chat...</p>
+    {/if}
   {:else}
+  <div class="card">
     <img id="logo" alt="Mooli.me logo" src="/static/icons/logo.svg"/>
-    <p>Accediendo al chat...</p>
+    <div id="buttons">
+      <Button large round fill on:click="{userSession}">
+        Inicia sesión
+      </Button>
+      <br/>
+      <Button large round fill on:click="{anonymousSession}">
+        Continúa de forma anónima<br/>
+      </Button>
+      <p>Continuando de forma anónima no podrás conservar tus conversaciones</p>
+    </div>
+  </div>
   {/if}
 
   </PageContent>
@@ -132,5 +151,16 @@
   img#logo {  
     width: 80vw;
     max-width: 200px;
+  }
+  div.card {
+      display: flex;
+      height: 60vh;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 3em;
+  }
+  div#buttons > * {
+    margin: 0.5em;
   }
 </style>

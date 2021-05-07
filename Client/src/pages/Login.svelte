@@ -25,6 +25,7 @@
   let username = '';
   let newAccount = false;
   let error;
+  export let redirect = '/Home/';
 
   async function login () {
     const nameHash = await sha512(`${username}:${password}`);
@@ -39,7 +40,7 @@
       $session.loggedOn = true;
       $session.pubIdentity = request.nameHash;
       $session.guest = false;
-      router.navigate('/Home/');
+      router.navigate(redirect);
     } else {
       if (response.message === "Inexistent nameHash") {
         newAccount = true;
@@ -77,10 +78,13 @@
 <div class="card">
 
     <div id="avatar">
-      {#await sha512(`${username}:${password}`) then hash }
+      {#await sha512(`${username}:${password}`)}
+      <Avatar id=''/>
+      {:then hash }
       <Avatar id={hash}/>
       {/await}
       <p>Este avatar representa tu identidad.</p>
+      <p>Te ayuda a reconocer tus credenciales.</p>
     </div>
 
     <input
@@ -120,6 +124,7 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
+      padding: 3em;
   }
 
   input {

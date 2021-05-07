@@ -41,6 +41,10 @@ var routes = [
     component: Login,
   },
   {
+    path: '/Login/:redirect/',
+    component: Login,
+  },
+  {
     path: '/Home/',
     component: Home,
     /*redirect: function (route, resolve, reject) {
