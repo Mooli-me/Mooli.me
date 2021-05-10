@@ -158,7 +158,7 @@
     }
   }
 
-  $: console.login(ws.readyState)
+  $: console.log(ws.readyState)
 
 </script>
 
