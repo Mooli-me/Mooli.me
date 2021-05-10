@@ -150,12 +150,15 @@
     ];
   }
 
-  if ( ! $session.loggedOn ) {
-    console.log(`/Login/${encodeURIComponent('/Home/')}/`)
-    router.navigate(`/Login/${encodeURIComponent('/Home/')}/`);
-  } else {
-    setUpdateHandlers();
+  $: if ( ws.readyState === 1 ) {
+    if ( ! $session.loggedOn ) {
+      router.navigate(`/Login/${encodeURIComponent('/Home/')}/`);
+    } else {
+      setUpdateHandlers();
+    }
   }
+
+  $: console.login(ws.readyState)
 
 </script>
 
