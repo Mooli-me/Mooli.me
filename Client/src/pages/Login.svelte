@@ -26,6 +26,7 @@
   let newAccount = false;
   let error;
   export let redirect = '/Home/';
+  console.log('redirect:',redirect)
 
   async function login () {
     const nameHash = await sha512(`${username}:${password}`);
@@ -40,7 +41,7 @@
       $session.loggedOn = true;
       $session.pubIdentity = request.nameHash;
       $session.guest = false;
-      router.navigate(redirect);
+      router.navigate(decodeURIComponent(redirect));
     } else {
       if (response.message === "Inexistent nameHash") {
         newAccount = true;

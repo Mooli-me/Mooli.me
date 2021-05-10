@@ -51,14 +51,14 @@ var routes = [
       resolve( sessionVal.guest ? '/FirstRun/' : '/Login/');
     }*/
   },
-  {
+  /*{
     path: '/SignOn/',
     component: SignOn,
   },
   {
     path: '/Peers/:chatIdx/',
     component: Peers,
-  },
+  },*/
   {
     path: '/ChatInfo/:chatId/',
     component: ChatInfo,

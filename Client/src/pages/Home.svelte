@@ -11,14 +11,9 @@
     Button,
     Badge,
   } from 'framework7-svelte';
-
-  import { fly } from 'svelte/transition';
   
   import {_} from 'svelte-i18n';
 
-  import TabbedSections from '../components/TabbedSections.svelte';
-  import ChatIcon from '../components/ChatIcon.svelte';
-  import Avatar from '../components/Avatar.svelte';
   import ChatCodeInput from '../components/ChatCodeInput.svelte';
   import ChatsList from '../components/ChatsList.svelte';
 
@@ -37,7 +32,7 @@
   var pwaInstall = null;
   var tabs = [];
 
-  async function signIn () {
+  /*async function signIn () {
     const id = sessionStorage.getItem('identity');
     identity.subscribe(
       (identity)=>{
@@ -64,9 +59,9 @@
     } else {
       alert('Error en signin')
     }
-  }
+  }*/
 
-  async function logIn () {
+  /*async function logIn () {
     const loginResponse =  await login($identity);
     console.log('Login result:',loginResponse);
     if ( loginResponse.ok ) {
@@ -78,7 +73,7 @@
     } else {
       setTimeout(logIn,loginDelay);
     }
-  }
+  }*/
 
   async function update () {
     const updateChatsResponse = await updateChats();
@@ -129,15 +124,6 @@
     }
   }
 
-  function chatClickHandler (ev) {
-    var chat = ev.detail;
-    if (chat.owner === $identity) {
-      router.navigate(`/ChatInfo/${encodeURIComponent(chat.id)}/`)
-    } else {
-      router.navigate(`/Chat/${encodeURIComponent(chat.id)}/null/`)
-    }
-  }
-
   function goToChatInfo () {
     router.navigate(`/ChatInfo/${encodeURIComponent($chats[0].id)}/`)
   }
@@ -164,7 +150,12 @@
     ];
   }
 
-  setUpdateHandlers();
+  if ( ! $session.loggedOn ) {
+    console.log(`/Login/${encodeURIComponent('/Home/')}/`)
+    router.navigate(`/Login/${encodeURIComponent('/Home/')}/`);
+  } else {
+    setUpdateHandlers();
+  }
 
 </script>
 
