@@ -47,7 +47,7 @@
 <Page name="home"  pageContent=false>
 
     <Navbar backLink>
-        <NavTitle>Nombre personalizado para {id}</NavTitle>
+        <NavTitle>Establecer nombre personalizado</NavTitle>
     </Navbar>
 
     <PageContent class="display-flex flex-direction-column justify-contents-center align-content-space-around align-contents-center" style="padding-top: 0px;">
