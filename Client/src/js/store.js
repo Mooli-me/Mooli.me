@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store';
 
-//import { newIdentity } from './aux.js';
+import { ws } from './webSocket.js';
 
 /*async function createGuestId () {
 	const sessionVal = get(session);
@@ -57,9 +57,19 @@ chats.subscribe(
 	}
 );
 names.subscribe(
-	(names)=>{
+	async (names)=>{
 		const namesJSON = JSON.stringify(names);
 		windowStorage.setItem('names', namesJSON);
+		if ( ws ) {
+			const request = {
+				msgType: 'saveState',
+				state: {
+					names: names,
+				},
+			};
+			const response = await ws.sendObj(request);
+			if ( ! response.ok ) console.error(request);
+		}
 	}
 );
 
