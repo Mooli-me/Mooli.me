@@ -133,7 +133,7 @@
     chatIdx = $chats.findIndex(
       chat => chat.id === chatId
     );
-    chatURL = `${location.protocol}//${location.host}/${encodeURIComponent($chats[chatIdx].id)}`
+    chatURL = `${location.host}/${encodeURIComponent($chats[chatIdx].id)}`
   }
 
   $: if ( $session.loggedOn && updated ) {
