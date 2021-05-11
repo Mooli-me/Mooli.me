@@ -26,7 +26,6 @@
   let newAccount = false;
   let error;
   export let redirect = '/Home/';
-  console.log('redirect:',redirect)
 
   async function login () {
     const nameHash = await sha512(`${username}:${password}`);

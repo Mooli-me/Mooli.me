@@ -11,7 +11,7 @@
     PageContent,
     } from 'framework7-svelte';
 
-    import { names } from '../js/store.js'
+    import { names, session } from '../js/store.js'
 
     import Avatar from '../components/Avatar.svelte';
 
@@ -25,6 +25,18 @@
         ev.preventDefault();
         router.back();
     }
+
+    function accessControl (flag = false) {
+        if ( flag ) {
+            if ( ! $session.loggedOn ) {
+                router.navigate(`/Login/${encodeURIComponent(`/CustomName/${id}/`)}/`);
+            }
+        } else {
+            setTimeout(()=>accessControl(true),500);
+        }
+    }
+
+    accessControl();
 
     $: {
         $names[id] = name;

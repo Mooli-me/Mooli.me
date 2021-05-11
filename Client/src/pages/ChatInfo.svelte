@@ -23,19 +23,20 @@
 
   import { identity, chats, session, names } from '../js/store.js';
 
-  import { login, pubIdentity, updateChats } from '../js/aux.js';
+  import { login, pubIdentity, updateChats} from '../js/aux.js';
 
   import { ws } from '../js/webSocket.js';
 
-  var router = f7.view.main.router;
+  const router = f7.view.main.router;
 
   export var chatId;
 
   var copied = false;
+  let updated = false
 
-  var chat, chatIdx, chatURL;
+  let chat, chatIdx, chatURL;
 
-  var name = $names[chatId] || '';
+  let name = $names[chatId] || '';
 
   function copyToClipboard(url) {
     navigator.clipboard.writeText(url).then(
@@ -54,6 +55,14 @@
           $session.loggedOn = true;
         }
       }
+  }
+
+  async function update () {
+    const updateChatsResponse = await updateChats();
+    if ( updateChatsResponse.ok ) {
+      $chats = updateChatsResponse.message;
+      updated = true;
+    }
   }
 
   async function setUpdateHandlers () {
@@ -102,22 +111,35 @@
     router.navigate(`/CustomName/${encodeURIComponent(id)}/`);
   }
 
-  if ( $session.loggedOn === false ) {
-    logIn();
+  function accessControl (flag = false) {
+    if ( flag ) {
+      if ( ! $session.loggedOn ) {
+        router.navigate(`/Login/${encodeURIComponent(`/ChatInfo/${chatId}/`)}/`);
+      } else {
+        setUpdateHandlers();
+      }
+    } else {
+      setTimeout(()=>accessControl(true),500);
+    }
   }
+
+  accessControl()
   
   if ( ! ws.pushHandlers.hasOwnProperty('updates') ) setUpdateHandlers();
 
-  $: {
+  $: if ( $session.loggedOn ) update();
+  
+  $: if ( $session.loggedOn && updated ) {
     chatIdx = $chats.findIndex(
       chat => chat.id === chatId
     );
     chatURL = `${location.protocol}//${location.host}/${encodeURIComponent($chats[chatIdx].id)}`
   }
 
-  $: {
-        $names[chatId] = name;
-    }
+  $: if ( $session.loggedOn && updated ) {
+    $names[chatId] = name;
+  }
+
 </script>
 
 <Page name="home"  pageContent=false>
@@ -139,7 +161,7 @@
   </Navbar>
 
   <PageContent class="display-flex flex-direction-column align-content-space-around align-items-center" style="padding-top: 0px;">
-
+    {#if $session.loggedOn && updated }
     <p id="code">{$chats[chatIdx].id}</p>
     <p id="chatType">
       {#if $chats[chatIdx].type === 'p2p'}
@@ -175,7 +197,7 @@
       <p transition:scale>{$_('ChatInfo.thereIsNobody')}</p>
     {/each}
     </Block>
-      
+    {/if}
   </PageContent>
 
 </Page>
@@ -200,13 +222,6 @@
     align-items: center;
     justify-content:center;
     width: 100%;
-  }
-  input {
-    border-style: solid;
-    border-radius: 0.5em;
-    text-align: center;
-    font-size: large;
-    padding: 0.5em
   }
   p#code {
     font-size: xx-large;

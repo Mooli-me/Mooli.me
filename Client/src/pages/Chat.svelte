@@ -216,6 +216,20 @@
         router.navigate(`/CustomName/${encodeURIComponent(id)}/`);
     }
 
+    function accessControl (flag = false) {
+        if ( flag ) {
+        if ( ! $session.loggedOn ) {
+            router.navigate(`/Login/${encodeURIComponent(`/Chat/${chatId}/${destId}/`)}/`);
+        } else {
+            setUpdateHandlers();
+        }
+        } else {
+        setTimeout(()=>accessControl(true),500);
+        }
+    }
+
+    accessControl();
+
     onMount(() => {
         f7ready(() => {
         messagebarInstance = messagebarComponent.instance();

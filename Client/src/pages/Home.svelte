@@ -128,6 +128,20 @@
     router.navigate(`/ChatInfo/${encodeURIComponent($chats[0].id)}/`)
   }
 
+  function accessControl (flag = false) {
+    if ( flag ) {
+      if ( ! $session.loggedOn ) {
+        router.navigate(`/Login/${encodeURIComponent('/Home/')}/`);
+      } else {
+        setUpdateHandlers();
+      }
+    } else {
+      setTimeout(()=>accessControl(true),500);
+    }
+  }
+
+  accessControl();
+
   $: {
     if ($session.loggedOn) update();
   }
@@ -149,16 +163,6 @@
       {title: "Tus galerías", contents: ownGalleries},
     ];
   }
-
-  $: if ( ws.readyState === 1 ) {
-    if ( ! $session.loggedOn ) {
-      router.navigate(`/Login/${encodeURIComponent('/Home/')}/`);
-    } else {
-      setUpdateHandlers();
-    }
-  }
-
-  $: console.log(ws.readyState)
 
 </script>
 
