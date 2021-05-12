@@ -108,7 +108,7 @@
   }
 
   function avatarClickHandler (id) {
-    router.navigate(`/CustomName/${encodeURIComponent(id)}/${encodeURIComponent(`/ChatInfo/${chatId}/`)}/`);
+    router.navigate(`/CustomName/${encodeURIComponent(id)}/`);
   }
 
   function accessControl (flag = false) {

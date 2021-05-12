@@ -68,7 +68,7 @@ var routes = [
     component: Chat,
   },
   {
-    path: '/CustomName/:id/:redirect/',
+    path: '/CustomName/:id/',
     component: CustomName,
   },
   {

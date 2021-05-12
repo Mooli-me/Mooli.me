@@ -29,6 +29,7 @@ export const names = writable(getSaved('names') || {} );*/
 export const identity = writable(null);
 export const chats = writable([]);
 export const names = writable({});
+export const lastAccesses = writable({});
 
 export const session = writable(
 	{
@@ -40,6 +41,19 @@ export const session = writable(
 	}
 );
 
+async function saveState () {
+	if ( ws ) {
+		const request = {
+			msgType: 'saveState',
+			state: {
+				names: get(names),
+				lastAccesses: get(lastAccesses),
+			},
+		};
+		const response = await ws.sendObj(request);
+		if ( ! response.ok ) console.error(request);
+	}
+}
 /**
  * Update localStorage on stores changes.
  */
@@ -57,21 +71,15 @@ chats.subscribe(
 	}
 );
 names.subscribe(
-	async (names)=>{
-		const namesJSON = JSON.stringify(names);
-		windowStorage.setItem('names', namesJSON);
-		if ( ws ) {
-			const request = {
-				msgType: 'saveState',
-				state: {
-					names: names,
-				},
-			};
-			const response = await ws.sendObj(request);
-			if ( ! response.ok ) console.error(request);
-		}
+	(names)=>{
+		saveState()
 	}
 );
+lastAccesses.subscribe(
+	(lastAccesses)=>{
+		saveState()
+	}
+)
 
 /**
  * Create identity if no identity found.

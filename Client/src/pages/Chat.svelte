@@ -21,7 +21,7 @@
 
     import { avatar } from '../js/AvatarURI.js';
 
-    import { identity, session, chats, names } from '../js/store.js';
+    import { identity, session, chats, names, lastAccesses } from '../js/store.js';
 
     import { ws } from '../js/webSocket.js';
 
@@ -213,7 +213,7 @@
     }
 
     function avatarClickHandler (id) {
-        router.navigate(`/CustomName/${encodeURIComponent(id)}/${encodeURIComponent(`/Chat/${chatId}/${destId}/`)}/`);
+        router.navigate(`/CustomName/${encodeURIComponent(id)}/`);
     }
 
     function accessControl (flag = false) {
@@ -226,6 +226,11 @@
         } else {
         setTimeout(()=>accessControl(true),500);
         }
+    }
+
+    function logLastAccess () {
+        $lastAccesses[chatId+destId] = Date.now();
+        console.log(chatId,destId,$lastAccesses);
     }
 
     accessControl();
@@ -261,6 +266,7 @@
     $: {
         if ( chatsUpdated === true && $chats[chatIdx].messages ) {
             messages = messagesData($chats[chatIdx]);
+            logLastAccess();
         }
     }
 
