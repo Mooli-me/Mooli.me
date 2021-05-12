@@ -16,6 +16,8 @@
     import Avatar from '../components/Avatar.svelte';
 
     export var id;
+
+    export let redirect = '/Home/';
     
     var name = $names[id] || '';
 
@@ -46,7 +48,12 @@
 
 <Page name="home"  pageContent=false>
 
-    <Navbar backLink>
+    <Navbar>
+        <NavLeft>
+            <Link href={decodeURI(redirect)}>
+              <Icon icon="icon-back"/>
+            </Link>
+          </NavLeft>
         <NavTitle>Establecer nombre personalizado</NavTitle>
     </Navbar>
 
