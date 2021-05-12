@@ -14,7 +14,7 @@
 
   import { sha512 } from '../js/aux.js';
 
-  import { identity, session } from '../js/store.js';
+  import { identity, session, lastAccesses, names } from '../js/store.js';
 
   import Avatar from '../components/Avatar.svelte';
 
@@ -36,6 +36,8 @@
     }
     response = await ws.sendObj(request);
     if ( response.ok ) {
+      $lastAccesses = response.message.lastAccesses;
+      $names = response.message.names;
       $identity = request.nameHash;
       $session.loggedOn = true;
       $session.pubIdentity = request.nameHash;

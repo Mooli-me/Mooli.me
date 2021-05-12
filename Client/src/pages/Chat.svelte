@@ -230,7 +230,6 @@
 
     function logLastAccess () {
         $lastAccesses[chatId+destId] = Date.now();
-        console.log(chatId,destId,$lastAccesses);
     }
 
     accessControl();
