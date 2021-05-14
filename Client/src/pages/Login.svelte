@@ -36,6 +36,7 @@
     }
     response = await ws.sendObj(request);
     if ( response.ok ) {
+      console.log(response)
       $lastAccesses = response.message.lastAccesses;
       $names = response.message.names;
       $identity = request.nameHash;
