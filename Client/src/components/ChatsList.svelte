@@ -1,12 +1,21 @@
 <script>
     import { f7 } from 'framework7-svelte';
-    import { chats, names, session } from '../js/store';
+    import { chats, lastAccesses, names, session } from '../js/store';
     import Avatar from './Avatar.svelte';
     import {_} from 'svelte-i18n';
 
     const router = f7.view.main.router;
 
     var myChats;
+
+    function pendingMessages (chat,lastAccessId) {
+        console.log($lastAccesses[lastAccessId]);
+        const lastAccess = $lastAccesses[lastAccessId] || 0;
+        const unreadMessages = chat.messages.filter(
+            (msg)=>msg.time >= lastAccess
+        )
+        return unreadMessages.length;
+    }
 
     function chatClickHandler (url) {
         console.log(url)
@@ -25,8 +34,8 @@
                             chatObj.URL = `/${encodeURIComponent(chat.id)}/${encodeURIComponent(peer)}/`;
                             chatObj.id = peer;
                             chatObj.name = `${$names[peer] ? $names[peer] : '...'} - ${$names[chat.id] ? $names[chat.id] : chat.id}`;
+                            chatObj.pending = pendingMessages(chat,chat.id+peer);
                             myChats = [...myChats, chatObj];
-                            console.log(myChats)
                         }
                     )
                 } else {
@@ -34,10 +43,12 @@
                     chatObj.URL = `/${encodeURIComponent(chat.id)}/null/`;
                     chatObj.id = chat.owner;
                     chatObj.name = $names[chat.owner] ? $names[chat.owner] : '...';
+                    chatObj.pending = pendingMessages(chat,chat.id+null);
                     myChats = [...myChats, chatObj]
                 }
             }
         )
+        console.log(myChats);
     }
 </script>
 <div>
@@ -45,6 +56,7 @@
     <Avatar 
         id={item.id} 
         name={item.name}
+        badge={item.pending}
         bgColor="pink" 
         badgeColor="indigo"
         on:click={()=>{chatClickHandler(item.URL)}}

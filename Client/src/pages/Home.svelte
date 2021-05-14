@@ -146,23 +146,6 @@
     if ($session.loggedOn) update();
   }
 
-  $: {
-    let ownGalleries = [];
-    let guestChats = [];
-    if ($session.loggedOn) $chats.forEach(
-      chat => {
-        if (chat.owner === $identity) {
-          ownGalleries.push(chat);
-        } else {
-          guestChats.push(chat);
-        }
-      }
-    );
-    tabs = [
-      {title: "Chats", contents: guestChats},
-      {title: "Tus galerías", contents: ownGalleries},
-    ];
-  }
 
 </script>
 
