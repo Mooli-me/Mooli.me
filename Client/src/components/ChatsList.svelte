@@ -9,7 +9,6 @@
     var myChats;
 
     function pendingMessages (chat,lastAccessId) {
-        console.log($lastAccesses[lastAccessId]);
         const lastAccess = $lastAccesses[lastAccessId] || 0;
         const unreadMessages = chat.messages.filter(
             (msg)=>msg.time >= lastAccess
@@ -18,7 +17,6 @@
     }
 
     function chatClickHandler (url) {
-        console.log(url)
         router.navigate('/Chat'+url)
     }
 
@@ -48,7 +46,6 @@
                 }
             }
         )
-        console.log(myChats);
     }
 </script>
 <div>
