@@ -48,7 +48,9 @@
 
     <Navbar>
         <NavLeft>
-            <Icon icon="icon-back" on:click="{submitHandler}"/>
+            <Link back>
+                <Icon icon="icon-back"/>
+            </Link>
         </NavLeft>
         <NavTitle>Establecer nombre personalizado</NavTitle>
     </Navbar>
