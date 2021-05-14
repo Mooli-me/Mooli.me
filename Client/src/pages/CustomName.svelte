@@ -56,7 +56,9 @@
     </Navbar>
 
     <PageContent class="display-flex flex-direction-column justify-contents-center align-content-space-around align-contents-center" style="padding-top: 0px;">
+        {#if id.length > 10}
         <Avatar id={id} name={$names[id] || '...'}/>
+        {/if}
         <form on:submit={submitHandler}>
             <input type="text" placeholder="..." bind:value={name}/>
             <p>El nombre que tú elijas se almacenará sólo en tu teléfono. No se compartirá con nandie.</p>
