@@ -181,23 +181,25 @@
                 case 'messages':
                     const message = obj.doc;
                     chatIdx = $chats.findIndex(
-                    chat => chat.id === message.chat
+                        chat => chat.id === message.chat
                     );
                     if ( chatIdx !== -1 ) {
-                    $chats[chatIdx].messages = [...$chats[chatIdx].messages, message];
+                        //$chats[chatIdx].messages = [...$chats[chatIdx].messages, message];
+                        $chats[chatIdx].messages.push(message);
+                        $chats = [...$chats];
                     } else {
-                    console.error('Message update for unexistent chat');
+                        console.error('Message update for unexistent chat');
                     }
                     break;
                 case 'chats':
                     const updatedChat = obj.doc;
                     chatIdx = $chats.findIndex(
-                    storedChat => storedChat.id === updatedChat.id
+                        storedChat => storedChat.id === updatedChat.id
                     );
                     if ( chatIdx !== -1 ) {
-                    $chats[chatIdx] = updatedChat;
+                        $chats[chatIdx] = updatedChat;
                     } else {
-                    $chats = [...$chats, updatedChat];
+                        $chats = [...$chats, updatedChat];
                     }
                     break;
                 default:
@@ -265,11 +267,13 @@
     $: {
         if ( chatsUpdated === true && $chats[chatIdx].messages ) {
             messages = messagesData($chats[chatIdx]);
-            logLastAccess();
         }
     }
 
-
+    $: if (messages) {
+        logLastAccess();
+    }
+    
     if ( ! ws.pushHandlers.hasOwnProperty('updates') ) setUpdateHandlers();
 
 </script>

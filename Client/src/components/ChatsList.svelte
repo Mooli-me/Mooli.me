@@ -6,7 +6,7 @@
 
     const router = f7.view.main.router;
 
-    var myChats;
+    let myChats;
 
     function pendingMessages (chat,lastAccessId) {
         const lastAccess = $lastAccesses[lastAccessId] || 0;
@@ -46,10 +46,11 @@
                 }
             }
         )
+        console.log(myChats)
     }
 </script>
 <div>
-{#each myChats as item (item.id) }
+{#each myChats as item (item.URL) }
     <Avatar 
         id={item.id} 
         name={item.name}

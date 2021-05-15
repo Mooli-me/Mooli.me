@@ -58,18 +58,18 @@ async function saveState () {
  * Update localStorage on stores changes.
  */
 
-identity.subscribe(
+/*identity.subscribe(
 	(identity)=>{
 		const identityJSON = JSON.stringify(identity);
 		windowStorage.setItem('identity', identityJSON);
 	}
-);
-chats.subscribe(
+);*/
+/*chats.subscribe(
 	(chats)=>{
 		const chatsJSON = JSON.stringify(chats);
 		windowStorage.setItem('chats', chatsJSON);
 	}
-);
+);*/
 names.subscribe(
 	(names)=>{
 		saveState()
