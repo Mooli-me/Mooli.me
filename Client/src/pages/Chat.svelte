@@ -220,11 +220,9 @@
 
     function accessControl (flag = false) {
         if ( flag ) {
-        if ( ! $session.loggedOn ) {
-            router.navigate(`/Login/${encodeURIComponent(`/Chat/${chatId}/${destId}/`)}/`);
-        } else {
-            setUpdateHandlers();
-        }
+            if ( ! $session.loggedOn ) {
+                router.navigate(`/Login/${encodeURIComponent(`/Chat/${chatId}/${destId}/`)}/`);
+            }
         } else {
         setTimeout(()=>accessControl(true),500);
         }

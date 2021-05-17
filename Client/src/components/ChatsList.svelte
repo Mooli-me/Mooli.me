@@ -8,12 +8,29 @@
 
     let myChats;
 
-    function pendingMessages (chat,lastAccessId) {
+    function messagesData (chat, destId) {
+        const messages = chat.type === 'm2m' ? chat.messages : chat.messages.filter(
+            (msg) => {
+                if ( $session.pubIdentity === chat.owner ) {
+                    return msg.destination === null && msg.user === destId || msg.destination === destId && msg.user === $session.pubIdentity;
+                } else {
+                    return msg.destination === $session.pubIdentity || msg.user === $session.pubIdentity;
+                }
+            }
+        );
+        return messages;
+    }
+
+    function pendingMessages (chat,destId,lastAccessId) {
+        const messages = messagesData(chat,destId);
         const lastAccess = $lastAccesses[lastAccessId] || 0;
-        const unreadMessages = chat.messages.filter(
-            (msg)=>msg.time >= lastAccess
+        const unreadedMessages = messages.filter(
+            (msg)=> {
+                return msg.time > lastAccess
+            }
+
         )
-        return unreadMessages.length;
+        return unreadedMessages.length;
     }
 
     function chatClickHandler (url) {
@@ -32,7 +49,7 @@
                             chatObj.URL = `/${encodeURIComponent(chat.id)}/${encodeURIComponent(peer)}/`;
                             chatObj.id = peer;
                             chatObj.name = `${$names[peer] ? $names[peer] : '...'} - ${$names[chat.id] ? $names[chat.id] : chat.id}`;
-                            chatObj.pending = pendingMessages(chat,chat.id+peer);
+                            chatObj.pending = pendingMessages(chat,peer,chat.id+peer);
                             myChats = [...myChats, chatObj];
                         }
                     )
@@ -41,12 +58,11 @@
                     chatObj.URL = `/${encodeURIComponent(chat.id)}/null/`;
                     chatObj.id = chat.owner;
                     chatObj.name = $names[chat.owner] ? $names[chat.owner] : '...';
-                    chatObj.pending = pendingMessages(chat,chat.id+null);
+                    chatObj.pending = pendingMessages(chat,$session.pubIdentity,chat.id+null);
                     myChats = [...myChats, chatObj]
                 }
             }
         )
-        console.log(myChats)
     }
 </script>
 <div>
