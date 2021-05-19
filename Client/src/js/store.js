@@ -53,7 +53,6 @@ async function saveState () {
 		const response = await ws.sendObj(request);
 		if ( ! response.ok ) console.error(request);
 	}
-	console.log('******************',Date.now())
 }
 /**
  * Update localStorage on stores changes.
