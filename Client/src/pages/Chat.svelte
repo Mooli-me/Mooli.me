@@ -231,6 +231,14 @@
         $lastAccesses[chatId+destId] = Date.now();
     }
 
+    function inputHandler (ev) {
+        if (ev.inputType === 'insertLineBreak') {
+            sendMessage(ev);
+        } else {
+            messageText = ev.target.value;
+        }
+    }
+
     accessControl();
 
     onMount(() => {
@@ -303,7 +311,7 @@
         attachmentsVisible={attachmentsVisible}
         sheetVisible={sheetVisible}
         value={messageText}
-        onInput={(e) => messageText = e.target.value}
+        onInput={inputHandler}
     >
         <!--
         <a class="link icon-only" slot="inner-start" on:click={() => sheetVisible = !sheetVisible}>
