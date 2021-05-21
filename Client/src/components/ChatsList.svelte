@@ -9,6 +9,7 @@
     let myChats;
 
     function messagesData (chat, destId) {
+        console.log('=> Filtering chat messages...')
         const messages = chat.type === 'm2m' ? chat.messages : chat.messages.filter(
             (msg) => {
                 if ( $session.pubIdentity === chat.owner ) {
@@ -18,15 +19,18 @@
                 }
             }
         );
+        console.log(`=> ${messages.length} messages in chat.`);
         return messages;
     }
 
     function pendingMessages (chat,destId,lastAccessId) {
+        console.log(`=> Counting unreaded messages for ${chat.id} - ${destId}...`);
         const messages = messagesData(chat,destId);
         const lastAccess = $lastAccesses[lastAccessId] || 0;
         const unreadedMessages = messages.filter(
             msg => msg.time > lastAccess
         )
+        console.log(`=> ${unreadedMessages.length} unreaded messages.`)
         return unreadedMessages.length;
     }
 

@@ -267,7 +267,8 @@
     }
 
     $: if (messages) {
-        logLastAccess();
+        let currentPath = router.currentRoute.path;
+        if ( currentPath.split('/',2)[1] === 'Chat') logLastAccess();
     }
     
     if ( ! ws.pushHandlers.hasOwnProperty('updates') ) setUpdateHandlers();
