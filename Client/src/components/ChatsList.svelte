@@ -25,9 +25,7 @@
         const messages = messagesData(chat,destId);
         const lastAccess = $lastAccesses[lastAccessId] || 0;
         const unreadedMessages = messages.filter(
-            (msg)=> {
-                return msg.time > lastAccess
-            }
+            msg => msg.time > lastAccess
         )
         return unreadedMessages.length;
     }
@@ -36,12 +34,12 @@
         router.navigate('/Chat'+url)
     }
 
-    $: {
+    $: if ( $chats ) {
         myChats = [];
         console.log('=> Updating local chats info...')
         $chats.forEach(
             chat=>{
-                var chatObj;
+                let chatObj;
                 if (chat.owner === $session.pubIdentity) {
                     chat.peers.forEach(
                         peer=>{
