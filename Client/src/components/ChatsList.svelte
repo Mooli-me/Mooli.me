@@ -28,7 +28,6 @@
             (msg)=> {
                 return msg.time > lastAccess
             }
-
         )
         return unreadedMessages.length;
     }
@@ -39,6 +38,7 @@
 
     $: {
         myChats = [];
+        console.log('=> Updating local chats info...')
         $chats.forEach(
             chat=>{
                 var chatObj;
@@ -63,6 +63,7 @@
                 }
             }
         )
+        console.log('=> Local chats info updated.')
     }
 </script>
 <div>

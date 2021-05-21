@@ -3,11 +3,8 @@
     f7,
     Page,
     Button,
-    Block,
     Navbar,
     NavTitle,
-    List,
-    ListInput,
   } from 'framework7-svelte';
 
   import {_} from 'svelte-i18n';
@@ -28,6 +25,7 @@
   export let redirect = '/Home/';
 
   async function login () {
+    console.log('=> Logging in...')
     const nameHash = await sha512(`${username}:${password}`);
     let response;
     var request = {
@@ -36,13 +34,13 @@
     }
     response = await ws.sendObj(request);
     if ( response.ok ) {
-      console.log(response)
       $lastAccesses = response.message.lastAccesses;
       $names = response.message.names;
       $identity = request.nameHash;
-      $session.loggedOn = true;
       $session.pubIdentity = request.nameHash;
+      $session.loggedOn = true;
       $session.guest = false;
+      console.log('=> Logged in.');
       router.navigate(decodeURIComponent(redirect));
     } else {
       if (response.message === "Inexistent nameHash") {
@@ -52,6 +50,7 @@
   }
 
   async function signUp () {
+    console.log('=> Signing on...')
     const nameHash = await sha512(`${username}:${password}`);
     const request = {
       msgType: 'signon',
@@ -59,7 +58,8 @@
     };
     const response = await ws.sendObj(request);
     if (response.ok) {
-      login()
+      console.log('=> Signed up.');
+      login();
     } else {
       error = "No se ha podido crear la cuenta de usuario";
     }

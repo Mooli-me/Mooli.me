@@ -6,10 +6,6 @@
     Navbar,
     NavTitle,
     NavRight,
-    Card,
-    Block,
-    Button,
-    Badge,
   } from 'framework7-svelte';
   
   import {_} from 'svelte-i18n';
@@ -17,11 +13,11 @@
   import ChatCodeInput from '../components/ChatCodeInput.svelte';
   import ChatsList from '../components/ChatsList.svelte';
 
-  import { identity, chats, session, names } from '../js/store.js';
+  import { chats, session } from '../js/store.js';
 
   import { ws } from '../js/webSocket.js';
 
-  import { signOn, login, updateChats } from '../js/aux.js';
+  import { updateChats } from '../js/aux.js';
 
   import AnonymousWarning from '../components/AnonymousWarning.svelte';
 
@@ -29,56 +25,12 @@
 
   var router = f7.view.main.router;
 
-  var pwaInstall = null;
-  var tabs = [];
-
-  /*async function signIn () {
-    const id = sessionStorage.getItem('identity');
-    identity.subscribe(
-      (identity)=>{
-        const identityJSON = JSON.stringify(identity);
-        localStorage.setItem('identity', identityJSON);
-      }
-    );
-    chats.subscribe(
-      (chats)=>{
-        const chatsJSON = JSON.stringify(chats);
-        localStorage.setItem('chats', chatsJSON);
-      }
-    );
-    names.subscribe(
-      (names)=>{
-        const namesJSON = JSON.stringify(names);
-        localStorage.setItem('names', namesJSON);
-      }
-    );
-    const signOnResponse = await signOn($identity);
-    if ( signOnResponse.ok ) {
-      $session.guest = false;
-      logIn();
-    } else {
-      alert('Error en signin')
-    }
-  }*/
-
-  /*async function logIn () {
-    const loginResponse =  await login($identity);
-    console.log('Login result:',loginResponse);
-    if ( loginResponse.ok ) {
-      const updateChatsResponse = await updateChats();
-      if ( updateChatsResponse.ok ) {
-        $chats = updateChatsResponse.message;
-        $session.loggedOn = true;
-      }
-    } else {
-      setTimeout(logIn,loginDelay);
-    }
-  }*/
-
   async function update () {
+    console.log('=> Requesting chats update...');
     const updateChatsResponse = await updateChats();
     if ( updateChatsResponse.ok ) {
       $chats = updateChatsResponse.message;
+      console.log('=> Chats updated.');
     }
   }
 

@@ -184,7 +184,6 @@
                         chat => chat.id === message.chat
                     );
                     if ( chatIdx !== -1 ) {
-                        //$chats[chatIdx].messages = [...$chats[chatIdx].messages, message];
                         $chats[chatIdx].messages.push(message);
                         $chats = [...$chats];
                     } else {
@@ -258,7 +257,6 @@
         }
         if ( chatsUpdated === true ) {
             peerId = destId ? destId : $chats[chatIdx].owner;
-            //backURL = $chats[chatIdx].owner === $identity ? `/ChatInfo/${encodeURIComponent(chatId)}/` : '/' ;
         }
     }
 
